@@ -1,0 +1,40 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables></variables>
+  <block type="event_whenflagclicked" id="{!5G[{H3qE2[NMQ;pK)W" x="288" y="407">
+    <next>
+      <block type="control_repeat" id="71*d]tdV^n0l@h?w=?,y">
+        <value name="TIMES">
+          <shadow type="math_whole_number" id="N^Xn]$)[rh7_]%H*=wdJ">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+        <statement name="SUBSTACK">
+          <block type="pico_internalledon" id="7C:eS~`AQH4|*),byhbW">
+            <next>
+              <block type="control_wait" id="cu?Ly0jM=-^J+^yc|M0*">
+                <value name="DURATION">
+                  <shadow type="math_positive_number" id="QD6OpKd)wHN,=E_a3y}?">
+                    <field name="NUM">1</field>
+                  </shadow>
+                </value>
+                <next>
+                  <block type="pico_internalledoff" id="t}94[pp__4$AF(0#f;sH">
+                    <next>
+                      <block type="control_wait" id=":Yp1=kryh?!=H`d)DdFH">
+                        <value name="DURATION">
+                          <shadow type="math_positive_number" id="Yr+Hhm_k~Rn7+4fIBh[o">
+                            <field name="NUM">1</field>
+                          </shadow>
+                        </value>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </next>
+  </block>
+</xml>

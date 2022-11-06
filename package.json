@@ -1,0 +1,37 @@
+{
+  "name": "picoscratch",
+  "version": "0.1.0",
+  "description": "Scratch for the Raspberry Pi Pico",
+  "main": "main.js",
+	"homepage": "https://github.com/cfpwastaken/picoscratch",
+  "scripts": {
+		"dist": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+	"build": {
+		"appId": "de.cfp.picoscratch",
+		"productName": "PicoScratch",
+		"win": {
+			"target": "portable",
+			"publisherName": "cfp"
+		},
+		"linux": {
+			"target": ["AppImage", "deb"],
+			"maintainer": "cfp"
+		}
+	},
+  "keywords": [],
+  "author": "cfp",
+  "license": "MIT",
+  "dependencies": {
+    "@electron/remote": "^2.0.8",
+    "electron-prompt": "^1.7.0",
+    "serialport": "^10.4.0",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+		"electron": "^21.2.2",
+		"electron-rebuild": "^3.2.9",
+    "electron-builder": "^23.6.0"
+  }
+}
