@@ -13,9 +13,10 @@ app.whenReady().then(() => {
 		webPreferences: {
 			nodeIntegration: true,
 			webSecurity: false,
-			contextIsolation: false
+			contextIsolation: false,
+			nodeIntegrationInSubFrames: true,
 		},
-		kiosk: false
+		kiosk: true
 	})
 	require('@electron/remote/main').enable(win.webContents)
 
@@ -33,7 +34,7 @@ app.whenReady().then(() => {
 		e.returnValue = null;
 	})
 
-	win.loadFile("web/editor.html");
+	win.loadFile("web/index.html");
 
 	win.webContents.openDevTools();
 })

@@ -6,6 +6,87 @@ const { autoDetect } = require("@serialport/bindings-cpp")
 const prompt = require("electron-prompt");
 const ipcRenderer = require("electron/renderer").ipcRenderer;
 
+const TASKS = [
+	{},
+	{
+		name: "LED zum blinken bringen",
+		instructions: [
+			{
+				text: "Nehme ein \"Wiederhole X mal\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				block: "control_repeat",
+				previousBlock: "event_whenflagclicked"
+			},
+			{
+				text: "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
+				block: "pico_internalledon",
+				previousBlock: "control_repeat"
+			},
+			{
+				text: "Baue eine pause mit einem \"warte X sekunden\" block",
+				block: "control_wait",
+				previousBlock: "pico_internalledon"
+			},
+			{
+				text: "Schalte die LED wieder aus mit einem \"Schalte interne LED aus\" block",
+				block: "pico_internalledoff",
+				previousBlock: "control_wait"
+			},
+			{
+				text: "Baue eine weitere pause ein.",
+				block: "control_wait",
+				previousBlock: "pico_internalledoff"
+			}
+		]
+	},
+	{
+		name: "LED zum blinken bringen 2",
+		instructions: [
+			{
+				text: "Nehme ein \"Wiederhole X mal\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				block: "control_repeat",
+				previousBlock: "event_whenflagclicked"
+			},
+			{
+				text: "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
+				block: "pico_internalledon",
+				previousBlock: "control_repeat"
+			},
+			{
+				text: "Baue eine pause mit einem \"warte X sekunden\" block",
+				block: "control_wait",
+				previousBlock: "pico_internalledon"
+			},
+			{
+				text: "Schalte die LED wieder aus mit einem \"Schalte interne LED aus\" block",
+				block: "pico_internalledoff",
+				previousBlock: "control_wait"
+			},
+			{
+				text: "Baue eine weitere pause ein.",
+				block: "control_wait",
+				previousBlock: "pico_internalledoff"
+			}
+		]
+	}
+]
+let taskIndex = -1;
+// TODO: show error message using my dialog lib
+if(location.hash == "") location.href = "";
+if(isNaN(location.hash.substring(1))) location.href = "index.html";
+let currentLevel = parseInt(location.hash.substring(1));
+
+function nextTask() {
+	taskIndex++;
+	if(taskIndex >= TASKS[currentLevel].instructions.length) {
+		document.querySelector("#instruction").innerText = "Super! Jetzt drück die grüne Flagge!";
+		document.querySelector("#greenflag").disabled = false;
+		document.querySelector("#reset").style.display = "none";
+		document.querySelector("#next").style.display = "";
+		return;
+	}
+	document.querySelector("#instruction").innerText = TASKS[currentLevel].instructions[taskIndex].text;
+}
+
 let picoport;
 let port;
 autoDetect().list().then(async ports => {
@@ -36,6 +117,9 @@ const startXML = `<xml xmlns="http://www.w3.org/1999/xhtml">
 </xml>`
 
 function start() {
+	document.querySelector("#taskname").innerText = TASKS[currentLevel].name;
+	nextTask();
+
 	soundsEnabled = true;
 
 	// Setup blocks
@@ -90,6 +174,39 @@ function start() {
 		if(e instanceof Blockly.Events.Create || e instanceof Blockly.Events.Delete || e instanceof Blockly.Events.Change || e instanceof Blockly.Events.Move || e instanceof Blockly.Events.VarDelete || e instanceof Blockly.Events.VarRename) {
 			if(running) cancel = true;
 		}
+		if(e instanceof Blockly.Events.EndBlockDrag) {
+			if(!workspace.getBlockById(e.blockId)) return;
+			if(workspace.getBlockById(e.blockId).startHat_) return;
+			if(workspace.getBlockById(e.blockId).type == TASKS[currentLevel].instructions[taskIndex].block &&
+				workspace.getBlockById(e.blockId).getPreviousBlock().type == TASKS[currentLevel].instructions[taskIndex].previousBlock) {
+					nextTask();
+			} else {
+				workspace.getBlockById(e.blockId).dispose(true);
+				document.querySelector("#instruction").animate([{
+					color: "white",
+					fontSize: "1.1rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "white",
+					fontSize: "1.1rem"
+				}],
+				{
+					duration: 1000
+				})
+			}
+		}
 	})
 
 	fromXml(startXML);
@@ -97,21 +214,29 @@ function start() {
 	document.querySelector("#greenflag").addEventListener("click", async () => {
 		await run();
 	})
-	document.querySelector("#stop").addEventListener("click", async () => {
-		await writePort("\r\x03")
-	})
+	// document.querySelector("#stop").addEventListener("click", async () => {
+	// 	await writePort("\r\x03")
+	// })
 	document.querySelector("#console_input").addEventListener("keypress", async (e) => {
 		if(e.key == "Enter") {
 			await writePort(document.querySelector("#console_input").value + "\r\n")
 			document.querySelector("#console_input").value = "";
 		}
 	})
-	document.querySelector("#save").addEventListener("click", async () => {
-		ipcRenderer.send("save", toXml());
+	// document.querySelector("#save").addEventListener("click", async () => {
+	// 	ipcRenderer.send("save", toXml());
+	// })
+	// document.querySelector("#load").addEventListener("click", async () => {
+	// 	const v = ipcRenderer.sendSync("load");
+	// 	if(v != null) fromXml(v);
+	// })
+	document.querySelector("#reset").addEventListener("click", async () => {
+		fromXml(startXML);
+		taskIndex = -1;
+		nextTask();
 	})
-	document.querySelector("#load").addEventListener("click", async () => {
-		const v = ipcRenderer.sendSync("load");
-		if(v != null) fromXml(v);
+	document.querySelector("#next").addEventListener("click", async () => {
+		location.href = "index.html#level-complete_" + currentLevel;
 	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {

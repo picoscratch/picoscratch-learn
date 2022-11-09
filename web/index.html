@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>PicoScratch Learn</title>
+	<link rel="stylesheet" href="style.css">
+	<script src="confetti.min.js"></script>
+	<script>
+		let nextLevel = 1;
+		const TOTAL_LEVELS = 2;
+		document.addEventListener("DOMContentLoaded", async (e) => {
+			const confettiSettings = {"target":"confetti-canvas","max":"300","size":"1","animate":true,"props":["circle","square","triangle","line"],"colors":[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],"clock":"25","rotate":true,"width":"1920","height":"1080","start_from_edge":true,"respawn":true};
+			const confetti = new ConfettiGenerator(confettiSettings);
+			confetti.render();
+			const confetti2Settings = {"target":"confetti-canvas-done","max":"300","size":"1","animate":true,"props":["circle","square","triangle","line"],"colors":[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],"clock":"25","rotate":true,"width":"1920","height":"1080","start_from_edge":true,"respawn":true};
+			const confetti2 = new ConfettiGenerator(confetti2Settings);
+			confetti2.render();
+			
+			function sleep(ms) {
+				return new Promise(resolve => setTimeout(resolve, ms));
+			}
+
+			async function fade(id1, id2) {
+				if(id1) {
+					document.getElementById(id1).animate([{opacity: "1"}, {opacity: "0"}], {duration: 500, iterations: 1});
+					await sleep(500);
+					document.getElementById(id1).style.display = "none";
+				}
+				if(id2) {
+					document.getElementById(id2).animate([{opacity: "0"}, {opacity: "1"}], {duration: 500, iterations: 1});
+					document.getElementById(id2).style.display = "flex";
+				}
+			}
+
+			if(location.hash) {
+				if(location.hash.startsWith("#level-complete")) {
+					nextLevel = parseInt(location.hash.split("#level-complete_")[1]) + 1;
+					if(nextLevel > TOTAL_LEVELS) {
+						await fade(undefined, "done");
+					} else {
+						await fade(undefined, "level-up");
+					}
+				} else {
+					await fade(undefined, location.hash.substring(1));
+				}
+			} else {
+				await fade(undefined, "first-screen")
+			}
+			
+			document.getElementById("start-btn").addEventListener("click", async () => {
+				await fade("first-screen", "difficulty-chooser");
+			})
+
+			document.getElementById("easy-btn").addEventListener("click", async () => {
+				await fade("difficulty-chooser", "name-chooser");
+				document.getElementById("name-input").focus();
+			})
+
+			document.getElementById("hard-btn").addEventListener("click", async () => {
+				await fade("difficulty-chooser", "name-chooser");
+				document.getElementById("name-input").focus();
+			})
+
+			document.getElementById("name-btn").addEventListener("click", async () => {
+				await fade("name-chooser");
+				await sleep(500);
+				location.href = "editor.html#1";
+			})
+
+			document.getElementById("next-btn").addEventListener("click", async () => {
+				await fade("level-up");
+				await sleep(500);
+				location.href = "editor.html#" + nextLevel;
+			})
+
+			document.getElementById("ok-btn").addEventListener("click", async () => {
+				await fade("done", "first-screen");
+			})
+		})
+	</script>
+</head>
+<body>
+	<div id="first-screen" style="display: none; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
+		<h1 style="font-size: 3rem;">PicoScratch Learn</h1>
+		<button id="start-btn" class="btn-green" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+			<svg width="30" height="30" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000"/></svg>
+			Start
+		</button>
+	</div>
+	<div id="difficulty-chooser" style="display: none; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
+		<h1 style="font-size: 3rem;">PicoScratch Learn</h1>
+		<div id="difficulty-buttons" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+			<button id="easy-btn" style="width: 300px; height: 300px; font-size: 40px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px;">
+				<img src="easy.svg" width="100px" height="100px">
+				Leicht
+				<span style="color: #acacac; font-size: 1.2rem;">Wähle dies, wenn du noch nicht programmieren kannst</span>
+			</button>
+			<button id="hard-btn" style="width: 300px; height: 300px; font-size: 40px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px;">
+				<svg width="100px" height="100px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m8.086 18.611 5.996-14.004a1 1 0 0 1 1.878.677l-.04.11-5.996 14.004a1 1 0 0 1-1.878-.677l.04-.11 5.996-14.004L8.086 18.61Zm-5.793-7.318 4-4a1 1 0 0 1 1.497 1.32l-.083.094L4.414 12l3.293 3.293a1 1 0 0 1-1.32 1.498l-.094-.084-4-4a1 1 0 0 1-.083-1.32l.083-.094 4-4-4 4Zm14-4.001a1 1 0 0 1 1.32-.083l.093.083 4.001 4.001a1 1 0 0 1 .083 1.32l-.083.095-4.001 3.995a1 1 0 0 1-1.497-1.32l.084-.095L19.584 12l-3.293-3.294a1 1 0 0 1 0-1.414Z" fill="#fff"/></svg>
+				Schwer
+				<span style="color: #acacac; font-size: 1.2rem;">Wähle dies, wenn du schon gut programmieren kannst</span>
+			</button>
+		</div>
+	</div>
+	<div id="name-chooser" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; display: none;">
+		<h1 style="font-size: 3rem;">Wie heißt du?</h1>
+		<input id="name-input" type="text" style="font-size: 2rem; text-align: center;" spellcheck="false" placeholder="Dein Name...">
+		<button id="name-btn" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+			<svg width="30" height="30" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m8.5 16.586-3.793-3.793a1 1 0 0 0-1.414 1.414l4.5 4.5a1 1 0 0 0 1.414 0l11-11a1 1 0 0 0-1.414-1.414L8.5 16.586Z" fill="#fff"/></svg>
+			Ok
+		</button>
+	</div>
+	<div id="level-up" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; display: none;">
+		<canvas id="confetti-canvas" style="position: fixed; top: 0; bottom: 0; width: 1920px; height: 1080px; z-index: -1;"></canvas>
+		<h1 style="font-size: 3rem;">Super!</h1>
+		<span style="font-size: 1.2rem;">Das war auch leicht. Aber jetzt wird es schwerer!</span>
+		<button id="next-btn" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+			Weiter
+		</button>
+	</div>
+	<div id="done" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; display: none;">
+		<canvas id="confetti-canvas-done" style="position: fixed; top: 0; bottom: 0; width: 1920px; height: 1080px; z-index: -1;"></canvas>
+		<h1 style="font-size: 3rem;">Fertig!</h1>
+		<span style="font-size: 1.2rem;">Super! Du bist fertig!</span>
+		<button id="ok-btn" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+			Ok
+		</button>
+	</div>
+</body>
+</html>

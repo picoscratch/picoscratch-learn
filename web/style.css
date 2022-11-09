@@ -123,6 +123,14 @@ button {
 	border-color: #1d1d1d;
 	border-bottom: 7px solid #3f3f3f;
 	outline: none;
+	color: white;
+}
+
+.btn-green {
+	background-color: #50F550;
+	border-color: #50F550;
+	border-bottom-color: #40C340;
+	color: black;
 }
 
 .blocklySvg,
