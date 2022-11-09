@@ -33,7 +33,7 @@ app.whenReady().then(() => {
 		e.returnValue = null;
 	})
 
-	win.loadFile("web/index.html");
+	win.loadFile("web/editor.html");
 
 	win.webContents.openDevTools();
 })
