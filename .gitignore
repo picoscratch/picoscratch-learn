@@ -1,3 +1,4 @@
 node_modules
 web/scratch-blocks/node_modules
 dist
+leaderboard.json

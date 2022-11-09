@@ -8,8 +8,15 @@
 	<link rel="stylesheet" href="style.css">
 	<script src="confetti.min.js"></script>
 	<script>
+		const fs = require("fs");
+		let leaderboard = [];
+		if(fs.existsSync("leaderboard.json")) {
+			leaderboard = JSON.parse(fs.readFileSync("leaderboard.json"));
+		}
 		let nextLevel = 1;
 		const TOTAL_LEVELS = 2;
+		let playerScore = 0;
+		let playerName = "";
 		document.addEventListener("DOMContentLoaded", async (e) => {
 			const confettiSettings = {"target":"confetti-canvas","max":"300","size":"1","animate":true,"props":["circle","square","triangle","line"],"colors":[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],"clock":"25","rotate":true,"width":"1920","height":"1080","start_from_edge":true,"respawn":true};
 			const confetti = new ConfettiGenerator(confettiSettings);
@@ -17,9 +24,43 @@
 			const confetti2Settings = {"target":"confetti-canvas-done","max":"300","size":"1","animate":true,"props":["circle","square","triangle","line"],"colors":[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],"clock":"25","rotate":true,"width":"1920","height":"1080","start_from_edge":true,"respawn":true};
 			const confetti2 = new ConfettiGenerator(confetti2Settings);
 			confetti2.render();
+
+			function renderLeaderboard() {
+				while (document.getElementById("leaderboard").firstChild) {
+					document.getElementById("leaderboard").removeChild(document.getElementById("leaderboard").lastChild);
+				}
+				const tr = document.createElement("tr");
+				["Platz", "Name", "Score"].forEach(s => {
+					const td = document.createElement("td");
+					td.innerText = s;
+					tr.appendChild(td);
+				})
+				document.getElementById("leaderboard").appendChild(tr);
+				for(let i = 0; i < 10; i++) {
+					if(!leaderboard[i]) break;
+					const player = leaderboard[i];
+					const tr = document.createElement("tr");
+					const place = document.createElement("td");
+					place.innerText = i + 1;
+					tr.appendChild(place);
+					const name = document.createElement("td");
+					name.innerText = player.name;
+					tr.appendChild(name);
+					const score = document.createElement("td");
+					score.innerText = player.score;
+					tr.appendChild(score);
+					document.getElementById("leaderboard").appendChild(tr);
+				}
+			}
+
+			renderLeaderboard();
 			
 			function sleep(ms) {
 				return new Promise(resolve => setTimeout(resolve, ms));
+			}
+
+			function randomRange(min, max) {
+				return Math.floor(Math.random() * (max - min + 1) + min)
 			}
 
 			async function fade(id1, id2) {
@@ -36,18 +77,54 @@
 
 			if(location.hash) {
 				if(location.hash.startsWith("#level-complete")) {
-					nextLevel = parseInt(location.hash.split("#level-complete_")[1]) + 1;
-					if(nextLevel > TOTAL_LEVELS) {
-						await fade(undefined, "done");
-					} else {
-						await fade(undefined, "level-up");
+					nextLevel = parseInt(location.hash.split("#level-complete_")[1].split("_")[0]) + 1;
+					playerName = location.hash.split("#level-complete_")[1].split("_")[1];
+					playerScore = parseInt(location.hash.split("#level-complete_")[1].split("_")[2]);
+					document.querySelector("#pluspoints").innerText = 100;
+					await fade(undefined, "level-up");
+					new Audio("sound.mp3").play();
+					let pluspoints = 100;
+					for(let i = 0; i < 60; i++) {
+						pluspoints = 100 + randomRange(10, 60);
+						document.querySelector("#pluspoints").innerText = pluspoints;
+						await sleep(10);
 					}
+					document.querySelector("#pluspoints").animate([
+						{
+							fontSize: "3rem"
+						},
+						{
+							fontSize: "5rem"
+						},
+						{
+							fontSize: "3rem"
+						}
+					], { duration: 250 })
+					playerScore += pluspoints;
 				} else {
 					await fade(undefined, location.hash.substring(1));
 				}
 			} else {
 				await fade(undefined, "first-screen")
 			}
+
+			function reset() {
+				nextLevel = 1;
+				playerScore = 0;
+				location.href = "#";
+			}
+
+			document.addEventListener("keydown", async (e) => {
+				if(e.ctrlKey && e.key == "c") {
+					reset();
+					await fade("first-screen");
+					await fade("difficulty-chooser");
+					await fade("name-chooser");
+					await fade("level-up");
+					await fade("done");
+					await fade(undefined, "first-screen");
+				}
+			})
 			
 			document.getElementById("start-btn").addEventListener("click", async () => {
 				await fade("first-screen", "difficulty-chooser");
@@ -66,13 +143,22 @@
 			document.getElementById("name-btn").addEventListener("click", async () => {
 				await fade("name-chooser");
 				await sleep(500);
-				location.href = "editor.html#1";
+				location.href = "editor.html#1_" + document.getElementById("name-input").value + "_0";
 			})
 
 			document.getElementById("next-btn").addEventListener("click", async () => {
 				await fade("level-up");
 				await sleep(500);
-				location.href = "editor.html#" + nextLevel;
+				if(nextLevel > TOTAL_LEVELS) {
+					leaderboard.push({name: playerName, score: playerScore});
+					leaderboard = leaderboard.sort((a, b) => b.score - a.score)
+					fs.writeFileSync("leaderboard.json", JSON.stringify(leaderboard));
+					reset();
+					renderLeaderboard();
+					await fade(undefined, "done");
+				} else {
+					location.href = "editor.html#" + nextLevel + "_" + playerName + "_" + playerScore;
+				}
 			})
 
 			document.getElementById("ok-btn").addEventListener("click", async () => {
@@ -80,14 +166,32 @@
 			})
 		})
 	</script>
+	<style>
+		th, td {
+			padding-left: 10px;
+			padding-right: 10px;
+			text-align: center;
+		}
+	</style>
 </head>
 <body>
-	<div id="first-screen" style="display: none; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
-		<h1 style="font-size: 3rem;">PicoScratch Learn</h1>
-		<button id="start-btn" class="btn-green" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-			<svg width="30" height="30" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000"/></svg>
-			Start
-		</button>
+	<div id="first-screen" style="display: none; align-items: center; justify-content: center; flex-direction: row; height: 100vh; gap: 50px;">
+		<div id="start" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
+			<h1 style="font-size: 3rem;">PicoScratch Learn</h1>
+			<button id="start-btn" class="btn-green" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+				<svg width="30" height="30" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000"/></svg>
+				Start
+			</button>
+		</div>
+		<div style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
+			<table id="leaderboard" style="font-size: 1.3rem;">
+				<tr>
+					<th>Platz</th>
+					<th>Name</th>
+					<th>Punkte</th>
+				</tr>
+			</table>
+		</div>
 	</div>
 	<div id="difficulty-chooser" style="display: none; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
 		<h1 style="font-size: 3rem;">PicoScratch Learn</h1>
@@ -114,7 +218,7 @@
 	</div>
 	<div id="level-up" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; display: none;">
 		<canvas id="confetti-canvas" style="position: fixed; top: 0; bottom: 0; width: 1920px; height: 1080px; z-index: -1;"></canvas>
-		<h1 style="font-size: 3rem;">Super!</h1>
+		<h1 style="font-size: 3rem;">Super! +<span id="pluspoints"></span> Punkte!</h1>
 		<span style="font-size: 1.2rem;">Das war auch leicht. Aber jetzt wird es schwerer!</span>
 		<button id="next-btn" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
 			Weiter

@@ -72,8 +72,10 @@ const TASKS = [
 let taskIndex = -1;
 // TODO: show error message using my dialog lib
 if(location.hash == "") location.href = "";
-if(isNaN(location.hash.substring(1))) location.href = "index.html";
-let currentLevel = parseInt(location.hash.substring(1));
+if(isNaN(location.hash.substring(1).split("_")[0])) location.href = "index.html";
+let currentLevel = parseInt(location.hash.substring(1).split("_")[0]);
+const playername = location.hash.substring(1).split("_")[1];
+const playerscore = location.hash.substring(1).split("_")[2];
 
 function nextTask() {
 	taskIndex++;
@@ -236,7 +238,7 @@ function start() {
 		nextTask();
 	})
 	document.querySelector("#next").addEventListener("click", async () => {
-		location.href = "index.html#level-complete_" + currentLevel;
+		location.href = "index.html#level-complete_" + currentLevel + "_" + playername + "_" + playerscore;
 	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {
