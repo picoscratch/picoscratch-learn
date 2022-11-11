@@ -105,7 +105,8 @@ autoDetect().list().then(async ports => {
 	})
 });
 
-window.addEventListener("beforeunload", () => {
+window.addEventListener("beforeunload", async () => {
+	await writePort("\r\x03")
 	port.close();
 })
 
