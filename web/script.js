@@ -84,6 +84,10 @@ function nextTask() {
 		document.querySelector("#greenflag").disabled = false;
 		document.querySelector("#reset").style.display = "none";
 		document.querySelector("#next").style.display = "";
+		updatePythonTab();
+		document.querySelector("#pythontab").style.width = "40%";
+		document.querySelector("#pythontab").style.display = "flex";
+		document.querySelector("#code-in-py").style.display = "";
 		return;
 	}
 	document.querySelector("#instruction").innerText = TASKS[currentLevel].instructions[taskIndex].text;
@@ -134,7 +138,6 @@ const startXML = `<xml xmlns="http://www.w3.org/1999/xhtml">
 function start() {
 	document.querySelector("#taskname").innerText = TASKS[currentLevel].name;
 	nextTask();
-	hljs.highlightAll();
 
 	soundsEnabled = true;
 
@@ -261,10 +264,9 @@ function start() {
 		document.querySelector("#tab-python").classList.remove("selected");
 	})
 	document.querySelector("#tab-python").addEventListener("click", async () => {
-		await makeCode();
-		document.querySelector("#pythontab").getElementsByTagName("code")[0].innerText = imports.map(l => { return "import " + l + "\n" }).join("") + finalCode;
+		await updatePythonTab();
 		document.querySelector("#blocklyDiv").style.display = "none";
-		document.querySelector("#pythontab").style.display = "";
+		document.querySelector("#pythontab").style.display = "flex";
 		document.querySelector("#tab-scratch").classList.remove("selected");
 		document.querySelector("#tab-python").classList.add("selected");
 	})
@@ -286,6 +288,12 @@ function start() {
 	setLocale(lang);
 	document.querySelector("#tab-language").value = lang;
 
+}
+
+async function updatePythonTab() {
+	await makeCode();
+	document.querySelector("#pythontab").getElementsByTagName("code")[0].textContent = imports.map(l => { return "import " + l + " # Importiert die Bibliothek \"" + l + "\"\n"; }).join("") + finalCode;
+	hljs.highlightElement(document.querySelector("#pythontab").getElementsByTagName("code")[0]);
 }
 
 function getToolboxElement() {
@@ -326,7 +334,7 @@ function readPortReponse() {
 let cancel = false;
 // let vars = [];
 // let lists = [];
-let finalCode = "import machine\r\nimport random\r\nimport time\r\n";
+let finalCode = "";
 let imports = [];
 let indent = "";
 
@@ -385,31 +393,31 @@ async function runBlock(hat) {
 			case "pico_ledon":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on()\r\n"
+				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on() # Führt die Funktion \"on\" aus beim Pin " + await solveNumber(blk.value[0]) + " von der Bibliothek \"machine\"\r\n"
 				break;
 			case "pico_ledoff":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off()\r\n"
+				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off() # Führt die Funktion \"off\" aus beim Pin " + await solveNumber(blk.value[0]) + " von der Bibliothek \"machine\"\r\n"
 				break;
 			case "pico_internalledon":
 				// await writePort("machine.Pin('LED').on()\r\n"); //! TODO: Check or ask if regular pico to use pin 25!!!!
 				addImport("machine");
-				finalCode += indent + "machine.Pin('LED').on()\r\n";
+				finalCode += indent + "machine.Pin('LED').on() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
 				break;
 			case "pico_internalledoff":
 				// await writePort("machine.Pin('LED').off()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin('LED').off()\r\n";
+				finalCode += indent + "machine.Pin('LED').off() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
 				break;
 			case "control_wait":
 				// await sleep(blk.value[0].shadow[0].field[0]._ * 1000);
 				addImport("time");
-				finalCode += indent + "time.sleep(" + await solveNumber(blk.value[0]) + ")\r\n";
+				finalCode += indent + "time.sleep(" + await solveNumber(blk.value[0]) + ") # Führt die Funktion \"sleep\" von der Bibliothek \"time\" aus und wartet " + await solveNumber(blk.value[0]) + " Sekunden\r\n";
 				break;
 			case "control_repeat":
 				const amount = await solveNumber(blk.value[0]);
-				finalCode += indent + "for i in range(" + amount + "):\r\n"
+				finalCode += indent + "for i in range(" + amount + "): # Wiederholt alles drunter " + amount + " mal\r\n"
 				indent += "\t";
 				// console.log(amount, blk.value[0]);
 				// console.log(blk);
@@ -421,7 +429,7 @@ async function runBlock(hat) {
 				indent = indent.substring(1);
 				break;
 			case "control_forever":
-				finalCode += indent + "while True:\r\n";
+				finalCode += indent + "while True: # Wiederholt alles drunter für immer\r\n";
 				indent += "\t";
 				if(blk.statement) {
 					// while(!cancel) {
@@ -436,7 +444,7 @@ async function runBlock(hat) {
 				// if(value && blk.statement) {
 				// 	await runBlock(blk.statement[0].block[0]);
 				// }
-				finalCode += indent + "if " + await solveCondition(blk.value[0].block[0]) + ":\r\n";
+				finalCode += indent + "if " + await solveCondition(blk.value[0].block[0]) + ": # Alles hier drunter wird nur ausgeführt wenn die Bedingung wahr ist\r\n";
 				indent += "\t";
 				if(blk.statement) {
 					await runBlock(blk.statement[0].block[0]);
@@ -452,7 +460,7 @@ async function runBlock(hat) {
 				// } else {
 				// 	await runBlock(blk.statement[1].block[0]);
 				// }
-				finalCode += indent + "if " + await solveCondition(blk.value[0].block[0]) + ":\r\n";
+				finalCode += indent + "if " + await solveCondition(blk.value[0].block[0]) + ": # Alles hier drunter wird nur ausgeführt wenn die Bedingung wahr ist\r\n";
 				indent += "\t";
 				if(blk.statement) {
 					await runBlock(blk.statement[0].block[0]);
@@ -460,7 +468,7 @@ async function runBlock(hat) {
 					finalCode += indent + "pass\r\n"
 				}
 				indent = indent.substring(1);
-				finalCode += indent + "else:\r\n"
+				finalCode += indent + "else: # Alles hier drunter wird nur ausgeführt wenn die Bedingung falsch ist\r\n"
 				indent += "\t";
 				if(blk.statement) {
 					await runBlock(blk.statement[1].block[0]);
@@ -472,13 +480,13 @@ async function runBlock(hat) {
 			}
 			case "debug_print":
 				// await writePort("print(\"" + await solveString(blk.value[0]) + "\")\r\n")
-				finalCode += indent + "print(" + await solveString(blk.value[0]) + ")\r\n";
+				finalCode += indent + "print(" + await solveString(blk.value[0]) + ") # Gibt etwas in der Konsole aus\r\n";
 				break;
 			case "data_setvariableto":
 				// vars.find(v => v.name == blk.field[0]._).value = await solveString(blk.value[0]);
 				let val = await solveString(blk.value[0]);
 				if(!isNaN(val.substring(1, val.length - 1))) val = parseInt(val.substring(1, val.length - 1));
-				finalCode += indent + blk.field[0]._ + " = " + val + "\r\n";
+				finalCode += indent + blk.field[0]._ + " = " + val + " # Setzt die Variable " + blk.field[0]._ + " zu " + val + "\r\n";
 				break;
 			case "data_changevariableby":
 				// let val = parseInt(vars.find(v => v.name == blk.field[0]._).value);
@@ -487,34 +495,34 @@ async function runBlock(hat) {
 				// console.log(val + await solveNumber(blk.value[0]));
 				// val = val + await solveNumber(blk.value[0]);
 				// vars.find(v => v.name == blk.field[0]._).value = val + "";
-				finalCode += indent + blk.field[0]._ + " += " + await solveNumber(blk.value[0]) + "\r\n";
+				finalCode += indent + blk.field[0]._ + " += " + await solveNumber(blk.value[0]) + " # Ändert den Wert der Variable " + blk.field[0]._ + " um " + val + "\r\n";
 				break;
 			case "data_addtolist":
 				// lists.find(v => v.name == blk.field[0]._).value.push(await solveString(blk.value[0]))
-				finalCode += indent + blk.field[0]._ + ".append(" + await solveString(blk.value[0]) + ")\r\n";
+				finalCode += indent + blk.field[0]._ + ".append(" + await solveString(blk.value[0]) + ") # Fügt " + await solveString(blk.value[0]) + " zur Liste " + blk.field[0]._ + " hinzu\r\n";
 				break;
 			case "data_deleteoflist":
 				// lists.find(v => v.name == blk.field[0]._).value.splice(await solveNumber(blk.value[0]) - 1, 1);
-				finalCode += indent + blk.field[0]._ + ".pop(" + await solveNumber(blk.value[0]) + ")\r\n";
+				finalCode += indent + blk.field[0]._ + ".pop(" + await solveNumber(blk.value[0]) + ") # Entfernt ein Element von der Liste " + blk.field[0]._ + "\r\n";
 				break;
 			case "data_deletealloflist":
 				// lists.find(v => v.name == blk.field[0]._).value = [];
-				finalCode += indent + blk.field[0]._ + " = []\r\n";
+				finalCode += indent + blk.field[0]._ + " = [] # Leert die Liste " + blk.field[0]._ + "\r\n";
 				break;
 			case "data_insertatlist":
 				// lists.find(v => v.name == blk.field[0]._).value.splice(await solveNumber(blk.value[1]) - 1, 0, await solveString(blk.value[0]));
-				finalCode += indent + blk.field[0]._ + ".insert(" + await solveNumber(blk.value[1]) + ", " + await solveString(blk.value[0]) + ")\r\n";
+				finalCode += indent + blk.field[0]._ + ".insert(" + await solveNumber(blk.value[1]) + ", " + await solveString(blk.value[0]) + ") # Fügt " + await solveString(blk.value[0]) + " zur Liste " + blk.field[0]._ + " an stelle " + await solveNumber(blk.value[1]) + " zu\r\n";
 				break;
 			case "data_replaceitemoflist":
 				// lists.find(v => v.name == blk.field[0]._).value.splice(await solveNumber(blk.value[0]) - 1, 1, await solveString(blk.value[1]));
-				finalCode += indent + blk.field[0]._ + ".pop(" + await solveNumber(blk.value[0]) + ")\r\n";
-				finalCode += indent + blk.field[0]._ + ".insert(" + await solveNumber(blk.value[0]) + ", " + await solveString(blk.value[1]) + ")\r\n";
+				finalCode += indent + blk.field[0]._ + ".pop(" + await solveNumber(blk.value[0]) + ") # Entfernt ein Element von der Liste " + blk.field[0]._ + "\r\n";
+				finalCode += indent + blk.field[0]._ + ".insert(" + await solveNumber(blk.value[0]) + ", " + await solveString(blk.value[1]) + ") # Fügt " + await solveString(blk.value[0]) + " zur Liste " + blk.field[0]._ + " an stelle " + await solveNumber(blk.value[1]) + " zu\r\n";
 				break;
 			case "debug_python":
-				finalCode += indent + blk.value[0].shadow[0].field[0]._ + "\r\n";
+				finalCode += indent + blk.value[0].shadow[0].field[0]._ + "# Führt Python Code aus\r\n";
 				break;
 			case "pico_setledbrightness":
-				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + await solveNumber(blk.value[1]) + " * " + await solveNumber(blk.value[1]) + ")\r\n"
+				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + await solveNumber(blk.value[1]) + " * " + await solveNumber(blk.value[1]) + ") # Setzt die Helligkeit der LED auf Pin " + await solveNumber(blk.value[0]) + " zu " + await solveNumber(blk.value[1]) + "\r\n"
 				break;
 		}
 		// workspace.glowBlock(blk.$.id, false);

@@ -48,10 +48,13 @@
 			<option value="de">Deutsch</option>
 		</select>
 	</div>
-	<div id="blocklyDiv"></div>
-	<pre id="pythontab" style="display: none; width: 100%; height: 65%">
-		<code class="language-python" style="width: 100%; height: 100%;"></code>
-	</pre>
+	<div id="tabs" style="display: flex; gap: 10px;">
+		<div id="blocklyDiv"></div>
+		<pre id="pythontab" style="display: none; width: 100%; height: 65%; flex-direction: column; gap: 5px;">
+			<span style="display: none;" id="code-in-py">Dies ist dein Code aber in der Programmiersprache Python:</span>
+			<code class="language-python" style="width: 100%; height: 100%;"></code>
+		</pre>
+	</div>
 	
 	<pre id="console">
 
