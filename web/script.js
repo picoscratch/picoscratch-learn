@@ -282,6 +282,10 @@ function start() {
 		})
 	}
 
+	const lang = ipcRenderer.sendSync("config.get", "lang");
+	setLocale(lang);
+	document.querySelector("#tab-language").value = lang;
+
 }
 
 function getToolboxElement() {

@@ -8,7 +8,9 @@
 	<link rel="stylesheet" href="style.css">
 	<script src="confetti.min.js"></script>
 	<script>
+		const ipcRenderer = require("electron/renderer").ipcRenderer;
 		const fs = require("fs");
+		const langs = require("./lang.json");
 		let leaderboard = [];
 		if(fs.existsSync("leaderboard.json")) {
 			leaderboard = JSON.parse(fs.readFileSync("leaderboard.json"));
@@ -18,6 +20,16 @@
 		let playerScore = 0;
 		let playerName = "";
 		document.addEventListener("DOMContentLoaded", async (e) => {
+			const title = ipcRenderer.sendSync("config.get", "title");
+			document.querySelectorAll(".title").forEach(e => e.innerText = title);
+			const lang = ipcRenderer.sendSync("config.get", "lang");
+			document.querySelectorAll("[data-lang]").forEach(e => {
+				e.innerText = langs[lang][e.getAttribute("data-lang")];
+			})
+			document.querySelectorAll("[data-lang-placeholder]").forEach(e => {
+				e.placeholder = langs[lang][e.getAttribute("data-lang-placeholder")];
+			})
+
 			const confettiSettings = {"target":"confetti-canvas","max":"300","size":"1","animate":true,"props":["circle","square","triangle","line"],"colors":[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],"clock":"25","rotate":true,"width":"1920","height":"1080","start_from_edge":true,"respawn":true};
 			const confetti = new ConfettiGenerator(confettiSettings);
 			confetti.render();
@@ -30,7 +42,7 @@
 					document.getElementById("leaderboard").removeChild(document.getElementById("leaderboard").lastChild);
 				}
 				const tr = document.createElement("tr");
-				["Platz", "Name", "Score"].forEach(s => {
+				[langs[lang].place, langs[lang].name, langs[lang].points].forEach(s => {
 					const td = document.createElement("td");
 					td.innerText = s;
 					tr.appendChild(td);
@@ -164,6 +176,11 @@
 			document.getElementById("ok-btn").addEventListener("click", async () => {
 				await fade("done", "first-screen");
 			})
+
+			document.getElementById("main-title").addEventListener("click", async () => {
+				await fade("first-screen");
+				location.href = "setup.html";
+			})
 		})
 	</script>
 	<style>
@@ -177,60 +194,56 @@
 <body>
 	<div id="first-screen" style="display: none; align-items: center; justify-content: center; flex-direction: row; height: 100vh; gap: 50px;">
 		<div id="start" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
-			<h1 style="font-size: 3rem;">PicoScratch Learn</h1>
+			<h1 style="font-size: 3rem;" class="title" id="main-title">PicoScratch Learn</h1>
 			<button id="start-btn" class="btn-green" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
 				<svg width="30" height="30" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000"/></svg>
-				Start
+				<span data-lang="start"></span>
 			</button>
 		</div>
 		<div style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
 			<table id="leaderboard" style="font-size: 1.3rem;">
 				<tr>
-					<th>Platz</th>
-					<th>Name</th>
-					<th>Punkte</th>
+					<th data-lang="place"></th>
+					<th data-lang="name"></th>
+					<th data-lang="points"></th>
 				</tr>
 			</table>
 		</div>
 	</div>
 	<div id="difficulty-chooser" style="display: none; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
-		<h1 style="font-size: 3rem;">PicoScratch Learn</h1>
+		<h1 style="font-size: 3rem;" class="title">PicoScratch Learn</h1>
 		<div id="difficulty-buttons" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
 			<button id="easy-btn" style="width: 300px; height: 300px; font-size: 40px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px;">
 				<img src="easy.svg" width="100px" height="100px">
-				Leicht
-				<span style="color: #acacac; font-size: 1.2rem;">Wähle dies, wenn du noch nicht programmieren kannst</span>
+				<span data-lang="easy"></span>
+				<span data-lang="easy-subtext" style="color: #acacac; font-size: 1.2rem;"></span>
 			</button>
 			<button id="hard-btn" style="width: 300px; height: 300px; font-size: 40px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px;">
 				<svg width="100px" height="100px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m8.086 18.611 5.996-14.004a1 1 0 0 1 1.878.677l-.04.11-5.996 14.004a1 1 0 0 1-1.878-.677l.04-.11 5.996-14.004L8.086 18.61Zm-5.793-7.318 4-4a1 1 0 0 1 1.497 1.32l-.083.094L4.414 12l3.293 3.293a1 1 0 0 1-1.32 1.498l-.094-.084-4-4a1 1 0 0 1-.083-1.32l.083-.094 4-4-4 4Zm14-4.001a1 1 0 0 1 1.32-.083l.093.083 4.001 4.001a1 1 0 0 1 .083 1.32l-.083.095-4.001 3.995a1 1 0 0 1-1.497-1.32l.084-.095L19.584 12l-3.293-3.294a1 1 0 0 1 0-1.414Z" fill="#fff"/></svg>
-				Schwer
-				<span style="color: #acacac; font-size: 1.2rem;">Wähle dies, wenn du schon gut programmieren kannst</span>
+				<span data-lang="hard"></span>
+				<span data-lang="hard-subtext" style="color: #acacac; font-size: 1.2rem;"></span>
 			</button>
 		</div>
 	</div>
 	<div id="name-chooser" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; display: none;">
-		<h1 style="font-size: 3rem;">Wie heißt du?</h1>
-		<input id="name-input" type="text" style="font-size: 2rem; text-align: center;" spellcheck="false" placeholder="Dein Name...">
+		<h1 style="font-size: 3rem;" data-lang="ask-name"></h1>
+		<input id="name-input" type="text" style="font-size: 2rem; text-align: center;" spellcheck="false" data-lang-placeholder="ask-name-placeholder">
 		<button id="name-btn" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
 			<svg width="30" height="30" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m8.5 16.586-3.793-3.793a1 1 0 0 0-1.414 1.414l4.5 4.5a1 1 0 0 0 1.414 0l11-11a1 1 0 0 0-1.414-1.414L8.5 16.586Z" fill="#fff"/></svg>
-			Ok
+			<span data-lang="ask-name-ok"></span>
 		</button>
 	</div>
 	<div id="level-up" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; display: none;">
 		<canvas id="confetti-canvas" style="position: fixed; top: 0; bottom: 0; width: 1920px; height: 1080px; z-index: -1;"></canvas>
-		<h1 style="font-size: 3rem;">Super! +<span id="pluspoints"></span> Punkte!</h1>
-		<span style="font-size: 1.2rem;">Das war auch leicht. Aber jetzt wird es schwerer!</span>
-		<button id="next-btn" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-			Weiter
-		</button>
+		<h1 style="font-size: 3rem;"><span data-lang="level-up-title"></span> +<span id="pluspoints"></span> <span data-lang="level-up-title-points"></span></h1>
+		<span style="font-size: 1.2rem;" data-lang="level-up-subtext"></span>
+		<button id="next-btn" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;" data-lang="level-up-button"></button>
 	</div>
 	<div id="done" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; display: none;">
 		<canvas id="confetti-canvas-done" style="position: fixed; top: 0; bottom: 0; width: 1920px; height: 1080px; z-index: -1;"></canvas>
-		<h1 style="font-size: 3rem;">Fertig!</h1>
-		<span style="font-size: 1.2rem;">Super! Du bist fertig!</span>
-		<button id="ok-btn" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-			Ok
-		</button>
+		<h1 style="font-size: 3rem;" data-lang="done-title"></h1>
+		<span style="font-size: 1.2rem;" data-lang="done-subtext"></span>
+		<button id="ok-btn" style="width: 200px; height: 60px; font-size: 40px; display: flex; align-items: center; justify-content: center; gap: 10px;" data-lang="done-ok"></button>
 	</div>
 </body>
 </html>

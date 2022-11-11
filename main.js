@@ -1,6 +1,9 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
 const { readFileSync, writeFileSync } = require("fs");
 require('@electron/remote/main').initialize()
+const Store = require('electron-store');
+
+const store = new Store();
 
 let win;
 
@@ -20,6 +23,15 @@ app.whenReady().then(() => {
 	})
 	require('@electron/remote/main').enable(win.webContents)
 
+	ipcMain.on("config.set", (e, key, value) => {
+		store.set(key, value);
+	})
+	ipcMain.on("config.get", (e, key) => {
+		e.returnValue = store.get(key);
+	})
+	ipcMain.on("config.has", (e, key) => {
+		e.returnValue = store.has(key);
+	})
 	ipcMain.on("save", (e, xml) => {
 		const path = dialog.showSaveDialogSync(win, { title: "Projekt speichern...", defaultPath: "project.xml", filters: [{ name: "PicoScratch Projekte", extensions: ["xml"] }] });
 		if(path) {
@@ -34,7 +46,8 @@ app.whenReady().then(() => {
 		e.returnValue = null;
 	})
 
-	win.loadFile("web/index.html");
+	if(!store.has("title")) win.loadFile("web/setup.html");
+	else win.loadFile("web/index.html");
 
 	win.webContents.openDevTools();
 })

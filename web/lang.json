@@ -1,0 +1,42 @@
+{
+	"en": {
+		"start": "Start",
+		"place": "Place",
+		"name": "Name",
+		"points": "Points",
+		"easy": "Easy",
+		"easy-subtext": "Choose this if you don't know how to code yet",
+		"hard": "Hard",
+		"hard-subtext": "Choose this if you already know how to code",
+		"ask-name": "What's your name?",
+		"ask-name-placeholder": "Your name...",
+		"ask-name-ok": "Ok",
+		"level-up-title": "Awesome!",
+		"level-up-title-points": "points!",
+		"level-up-subtext": "That was easy. But now it will get harder.",
+		"level-up-button": "Next",
+		"done-title": "Done!",
+		"done-subtext": "Awesome! You are done!",
+		"done-ok": "Ok"
+	},
+	"de": {
+		"start": "Start",
+		"place": "Platz",
+		"name": "Name",
+		"points": "Punkte",
+		"easy": "Leicht",
+		"easy-subtext": "Wähle dies, wenn du noch nicht programmieren kannst",
+		"hard": "Schwer",
+		"hard-subtext": "Wähle dies, wenn du schon gut programmieren kannst",
+		"ask-name": "Wie heißt du?",
+		"ask-name-placeholder": "Dein Name...",
+		"ask-name-ok": "Ok",
+		"level-up-title": "Super!",
+		"level-up-title-points": "Punkte!",
+		"level-up-subtext": "Das war auch leicht. Aber jetzt wird es schwerer!",
+		"level-up-button": "Weiter",
+		"done-title": "Fertig!",
+		"done-subtext": "Super! Du bist fertig!",
+		"done-ok": "Ok"
+	}
+}

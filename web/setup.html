@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>PicoScratch Learn Setup</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
+	<h1 style="font-size: 2rem; margin: 0;">PicoScratch Learn Setup</h1>
+	<h2 style="margin: 0;">Title:</h2>
+	<input type="text" placeholder="Title..." value="PicoScratch Learn" id="title">
+	<h2 style="margin: 0;">Language:</h2>
+	<select id="lang" style="background-color: #1d1d1d; color: white; font-size: 1.5rem">
+		<option value="en" selected>English</option>
+		<option value="de">Deutsch</option>
+	</select>
+	<button class="btn-green" id="btn-ok" style="font-size: 3rem;">OK</button>
+
+	<script>
+		const ipcRenderer = require("electron/renderer").ipcRenderer;
+		if(ipcRenderer.sendSync("config.has", "title")) {
+			document.getElementById("title").value = ipcRenderer.sendSync("config.get", "title");
+			document.getElementById("lang").value = ipcRenderer.sendSync("config.get", "lang");
+		}
+
+		document.getElementById("btn-ok").addEventListener("click", () => {
+			ipcRenderer.send("config.set", "title", document.getElementById("title").value);
+			ipcRenderer.send("config.set", "lang", document.getElementById("lang").value);
+			location.href = "index.html";
+		})
+	</script>
+</body>
+</html>
