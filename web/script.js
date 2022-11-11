@@ -87,6 +87,18 @@ function nextTask() {
 		return;
 	}
 	document.querySelector("#instruction").innerText = TASKS[currentLevel].instructions[taskIndex].text;
+	document.querySelector("#instruction").animate([{
+		fontSize: "1.1rem"
+	},
+	{
+		fontSize: "1.3rem"
+	},
+	{
+		fontSize: "1.1rem"
+	}],
+	{
+		duration: 500
+	})
 }
 
 let picoport;
