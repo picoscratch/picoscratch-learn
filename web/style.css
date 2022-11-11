@@ -103,7 +103,7 @@ h1 {
 }
 
 #blocklyDiv {
-	height: 75%;
+	height: 65vh;
 	width: 100%;
 }
 
@@ -113,7 +113,7 @@ h1 {
 
 #console {
 	overflow-y: scroll;
-	height: 8%;
+	height: 10vh;
 }
 
 button {
@@ -123,6 +123,28 @@ button {
 	border-color: #1d1d1d;
 	border-bottom: 7px solid #3f3f3f;
 	outline: none;
+}
+
+#tabswitcher {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 5px;
+}
+
+.tab {
+	font-size: 1.5rem;
+	background-color: #1d1d1d;
+	padding: 10px;
+	border-radius: 10px;
+	transition: background-color 300ms;
+}
+
+.tab:hover {
+	background-color: #3f3f3f;
+}
+
+.tab.selected {
+	background-color: #2e2e2e;
 }
 
 .blocklySvg,
@@ -141,7 +163,7 @@ button:active{
 }
 
 #console_input {
-	height: 4%;
+	height: 4vh;
 	width: calc(100% - 20px);
 }
 

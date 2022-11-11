@@ -36,6 +36,8 @@ const startXML = `<xml xmlns="http://www.w3.org/1999/xhtml">
 </xml>`
 
 function start() {
+	hljs.highlightAll();
+
 	soundsEnabled = true;
 
 	// Setup blocks
@@ -113,6 +115,20 @@ function start() {
 		const v = ipcRenderer.sendSync("load");
 		if(v != null) fromXml(v);
 	})
+	document.querySelector("#tab-scratch").addEventListener("click", async () => {
+		document.querySelector("#pythontab").style.display = "none";
+		document.querySelector("#blocklyDiv").style.display = "";
+		document.querySelector("#tab-scratch").classList.add("selected");
+		document.querySelector("#tab-python").classList.remove("selected");
+	})
+	document.querySelector("#tab-python").addEventListener("click", async () => {
+		await makeCode();
+		document.querySelector("#pythontab").getElementsByTagName("code")[0].innerText = finalCode;
+		document.querySelector("#blocklyDiv").style.display = "none";
+		document.querySelector("#pythontab").style.display = "";
+		document.querySelector("#tab-scratch").classList.remove("selected");
+		document.querySelector("#tab-python").classList.add("selected");
+	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {
 		prompt({
@@ -173,7 +189,17 @@ async function addImport(lib) {
 }
 
 async function run() {
-	running = true;
+	await makeCode();
+	await writePort("\r\x05")
+	for(const lib of imports) {
+		await writePort("import " + lib + "\r\n");
+	}
+	await writePort(finalCode);
+	await writePort("\r\x04");
+	document.querySelector("#console").innerText = "";
+}
+
+async function makeCode() {
 	indent = "";
 	finalCode = "";
 	const res = await parseXML(toXml());
@@ -201,15 +227,6 @@ async function run() {
 			// workspace.glowStack(hat.$.id, false);
 		}
 	}
-	running = false;
-	cancel = false;
-	await writePort("\r\x05")
-	for(const lib of imports) {
-		await writePort("import " + lib + "\r\n");
-	}
-	await writePort(finalCode);
-	await writePort("\r\x04");
-	document.querySelector("#console").innerText = "";
 }
 
 async function runBlock(hat) {
