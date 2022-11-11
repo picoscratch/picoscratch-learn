@@ -90,7 +90,7 @@
 			if(location.hash) {
 				if(location.hash.startsWith("#level-complete")) {
 					nextLevel = parseInt(location.hash.split("#level-complete_")[1].split("_")[0]) + 1;
-					playerName = location.hash.split("#level-complete_")[1].split("_")[1];
+					playerName = decodeURI(location.hash.split("#level-complete_")[1].split("_")[1]);
 					playerScore = parseInt(location.hash.split("#level-complete_")[1].split("_")[2]);
 					document.querySelector("#pluspoints").innerText = 100;
 					await fade(undefined, "level-up");
