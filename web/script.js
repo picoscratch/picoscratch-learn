@@ -123,7 +123,7 @@ function start() {
 	})
 	document.querySelector("#tab-python").addEventListener("click", async () => {
 		await makeCode();
-		document.querySelector("#pythontab").getElementsByTagName("code")[0].innerText = imports.map(l => { return "import " + l + "\n" }) + finalCode;
+		document.querySelector("#pythontab").getElementsByTagName("code")[0].innerText = imports.map(l => { return "import " + l + "\n" }).join("") + finalCode;
 		document.querySelector("#blocklyDiv").style.display = "none";
 		document.querySelector("#pythontab").style.display = "";
 		document.querySelector("#tab-scratch").classList.remove("selected");
