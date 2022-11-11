@@ -129,6 +129,9 @@ function start() {
 		document.querySelector("#tab-scratch").classList.remove("selected");
 		document.querySelector("#tab-python").classList.add("selected");
 	})
+	document.querySelector("#tab-language").addEventListener("change", async () => {
+		setLocale(document.querySelector("#tab-language").value);
+	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {
 		prompt({
