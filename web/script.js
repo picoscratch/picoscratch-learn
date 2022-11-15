@@ -5,70 +5,9 @@ const { SerialPort } = require('serialport')
 const { autoDetect } = require("@serialport/bindings-cpp")
 const prompt = require("electron-prompt");
 const ipcRenderer = require("electron/renderer").ipcRenderer;
+const fs = require("fs");
 
-const TASKS = [
-	{},
-	{
-		name: "LED zum blinken bringen",
-		instructions: [
-			{
-				text: "Nehme ein \"Wiederhole X mal\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
-				block: "control_repeat",
-				previousBlock: "event_whenflagclicked"
-			},
-			{
-				text: "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
-				block: "pico_internalledon",
-				previousBlock: "control_repeat"
-			},
-			{
-				text: "Baue eine pause mit einem \"warte X sekunden\" block",
-				block: "control_wait",
-				previousBlock: "pico_internalledon"
-			},
-			{
-				text: "Schalte die LED wieder aus mit einem \"Schalte interne LED aus\" block",
-				block: "pico_internalledoff",
-				previousBlock: "control_wait"
-			},
-			{
-				text: "Baue eine weitere pause ein.",
-				block: "control_wait",
-				previousBlock: "pico_internalledoff"
-			}
-		]
-	},
-	{
-		name: "LED zum blinken bringen 2",
-		instructions: [
-			{
-				text: "Nehme ein \"Wiederhole X mal\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
-				block: "control_repeat",
-				previousBlock: "event_whenflagclicked"
-			},
-			{
-				text: "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
-				block: "pico_internalledon",
-				previousBlock: "control_repeat"
-			},
-			{
-				text: "Baue eine pause mit einem \"warte X sekunden\" block",
-				block: "control_wait",
-				previousBlock: "pico_internalledon"
-			},
-			{
-				text: "Schalte die LED wieder aus mit einem \"Schalte interne LED aus\" block",
-				block: "pico_internalledoff",
-				previousBlock: "control_wait"
-			},
-			{
-				text: "Baue eine weitere pause ein.",
-				block: "control_wait",
-				previousBlock: "pico_internalledoff"
-			}
-		]
-	}
-]
+const TASKS = JSON.parse(fs.readFileSync("tasks.json", { encoding: "utf-8" }));
 let taskIndex = -1;
 // TODO: show error message using my dialog lib
 if(location.hash == "") location.href = "";

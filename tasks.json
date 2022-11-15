@@ -1,0 +1,63 @@
+[
+	{},
+	{
+		"name": "LED zum blinken bringen yay",
+		"instructions": [
+			{
+				"text": "Nehme ein \"Wiederhole X mal\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				"block": "control_repeat",
+				"previousBlock": "event_whenflagclicked"
+			},
+			{
+				"text": "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
+				"block": "pico_internalledon",
+				"previousBlock": "control_repeat"
+			},
+			{
+				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
+				"block": "control_wait",
+				"previousBlock": "pico_internalledon"
+			},
+			{
+				"text": "Schalte die LED wieder aus mit einem \"Schalte interne LED aus\" block",
+				"block": "pico_internalledoff",
+				"previousBlock": "control_wait"
+			},
+			{
+				"text": "Baue eine weitere pause ein.",
+				"block": "control_wait",
+				"previousBlock": "pico_internalledoff"
+			}
+		]
+	},
+	{
+		"name": "LED zum blinken bringen 2",
+		"instructions": [
+			{
+				"text": "Nehme ein \"Wiederhole X mal\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				"block": "control_repeat",
+				"previousBlock": "event_whenflagclicked"
+			},
+			{
+				"text": "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
+				"block": "pico_internalledon",
+				"previousBlock": "control_repeat"
+			},
+			{
+				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
+				"block": "control_wait",
+				"previousBlock": "pico_internalledon"
+			},
+			{
+				"text": "Schalte die LED wieder aus mit einem \"Schalte interne LED aus\" block",
+				"block": "pico_internalledoff",
+				"previousBlock": "control_wait"
+			},
+			{
+				"text": "Baue eine weitere pause ein.",
+				"block": "control_wait",
+				"previousBlock": "pico_internalledoff"
+			}
+		]
+	}
+]
