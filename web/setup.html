@@ -16,18 +16,21 @@
 		<option value="en" selected>English</option>
 		<option value="de">Deutsch</option>
 	</select>
+
+	<h2 style="margin: 0;">Leaderboard Server: (leave empty for none)</h2>
+	<input type="url" placeholder="ws://localhost:8080" id="server">
 	<button class="btn-green" id="btn-ok" style="font-size: 3rem;">OK</button>
 
 	<script>
 		const ipcRenderer = require("electron/renderer").ipcRenderer;
-		if(ipcRenderer.sendSync("config.has", "title")) {
-			document.getElementById("title").value = ipcRenderer.sendSync("config.get", "title");
-			document.getElementById("lang").value = ipcRenderer.sendSync("config.get", "lang");
-		}
+		if(ipcRenderer.sendSync("config.has", "title")) document.getElementById("title").value = ipcRenderer.sendSync("config.get", "title");
+		if(ipcRenderer.sendSync("config.has", "lang")) document.getElementById("lang").value = ipcRenderer.sendSync("config.get", "lang");
+		if(ipcRenderer.sendSync("config.has", "server")) document.getElementById("server").value = ipcRenderer.sendSync("config.get", "server");
 
 		document.getElementById("btn-ok").addEventListener("click", () => {
 			ipcRenderer.send("config.set", "title", document.getElementById("title").value);
 			ipcRenderer.send("config.set", "lang", document.getElementById("lang").value);
+			ipcRenderer.send("config.set", "server", document.getElementById("server").value);
 			location.href = "index.html";
 		})
 	</script>

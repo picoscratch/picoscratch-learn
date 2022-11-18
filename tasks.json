@@ -1,17 +1,17 @@
 [
 	{},
 	{
-		"name": "LED zum blinken bringen yay",
+		"name": "LED zum blinken bringen",
 		"instructions": [
 			{
-				"text": "Nehme ein \"Wiederhole X mal\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
-				"block": "control_repeat",
+				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				"block": "control_forever",
 				"previousBlock": "event_whenflagclicked"
 			},
 			{
 				"text": "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
 				"block": "pico_internalledon",
-				"previousBlock": "control_repeat"
+				"previousBlock": "control_forever"
 			},
 			{
 				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
@@ -31,32 +31,64 @@
 		]
 	},
 	{
-		"name": "LED zum blinken bringen 2",
+		"name": "Externe LED zum blinken bringen",
 		"instructions": [
 			{
-				"text": "Nehme ein \"Wiederhole X mal\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
-				"block": "control_repeat",
+				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				"block": "control_forever",
 				"previousBlock": "event_whenflagclicked"
 			},
 			{
-				"text": "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
-				"block": "pico_internalledon",
-				"previousBlock": "control_repeat"
+				"text": "Nehme ein \"Schalte LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
+				"block": "pico_ledon",
+				"previousBlock": "control_forever"
 			},
 			{
 				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
 				"block": "control_wait",
-				"previousBlock": "pico_internalledon"
+				"previousBlock": "pico_ledon"
 			},
 			{
-				"text": "Schalte die LED wieder aus mit einem \"Schalte interne LED aus\" block",
-				"block": "pico_internalledoff",
+				"text": "Schalte die LED wieder aus mit einem \"Schalte LED aus\" block",
+				"block": "pico_ledoff",
 				"previousBlock": "control_wait"
 			},
 			{
 				"text": "Baue eine weitere pause ein.",
 				"block": "control_wait",
-				"previousBlock": "pico_internalledoff"
+				"previousBlock": "pico_ledoff"
+			}
+		]
+	},
+	{
+		"name": "LED mit Knopf steuern",
+		"instructions": [
+			{
+				"text": "Mache erneut eine unendliche Schleife",
+				"block": "control_forever",
+				"previousBlock": "event_whenflagclicked"
+			},
+			{
+				"text": "Nehme einen \"falls ... sonst\" block",
+				"block": "control_if_else",
+				"previousBlock": "control_forever"
+			},
+			{
+				"text": "Ziehe einen \"Ist Knopf gedrückt?\" block in den \"falls ... sonst\" block",
+				"block": "pico_buttonstatus",
+				"parent": "control_if_else"
+			},
+			{
+				"text": "Schalte die LED ein, wenn ja",
+				"block": "pico_ledon",
+				"previousBlock": "control_if_else",
+				"parentStack": "SUBSTACK"
+			},
+			{
+				"text": "Schalte die LED aus, wenn nicht",
+				"block": "pico_ledoff",
+				"previousBlock": "control_if_else",
+				"parentStack": "SUBSTACK2"
 			}
 		]
 	}

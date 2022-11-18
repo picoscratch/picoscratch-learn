@@ -16,9 +16,27 @@
 			leaderboard = JSON.parse(fs.readFileSync("leaderboard.json"));
 		}
 		let nextLevel = 1;
-		const TOTAL_LEVELS = 2;
+		const TOTAL_LEVELS = 3;
 		let playerScore = 0;
 		let playerName = "";
+		let USE_SERVER = false;
+		let server = "";
+		let serverWS;
+		function hasJsonStructure(str) {
+			if (typeof str !== 'string') return false;
+			try {
+				const result = JSON.parse(str);
+				const type = Object.prototype.toString.call(result);
+				return type === '[object Object]' 
+					|| type === '[object Array]';
+			} catch (err) {
+				return false;
+			}
+		}
+		let allowUnload = false;
+		window.addEventListener("beforeunload", (e) => {
+			if(!allowUnload) e.returnValue = true;
+		});
 		document.addEventListener("DOMContentLoaded", async (e) => {
 			const title = ipcRenderer.sendSync("config.get", "title");
 			document.querySelectorAll(".title").forEach(e => e.innerText = title);
@@ -36,6 +54,33 @@
 			const confetti2Settings = {"target":"confetti-canvas-done","max":"300","size":"1","animate":true,"props":["circle","square","triangle","line"],"colors":[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],"clock":"25","rotate":true,"width":"1920","height":"1080","start_from_edge":true,"respawn":true};
 			const confetti2 = new ConfettiGenerator(confetti2Settings);
 			confetti2.render();
+
+			if(ipcRenderer.sendSync("config.has", "server")) {
+				const srv = ipcRenderer.sendSync("config.get", "server");
+				if(srv.trim() !== "") {
+					USE_SERVER = true;
+					server = srv;
+					serverWS = new WebSocket(server);
+					serverWS.addEventListener("error", (e) => {
+						alert("Failed connecting to leaderboard server. Is it on?", e);
+					})
+					serverWS.addEventListener("message", (data) => {
+						if(hasJsonStructure(data.data.toString())) {
+							leaderboard = JSON.parse(data.data.toString());
+							renderLeaderboard();
+						}
+					})
+					function reqLeader() {
+						requestLeaderboard();
+						serverWS.removeEventListener("open", reqLeader);
+					}
+					serverWS.addEventListener("open", reqLeader);
+				}
+			}
+
+			function requestLeaderboard() {
+				serverWS.send("get");
+			}
 
 			function renderLeaderboard() {
 				while (document.getElementById("leaderboard").firstChild) {
@@ -65,7 +110,7 @@
 				}
 			}
 
-			renderLeaderboard();
+			if(!USE_SERVER) renderLeaderboard();
 			
 			function sleep(ms) {
 				return new Promise(resolve => setTimeout(resolve, ms));
@@ -94,7 +139,7 @@
 					playerScore = parseInt(location.hash.split("#level-complete_")[1].split("_")[2]);
 					document.querySelector("#pluspoints").innerText = 100;
 					await fade(undefined, "level-up");
-					new Audio("sound.mp3").play();
+					// new Audio("sound.mp3").play();
 					let pluspoints = 100;
 					for(let i = 0; i < 60; i++) {
 						pluspoints = 100 + randomRange(10, 60);
@@ -139,7 +184,8 @@
 			})
 			
 			document.getElementById("start-btn").addEventListener("click", async () => {
-				await fade("first-screen", "difficulty-chooser");
+				// await fade("first-screen", "difficulty-chooser");
+				await fade("first-screen", "name-chooser");
 			})
 
 			document.getElementById("easy-btn").addEventListener("click", async () => {
@@ -155,6 +201,7 @@
 			document.getElementById("name-btn").addEventListener("click", async () => {
 				await fade("name-chooser");
 				await sleep(500);
+				allowUnload = true;
 				location.href = "editor.html#1_" + document.getElementById("name-input").value + "_0";
 			})
 
@@ -162,13 +209,19 @@
 				await fade("level-up");
 				await sleep(500);
 				if(nextLevel > TOTAL_LEVELS) {
-					leaderboard.push({name: playerName, score: playerScore});
-					leaderboard = leaderboard.sort((a, b) => b.score - a.score)
-					fs.writeFileSync("leaderboard.json", JSON.stringify(leaderboard));
+					if(USE_SERVER) {
+						serverWS.send("add " + playerScore + " " + playerName);
+						requestLeaderboard();
+					} else {
+						leaderboard.push({name: playerName, score: playerScore});
+						leaderboard = leaderboard.sort((a, b) => b.score - a.score)
+						fs.writeFileSync("leaderboard.json", JSON.stringify(leaderboard));
+						renderLeaderboard();
+					}
 					reset();
-					renderLeaderboard();
 					await fade(undefined, "done");
 				} else {
+					allowUnload = true;
 					location.href = "editor.html#" + nextLevel + "_" + playerName + "_" + playerScore;
 				}
 			})
@@ -179,6 +232,7 @@
 
 			document.getElementById("main-title").addEventListener("click", async () => {
 				await fade("first-screen");
+				allowUnload = true;
 				location.href = "setup.html";
 			})
 		})

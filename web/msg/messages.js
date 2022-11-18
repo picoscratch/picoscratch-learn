@@ -353,15 +353,15 @@ Blockly.Msg.BROADCAST_MODAL_TITLE = 'New Message';
 Blockly.Msg.DEFAULT_BROADCAST_MESSAGE_NAME = 'message1';
 
 // Pico Blocks
-Blockly.Msg.TURN_LED_OFF = "%1 %2 Turn LED %3 off";
-Blockly.Msg.LED_STATUS = "%1 %2 Is LED %3 on?";
-Blockly.Msg.TURN_LED_ON = "%1 %2 Turn LED %3 on";
-Blockly.Msg.SET_LED_BRIGHTNESS = "%1 %2 Set LED %3 brightness to %4";
-Blockly.Msg.GET_LED_BRIGHTNESS = "%1 %2 LED %3 brightness";
+Blockly.Msg.TURN_LED_OFF = "%1 %2 Turn LED off";
+Blockly.Msg.LED_STATUS = "%1 %2 Is LED on?";
+Blockly.Msg.TURN_LED_ON = "%1 %2 Turn LED on";
+Blockly.Msg.SET_LED_BRIGHTNESS = "%1 %2 Set LED brightness to %3";
+Blockly.Msg.GET_LED_BRIGHTNESS = "%1 %2 LED brightness";
 Blockly.Msg.TURN_INTERNAL_LED_OFF = "%1 %2 Turn internal LED off";
 Blockly.Msg.INTERNAL_LED_STATUS = "%1 %2 Is internal LED on?";
 Blockly.Msg.TURN_INTERNAL_LED_ON = "%1 %2 Turn internal LED on";
-Blockly.Msg.BUTTON_STATUS = "%1 %2 Is button %3 pressed down?";
+Blockly.Msg.BUTTON_STATUS = "%1 %2 Is button pressed down?";
 
 // Debug blocks
 Blockly.Msg.PRINT = "Print %1 to the console";

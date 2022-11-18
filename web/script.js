@@ -7,11 +7,22 @@ const prompt = require("electron-prompt");
 const ipcRenderer = require("electron/renderer").ipcRenderer;
 const fs = require("fs");
 
+let allowUnload = false;
+window.addEventListener("beforeunload", (e) => {
+	if(!allowUnload) e.returnValue = true;
+})
+
 const TASKS = JSON.parse(fs.readFileSync("tasks.json", { encoding: "utf-8" }));
 let taskIndex = -1;
 // TODO: show error message using my dialog lib
-if(location.hash == "") location.href = "";
-if(isNaN(location.hash.substring(1).split("_")[0])) location.href = "index.html";
+if(location.hash == "") {
+	allowUnload = true;
+	location.href = "index.html";
+}
+if(isNaN(location.hash.substring(1).split("_")[0])) {
+	allowUnload = true;
+	location.href = "index.html";
+}
 let currentLevel = parseInt(location.hash.substring(1).split("_")[0]);
 const playername = location.hash.substring(1).split("_")[1];
 const playerscore = location.hash.substring(1).split("_")[2];
@@ -61,6 +72,7 @@ autoDetect().list().then(async ports => {
 });
 
 window.addEventListener("beforeunload", async () => {
+	if(!allowUnload) return;
 	await writePort("\r\x03")
 	port.close();
 })
@@ -135,11 +147,30 @@ function start() {
 		if(e instanceof Blockly.Events.EndBlockDrag) {
 			if(!workspace.getBlockById(e.blockId)) return;
 			if(workspace.getBlockById(e.blockId).startHat_) return;
-			if(workspace.getBlockById(e.blockId).type == TASKS[currentLevel].instructions[taskIndex].block &&
-				workspace.getBlockById(e.blockId).getPreviousBlock().type == TASKS[currentLevel].instructions[taskIndex].previousBlock) {
-					nextTask();
+			const INSTRUCTION = TASKS[currentLevel].instructions[taskIndex];
+			let allow = true;
+			if(INSTRUCTION.block && workspace.getBlockById(e.blockId).type !== INSTRUCTION.block) {
+				allow = false;
+			}
+			if(INSTRUCTION.previousBlock && workspace.getBlockById(e.blockId).getPreviousBlock().type !== INSTRUCTION.previousBlock) {
+				allow = false;
+			}
+			if(INSTRUCTION.parentBlock && workspace.getBlockById(e.blockId).getParent().type !== INSTRUCTION.parentBlock) {
+				allow = false;
+			}
+			if(INSTRUCTION.parentStack) {
+				if(!workspace.getBlockById(e.blockId).getParent().getInputTargetBlock(INSTRUCTION.parentStack)) {
+					allow = false;
+				} else {
+					if(workspace.getBlockById(e.blockId).getParent().getInputTargetBlock(INSTRUCTION.parentStack).id != e.blockId) {
+						allow = false;
+					}
+				}
+			}
+			if(allow) {
+				nextTask();
 			} else {
-				workspace.getBlockById(e.blockId).dispose(true);
+				workspace.getBlockById(e.blockId).dispose(true, true);
 				document.querySelector("#instruction").animate([{
 					color: "white",
 					fontSize: "1.1rem"
@@ -194,6 +225,7 @@ function start() {
 		nextTask();
 	})
 	document.querySelector("#next").addEventListener("click", async () => {
+		allowUnload = true;
 		location.href = "index.html#level-complete_" + currentLevel + "_" + playername + "_" + playerscore;
 	})
 	document.querySelector("#tab-scratch").addEventListener("click", async () => {
@@ -332,12 +364,12 @@ async function runBlock(hat) {
 			case "pico_ledon":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on() # Führt die Funktion \"on\" aus beim Pin " + await solveNumber(blk.value[0]) + " von der Bibliothek \"machine\"\r\n"
+				finalCode += indent + "machine.Pin(0, machine.Pin.OUT).on() # Führt die Funktion \"on\" aus beim Pin 0 von der Bibliothek \"machine\"\r\n"
 				break;
 			case "pico_ledoff":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off() # Führt die Funktion \"off\" aus beim Pin " + await solveNumber(blk.value[0]) + " von der Bibliothek \"machine\"\r\n"
+				finalCode += indent + "machine.Pin(0, machine.Pin.OUT).off() # Führt die Funktion \"off\" aus beim Pin 0 von der Bibliothek \"machine\"\r\n"
 				break;
 			case "pico_internalledon":
 				// await writePort("machine.Pin('LED').on()\r\n"); //! TODO: Check or ask if regular pico to use pin 25!!!!
@@ -461,7 +493,7 @@ async function runBlock(hat) {
 				finalCode += indent + blk.value[0].shadow[0].field[0]._ + "# Führt Python Code aus\r\n";
 				break;
 			case "pico_setledbrightness":
-				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + await solveNumber(blk.value[1]) + " * " + await solveNumber(blk.value[1]) + ") # Setzt die Helligkeit der LED auf Pin " + await solveNumber(blk.value[0]) + " zu " + await solveNumber(blk.value[1]) + "\r\n"
+				finalCode += indent + "machine.PWM(machine.Pin(0)).duty_u16(" + await solveNumber(blk.value[0]) + " * " + await solveNumber(blk.value[0]) + ") # Setzt die Helligkeit der LED auf Pin 0 zu " + await solveNumber(blk.value[0]) + "\r\n"
 				break;
 		}
 		// workspace.glowBlock(blk.$.id, false);
@@ -509,7 +541,7 @@ async function solveCondition(conditionBlock) {
 			// await writePort("\r\n");
 			// await readPortReponse();
 			// return await readPortReponse() == 1;
-			return "machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.OUT).value() == 1"
+			return "machine.Pin(0, machine.Pin.OUT).value() == 1"
 		case "pico_internalledstatus":
 			// await writePort("machine.Pin('LED').value()")
 			// await writePort("\r\n");
@@ -517,7 +549,7 @@ async function solveCondition(conditionBlock) {
 			// return await readPortReponse() == 1;
 			return "machine.Pin(\"LED\").value() == 1"
 		case "pico_buttonstatus":
-			return "machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.IN, machine.Pin.PULL_DOWN).value() == 1"
+			return "machine.Pin(1, machine.Pin.IN, machine.Pin.PULL_DOWN).value() == 1"
 	}
 	return false;
 }
