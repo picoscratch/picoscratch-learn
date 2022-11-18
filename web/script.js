@@ -47,7 +47,7 @@ function nextTask() {
 let picoport;
 let port;
 autoDetect().list().then(async ports => {
-	picoport = ports.find(p => p.manufacturer == "MicroPython").path;
+	picoport = ports.find(p => p.manufacturer == "MicroPython" || p.manufacturer == "Microsoft").path;
 	port = new SerialPort({
 		path: picoport,
 		baudRate: 115200,
