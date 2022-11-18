@@ -11,7 +11,7 @@
 			{
 				"text": "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
 				"block": "pico_internalledon",
-				"previousBlock": "control_forever"
+				"parentBlock": "control_forever"
 			},
 			{
 				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
@@ -41,7 +41,7 @@
 			{
 				"text": "Nehme ein \"Schalte LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
 				"block": "pico_ledon",
-				"previousBlock": "control_forever"
+				"parentBlock": "control_forever"
 			},
 			{
 				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
@@ -71,24 +71,44 @@
 			{
 				"text": "Nehme einen \"falls ... sonst\" block",
 				"block": "control_if_else",
-				"previousBlock": "control_forever"
+				"parentBlock": "control_forever"
 			},
 			{
 				"text": "Ziehe einen \"Ist Knopf gedrückt?\" block in den \"falls ... sonst\" block",
 				"block": "pico_buttonstatus",
-				"parent": "control_if_else"
+				"parentBlock": "control_if_else"
 			},
 			{
 				"text": "Schalte die LED ein, wenn ja",
 				"block": "pico_ledon",
-				"previousBlock": "control_if_else",
+				"parentBlock": "control_if_else",
 				"parentStack": "SUBSTACK"
 			},
 			{
 				"text": "Schalte die LED aus, wenn nicht",
 				"block": "pico_ledoff",
-				"previousBlock": "control_if_else",
+				"parentBlock": "control_if_else",
 				"parentStack": "SUBSTACK2"
+			}
+		]
+	},
+	{
+		"name": "LED mit Poti steuern",
+		"instructions": [
+			{
+				"text": "Mache noch eine unendliche Schleife",
+				"block": "control_forever",
+				"previousBlock": "event_whenflagclicked"
+			},
+			{
+				"text": "Nehme einen \"Setze LED helligkeit\" block",
+				"block": "pico_setledbrightness",
+				"parentBlock": "control_forever"
+			},
+			{
+				"text": "Nehme einen \"Potentiometer wert\" block",
+				"block": "pico_potentiometer",
+				"parentBlock": "pico_setledbrightness"
 			}
 		]
 	}
