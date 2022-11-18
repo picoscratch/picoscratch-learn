@@ -590,9 +590,9 @@ async function solveNumber(val) {
 			// return lists.find(v => v.name == blk.field[0]._).value.length;
 			return "len(" + blk.field[0]._ + ")";
 		case "pico_ledbrightness":
-			return "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16() / 255"
+			return "machine.PWM(machine.Pin(0)).duty_u16() / 255"
 		case "pico_potentiometer":
-			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
+			return "int(round(machine.ADC(machine.Pin(26)).read_u16() / 65535 * 255, 0))"
 	}
 }
 
