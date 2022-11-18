@@ -591,6 +591,8 @@ async function solveNumber(val) {
 			return "len(" + blk.field[0]._ + ")";
 		case "pico_ledbrightness":
 			return "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16() / 255"
+		case "pico_potentiometer":
+			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
 	}
 }
 
