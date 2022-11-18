@@ -362,6 +362,7 @@ Blockly.Msg.TURN_INTERNAL_LED_OFF = "%1 %2 Turn internal LED off";
 Blockly.Msg.INTERNAL_LED_STATUS = "%1 %2 Is internal LED on?";
 Blockly.Msg.TURN_INTERNAL_LED_ON = "%1 %2 Turn internal LED on";
 Blockly.Msg.BUTTON_STATUS = "%1 %2 Is button %3 pressed down?";
+Blockly.Msg.POTENTIOMETER = "%1 %2 Potentiometer %3 value";
 
 // Debug blocks
 Blockly.Msg.PRINT = "Print %1 to the console";
