@@ -13,11 +13,14 @@
 		"productName": "PicoScratch",
 		"win": {
 			"target": "portable",
-			"publisherName": "cfp"
+			"publisherName": "cfp",
+			"icon": "picoscratch.ico"
 		},
 		"linux": {
 			"target": ["AppImage", "deb"],
-			"maintainer": "cfp"
+			"maintainer": "cfp",
+			"icon": "picoscratch.png",
+			"category": "Development"
 		}
 	},
   "keywords": [],
