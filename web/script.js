@@ -8,19 +8,35 @@ const ipcRenderer = require("electron/renderer").ipcRenderer;
 
 let picoport;
 let port;
-autoDetect().list().then(async ports => {
-	picoport = ports.find(p => p.manufacturer == "MicroPython" || p.manufacturer == "Microsoft").path;
-	port = new SerialPort({
-		path: picoport,
-		baudRate: 115200,
+let connectDialogShown = false;
+function connectPort() {
+	autoDetect().list().then(async ports => {
+		picoport = ports.find(p => p.manufacturer == "MicroPython" || p.manufacturer == "Microsoft");
+		if(!picoport) {
+			connectDialogShown = true;
+			new Dialog("#connect-pico-dialog").show();
+			setTimeout(connectPort, 1000);
+			return;
+		}
+		if(connectDialogShown) {
+			connectDialogShown = false;
+			document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb").id = "usb-connected";
+			setTimeout(() => { new Dialog("#connect-pico-dialog").hide(); }, 500);
+		}
+		picoport = picoport.path;
+		port = new SerialPort({
+			path: picoport,
+			baudRate: 115200,
+		});
+		port.on('readable', async function () {
+			const data = port.read().toString()
+			document.querySelector("#console").innerText += data;
+			document.querySelector("#console").scrollTop = document.querySelector("#console").scrollHeight;
+			document.dispatchEvent(new CustomEvent("portdata", {detail: data}))
+		})
 	});
-	port.on('readable', async function () {
-		const data = port.read().toString()
-		document.querySelector("#console").innerText += data;
-		document.querySelector("#console").scrollTop = document.querySelector("#console").scrollHeight;
-		document.dispatchEvent(new CustomEvent("portdata", {detail: data}))
-	})
-});
+}
+connectPort();
 
 window.addEventListener("beforeunload", () => {
 	port.close();
