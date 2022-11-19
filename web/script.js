@@ -34,6 +34,10 @@ function connectPort() {
 			document.querySelector("#console").scrollTop = document.querySelector("#console").scrollHeight;
 			document.dispatchEvent(new CustomEvent("portdata", {detail: data}))
 		})
+		port.on("close", () => {
+			if(document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb-connected")) document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb-connected").id = "usb";
+			connectPort();
+		})
 	});
 }
 connectPort();
