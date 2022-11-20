@@ -405,7 +405,11 @@ async function solveCondition(conditionBlock) {
 			// const v1 = conditionBlock.value[0].shadow[0].field[0]._;
 			// const v2 = conditionBlock.value[1].shadow[0].field[0]._;
 			// return v1 == v2;
-			return conditionBlock.value[0].shadow[0].field[0]._ + " == " + conditionBlock.value[1].shadow[0].field[0]._;
+			let val = await solveString(conditionBlock.value[0]);
+			if(!isNaN(val.substring(1, val.length - 1))) val = parseInt(val.substring(1, val.length - 1));
+			let val2 = await solveString(conditionBlock.value[1]);
+			if(!isNaN(val2.substring(1, val2.length - 1))) val2 = parseInt(val2.substring(1, val2.length - 1));
+			return val + " == " + val2;
 		}
 		case "operator_and": {
 			// const v1 = await solveCondition(conditionBlock.value[0].block[0]);
