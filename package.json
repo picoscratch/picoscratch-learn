@@ -12,7 +12,7 @@
 		"appId": "de.cfp.picoscratch",
 		"productName": "PicoScratch",
 		"win": {
-			"target": "portable",
+			"target": ["portable", "nsis", "msi"],
 			"publisherName": "cfp",
 			"icon": "picoscratch.ico"
 		},
