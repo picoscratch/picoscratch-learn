@@ -20,7 +20,7 @@ function start() {
 			contextIsolation: false,
 			nodeIntegrationInSubFrames: true,
 		},
-		kiosk: true,
+		// kiosk: true,
 		icon: path.join(__dirname, "picoscratch.ico")
 	})
 	require('@electron/remote/main').enable(win.webContents)
@@ -53,9 +53,9 @@ function start() {
 	})
 
 	if(!store.has("title")) win.loadFile("web/setup.html");
-	else win.loadFile("web/index.html");
+	else win.loadFile("web/editor.html");
 
-	//win.webContents.openDevTools();
+	win.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {

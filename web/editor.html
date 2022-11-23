@@ -14,6 +14,7 @@
 	<script src="script.js"></script>
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="dialog.css">
+	<link rel="stylesheet" href="spinner.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/vs2015.min.css">
 	<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"></script>
 	<link rel="shortcut icon" href="../picoscratch.ico" type="image/x-icon">
@@ -24,6 +25,41 @@
 			<h2>Connect pico</h2>
 			<p>Please connect the pico to the computer.</p>
 			<object id="connect-pico-obj" data="connectpico.svg" type="image/svg+xml" style="width: 700px; margin-bottom: 15px;"></object>
+		</div>
+		<div class="dialog" id="log-in-dialog" style="display: none;">
+			<h2>Log in</h2>
+			<p>Please enter your name.</p>
+			<input type="text" placeholder="John Doe" style="text-align: center;" id="name">
+			<button id="submit-name" class="btn-green" style="font-size: 1.4rem;">Submit</button>
+		</div>
+		<div class="dialog" id="waiting-for-teacher-dialog" style="display: none;">
+			<h2>Waiting for teacher</h2>
+			<p>The teacher hasn't started yet.</p>
+		</div>
+		<div class="dialog" id="end-dialog" style="display: none;">
+			<h2>The game has ended.</h2>
+			<p>The teacher has ended this game.</p>
+		</div>
+		<div class="dialog" id="done-dialog" style="display: none;">
+			<h2>Done</h2>
+			<p>You have finished all tasks.</p>
+		</div>
+		<div class="dialog" id="loading-dialog" style="display: none;">
+			<h2>Loading</h2>
+			<div class="progress-ring spinner-indeter" style="margin-top: 10px">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="ring">
+					<circle class="dynamic" cx="50%" cy="50%" r="43.75%"></circle>
+				</svg>
+			</div>
+			<p style="margin-bottom: 5px;">One moment please.</p>
+			<p id="status" style="color: #acacac; margin: 0; margin-bottom: 10px;">
+				Connecting to Server
+			</p>
+		</div>
+		<div class="dialog" id="leaderboard-dialog" style="display: none;">
+			<h2>Leaderboard</h2>
+			<table id="leaderboard"></table>
+			<button id="exit-leaderboard" style="font-size: 1.4rem;">Ok</button>
 		</div>
 	</div>
 	<div id="topbar" style="display: flex; gap: 5px; align-items: center;">

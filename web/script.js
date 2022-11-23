@@ -9,148 +9,41 @@ const fs = require("fs");
 
 let allowUnload = false;
 window.addEventListener("beforeunload", (e) => {
-	if(!allowUnload) e.returnValue = true;
+	// if(!allowUnload) e.returnValue = true;
 })
 
-const TASKS = [
-	{},
-	{
-		"name": "LED zum blinken bringen",
-		"instructions": [
-			{
-				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
-				"block": "control_forever",
-				"previousBlock": "event_whenflagclicked"
-			},
-			{
-				"text": "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
-				"block": "pico_internalledon",
-				"parentBlock": "control_forever"
-			},
-			{
-				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
-				"block": "control_wait",
-				"previousBlock": "pico_internalledon"
-			},
-			{
-				"text": "Schalte die LED wieder aus mit einem \"Schalte interne LED aus\" block",
-				"block": "pico_internalledoff",
-				"previousBlock": "control_wait"
-			},
-			{
-				"text": "Baue eine weitere pause ein.",
-				"block": "control_wait",
-				"previousBlock": "pico_internalledoff"
-			}
-		]
-	},
-	{
-		"name": "Externe LED zum blinken bringen",
-		"instructions": [
-			{
-				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
-				"block": "control_forever",
-				"previousBlock": "event_whenflagclicked"
-			},
-			{
-				"text": "Nehme ein \"Schalte LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
-				"block": "pico_ledon",
-				"parentBlock": "control_forever"
-			},
-			{
-				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
-				"block": "control_wait",
-				"previousBlock": "pico_ledon"
-			},
-			{
-				"text": "Schalte die LED wieder aus mit einem \"Schalte LED aus\" block",
-				"block": "pico_ledoff",
-				"previousBlock": "control_wait"
-			},
-			{
-				"text": "Baue eine weitere pause ein.",
-				"block": "control_wait",
-				"previousBlock": "pico_ledoff"
-			}
-		]
-	},
-	{
-		"name": "LED mit Knopf steuern",
-		"instructions": [
-			{
-				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
-				"block": "control_forever",
-				"previousBlock": "event_whenflagclicked"
-			},
-			{
-				"text": "Nehme einen \"falls ... sonst\" block",
-				"block": "control_if_else",
-				"parentBlock": "control_forever"
-			},
-			{
-				"text": "Ziehe einen \"Ist Knopf gedrückt?\" block in den \"falls ... sonst\" block",
-				"block": "pico_buttonstatus",
-				"parentBlock": "control_if_else"
-			},
-			{
-				"text": "Schalte die LED ein, wenn ja",
-				"block": "pico_ledon",
-				"parentBlock": "control_if_else",
-				"parentStack": "SUBSTACK"
-			},
-			{
-				"text": "Schalte die LED aus, wenn nicht",
-				"block": "pico_ledoff",
-				"parentBlock": "control_if_else",
-				"parentStack": "SUBSTACK2"
-			}
-		]
-	},
-	{
-		"name": "LED mit Poti steuern",
-		"instructions": [
-			{
-				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
-				"block": "control_forever",
-				"previousBlock": "event_whenflagclicked"
-			},
-			{
-				"text": "Nehme einen \"Setze LED helligkeit\" block",
-				"block": "pico_setledbrightness",
-				"parentBlock": "control_forever"
-			},
-			{
-				"text": "Nehme einen \"Potentiometer wert\" block",
-				"block": "pico_potentiometer",
-				"parentBlock": "pico_setledbrightness"
-			}
-		]
-	}
-];
+let leaderboard = [];
+
 let taskIndex = -1;
 // TODO: show error message using my dialog lib
-if(location.hash == "") {
-	allowUnload = true;
-	location.href = "index.html";
-}
-if(isNaN(location.hash.substring(1).split("_")[0])) {
-	allowUnload = true;
-	location.href = "index.html";
-}
-let currentLevel = parseInt(location.hash.substring(1).split("_")[0]);
-const playername = location.hash.substring(1).split("_")[1];
-const playerscore = location.hash.substring(1).split("_")[2];
+// if(location.hash == "") {
+// 	allowUnload = true;
+// 	location.href = "index.html";
+// }
+// if(isNaN(location.hash.substring(1).split("_")[0])) {
+// 	allowUnload = true;
+// 	location.href = "index.html";
+// }
+// let currentLevel = parseInt(location.hash.substring(1).split("_")[0]);
+let currentLevel = 1;
+// const playername = location.hash.substring(1).split("_")[1];
+// const playerscore = location.hash.substring(1).split("_")[2];
+let ws;
+let task;
 
 async function loadNextLevel() {
 	currentLevel++;
 	taskIndex = -1;
-	if(!TASKS[currentLevel]) {
-		allowUnload = true;
-		ipcRenderer.send("close");
-		return;
-	}
-	document.querySelector("#taskname").innerText = TASKS[currentLevel].name;
-	nextTask();
+	// if(!TASKS[currentLevel]) {
+	// 	allowUnload = true;
+	// 	ipcRenderer.send("close");
+	// 	return;
+	// }
+	// document.querySelector("#taskname").innerText = task.name;
+	// nextTask();
+	await new Dialog("#loading-dialog").show()
+	ws.send("done");
+	ws.send("task");
 	fromXml(startXML);
 	document.querySelector("#greenflag").disabled = true;
 	document.querySelector("#reset").style.display = "";
@@ -164,7 +57,7 @@ async function loadNextLevel() {
 
 function nextTask() {
 	taskIndex++;
-	if(taskIndex >= TASKS[currentLevel].instructions.length) {
+	if(taskIndex >= task.instructions.length) {
 		document.querySelector("#instruction").innerText = "Super! Jetzt drück die grüne Flagge!";
 		document.querySelector("#greenflag").disabled = false;
 		document.querySelector("#reset").style.display = "none";
@@ -175,7 +68,7 @@ function nextTask() {
 		document.querySelector("#code-in-py").style.display = "";
 		return;
 	}
-	document.querySelector("#instruction").innerText = TASKS[currentLevel].instructions[taskIndex].text;
+	document.querySelector("#instruction").innerText = task.instructions[taskIndex].text;
 	document.querySelector("#instruction").animate([{
 		fontSize: "1.1rem"
 	},
@@ -232,6 +125,37 @@ function connectPort() {
 }
 connectPort();
 
+function renderLeaderboard() {
+	while (document.getElementById("leaderboard").firstChild) {
+		document.getElementById("leaderboard").removeChild(document.getElementById("leaderboard").lastChild);
+	}
+	const tr = document.createElement("tr");
+	["Platz", "Name", "Level"].forEach(s => {
+		const td = document.createElement("td");
+		td.innerText = s;
+		tr.appendChild(td);
+	})
+	document.getElementById("leaderboard").appendChild(tr);
+	for(let i = 0; i < 10; i++) {
+		if(!leaderboard[i]) break;
+		const player = leaderboard[i];
+		const tr = document.createElement("tr");
+		if(player.name == document.querySelector("#name").value) {
+			tr.style.backgroundColor = "#1d1d1d";
+		}
+		const place = document.createElement("td");
+		place.innerText = i + 1;
+		tr.appendChild(place);
+		const name = document.createElement("td");
+		name.innerText = player.name;
+		tr.appendChild(name);
+		const level = document.createElement("td");
+		level.innerText = player.level;
+		tr.appendChild(level);
+		document.getElementById("leaderboard").appendChild(tr);
+	}
+}
+
 window.addEventListener("beforeunload", async () => {
 	if(!allowUnload) return;
 	await writePort("\r\x03")
@@ -248,8 +172,8 @@ const startXML = `<xml xmlns="http://www.w3.org/1999/xhtml">
 </xml>`
 
 function start() {
-	document.querySelector("#taskname").innerText = TASKS[currentLevel].name;
-	nextTask();
+	new Dialog("#log-in-dialog").show();
+	// nextTask();
 
 	soundsEnabled = true;
 
@@ -308,7 +232,7 @@ function start() {
 		if(e instanceof Blockly.Events.EndBlockDrag) {
 			if(!workspace.getBlockById(e.blockId)) return;
 			if(workspace.getBlockById(e.blockId).startHat_) return;
-			const INSTRUCTION = TASKS[currentLevel].instructions[taskIndex];
+			const INSTRUCTION = task.instructions[taskIndex];
 			let allow = true;
 			if(INSTRUCTION.block && workspace.getBlockById(e.blockId).type !== INSTRUCTION.block) {
 				allow = false;
@@ -407,6 +331,49 @@ function start() {
 	})
 	document.querySelector("#tab-language").addEventListener("change", async () => {
 		setLocale(document.querySelector("#tab-language").value);
+	})
+	document.querySelector("#submit-name").addEventListener("click", async () => {
+		await new Dialog("#log-in-dialog").hide();
+		await new Dialog("#loading-dialog").show();
+		const server = ipcRenderer.sendSync("config.get", "server");
+		ws = new WebSocket(server);
+		ws.addEventListener("open", () => {
+			ws.send("identify " + document.querySelector("#name").value);
+			document.querySelector("#status").innerText = "Loading task";
+			ws.send("task");
+		})
+		ws.addEventListener("message", async (data) => {
+			const msg = data.data.toString();
+			if(msg.startsWith("task ")) {
+				task = JSON.parse(msg.split("task ", 2)[1]);
+				taskIndex = -1;
+				nextTask();
+				await new Dialog("#loading-dialog").hide();
+				ws.send("leaderboard");
+				await new Dialog("#leaderboard-dialog").show();
+				document.querySelector("#taskname").innerText = task.name;
+			} else if(msg.startsWith("finished")) {
+				await new Dialog("#loading-dialog").hide();
+				new Dialog("#done-dialog").show();
+			} else if(msg.startsWith("leaderboard ")) {
+				leaderboard = JSON.parse(msg.split("leaderboard ", 2)[1]);
+				renderLeaderboard();
+			} else if(msg == "notrunning") {
+				await new Dialog("#loading-dialog").hide();
+				new Dialog("#waiting-for-teacher-dialog").show();
+			} else if(msg == "end") {
+				await new Dialog("#leaderboard-dialog").hide();
+				new Dialog("#end-dialog").show();
+			} else if(msg == "start") {
+				await new Dialog("#waiting-for-teacher-dialog").hide();
+				await new Dialog("#end-dialog").hide();
+				new Dialog("#loading-dialog").show();
+				ws.send("task");
+			}
+		})
+	})
+	document.querySelector("#exit-leaderboard").addEventListener("click", () => {
+		new Dialog("#leaderboard-dialog").hide();
 	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {
