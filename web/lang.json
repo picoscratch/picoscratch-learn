@@ -17,7 +17,10 @@
 		"level-up-button": "Next",
 		"done-title": "Done!",
 		"done-subtext": "Awesome! You are done!",
-		"done-ok": "Ok"
+		"done-ok": "Ok",
+		"dialog-connect-pico-title": "Connect pico",
+		"dialog-connect-pico-text": "Please connect the pico to the computer.",
+		"send-to-console": "Send to console..."
 	},
 	"de": {
 		"start": "Start",
@@ -37,6 +40,9 @@
 		"level-up-button": "Weiter",
 		"done-title": "Fertig!",
 		"done-subtext": "Super! Du bist fertig!",
-		"done-ok": "Ok"
+		"done-ok": "Ok",
+		"dialog-connect-pico-title": "Pico verbinden",
+		"dialog-connect-pico-text": "Bitte verbine den Pico mit dem Computer.",
+		"send-to-console": "Text zur Konsole senden..."
 	}
 }

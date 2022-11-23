@@ -6,6 +6,7 @@ const { autoDetect } = require("@serialport/bindings-cpp")
 const prompt = require("electron-prompt");
 const ipcRenderer = require("electron/renderer").ipcRenderer;
 const fs = require("fs");
+const langs = require("./lang.json");
 
 let allowUnload = false;
 window.addEventListener("beforeunload", (e) => {
@@ -170,6 +171,16 @@ const startXML = `<xml xmlns="http://www.w3.org/1999/xhtml">
 <variables></variables>
 <block type="event_whenflagclicked" id="{!5G[{H3qE2[NMQ;pK)W" x="300" y="400"></block>
 </xml>`
+let lang = "en";
+
+function updateLanguages() {
+	document.querySelectorAll("[data-lang]").forEach(e => {
+		e.innerText = langs[lang][e.getAttribute("data-lang")];
+	})
+	document.querySelectorAll("[data-lang-placeholder]").forEach(e => {
+		e.placeholder = langs[lang][e.getAttribute("data-lang-placeholder")];
+	})
+}
 
 function start() {
 	new Dialog("#log-in-dialog").show();
@@ -331,6 +342,8 @@ function start() {
 	})
 	document.querySelector("#tab-language").addEventListener("change", async () => {
 		setLocale(document.querySelector("#tab-language").value);
+		lang = document.querySelector("#tab-language").value;
+		updateLanguages();
 	})
 	document.querySelector("#submit-name").addEventListener("click", async () => {
 		await new Dialog("#log-in-dialog").hide();
@@ -386,9 +399,11 @@ function start() {
 		})
 	}
 
-	const lang = ipcRenderer.sendSync("config.get", "lang");
-	setLocale(lang);
-	document.querySelector("#tab-language").value = lang;
+	const language = ipcRenderer.sendSync("config.get", "lang");
+	setLocale(language);
+	document.querySelector("#tab-language").value = language;
+	lang = language;
+	updateLanguages();
 
 }
 
