@@ -9,7 +9,7 @@ let win;
 
 Menu.setApplicationMenu(null)
 
-app.whenReady().then(() => {
+function start() {
 	win = new BrowserWindow({
 		width: 800,
 		height: 600,
@@ -45,9 +45,17 @@ app.whenReady().then(() => {
 		}
 		e.returnValue = null;
 	})
+	ipcMain.on("close", (e) => {
+		win.close();
+		start();
+	})
 
 	if(!store.has("title")) win.loadFile("web/setup.html");
 	else win.loadFile("web/index.html");
 
-	win.webContents.openDevTools();
+	//win.webContents.openDevTools();
+}
+
+app.whenReady().then(() => {
+	start();
 })

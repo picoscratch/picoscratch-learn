@@ -12,7 +12,121 @@ window.addEventListener("beforeunload", (e) => {
 	if(!allowUnload) e.returnValue = true;
 })
 
-const TASKS = JSON.parse(fs.readFileSync("tasks.json", { encoding: "utf-8" }));
+const TASKS = [
+	{},
+	{
+		"name": "LED zum blinken bringen",
+		"instructions": [
+			{
+				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				"block": "control_forever",
+				"previousBlock": "event_whenflagclicked"
+			},
+			{
+				"text": "Nehme ein \"Schalte interne LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
+				"block": "pico_internalledon",
+				"parentBlock": "control_forever"
+			},
+			{
+				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
+				"block": "control_wait",
+				"previousBlock": "pico_internalledon"
+			},
+			{
+				"text": "Schalte die LED wieder aus mit einem \"Schalte interne LED aus\" block",
+				"block": "pico_internalledoff",
+				"previousBlock": "control_wait"
+			},
+			{
+				"text": "Baue eine weitere pause ein.",
+				"block": "control_wait",
+				"previousBlock": "pico_internalledoff"
+			}
+		]
+	},
+	{
+		"name": "Externe LED zum blinken bringen",
+		"instructions": [
+			{
+				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				"block": "control_forever",
+				"previousBlock": "event_whenflagclicked"
+			},
+			{
+				"text": "Nehme ein \"Schalte LED an\" block und ziehe ihn unter den \"Wiederhole\" block",
+				"block": "pico_ledon",
+				"parentBlock": "control_forever"
+			},
+			{
+				"text": "Baue eine pause mit einem \"warte X sekunden\" block",
+				"block": "control_wait",
+				"previousBlock": "pico_ledon"
+			},
+			{
+				"text": "Schalte die LED wieder aus mit einem \"Schalte LED aus\" block",
+				"block": "pico_ledoff",
+				"previousBlock": "control_wait"
+			},
+			{
+				"text": "Baue eine weitere pause ein.",
+				"block": "control_wait",
+				"previousBlock": "pico_ledoff"
+			}
+		]
+	},
+	{
+		"name": "LED mit Knopf steuern",
+		"instructions": [
+			{
+				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				"block": "control_forever",
+				"previousBlock": "event_whenflagclicked"
+			},
+			{
+				"text": "Nehme einen \"falls ... sonst\" block",
+				"block": "control_if_else",
+				"parentBlock": "control_forever"
+			},
+			{
+				"text": "Ziehe einen \"Ist Knopf gedrückt?\" block in den \"falls ... sonst\" block",
+				"block": "pico_buttonstatus",
+				"parentBlock": "control_if_else"
+			},
+			{
+				"text": "Schalte die LED ein, wenn ja",
+				"block": "pico_ledon",
+				"parentBlock": "control_if_else",
+				"parentStack": "SUBSTACK"
+			},
+			{
+				"text": "Schalte die LED aus, wenn nicht",
+				"block": "pico_ledoff",
+				"parentBlock": "control_if_else",
+				"parentStack": "SUBSTACK2"
+			}
+		]
+	},
+	{
+		"name": "LED mit Poti steuern",
+		"instructions": [
+			{
+				"text": "Nehme ein \"Wiederhole fortlaufend\" block und ziehe ihn unter den \"Wenn grüne Flagge geklickt\" block",
+				"block": "control_forever",
+				"previousBlock": "event_whenflagclicked"
+			},
+			{
+				"text": "Nehme einen \"Setze LED helligkeit\" block",
+				"block": "pico_setledbrightness",
+				"parentBlock": "control_forever"
+			},
+			{
+				"text": "Nehme einen \"Potentiometer wert\" block",
+				"block": "pico_potentiometer",
+				"parentBlock": "pico_setledbrightness"
+			}
+		]
+	}
+];
 let taskIndex = -1;
 // TODO: show error message using my dialog lib
 if(location.hash == "") {
@@ -26,6 +140,27 @@ if(isNaN(location.hash.substring(1).split("_")[0])) {
 let currentLevel = parseInt(location.hash.substring(1).split("_")[0]);
 const playername = location.hash.substring(1).split("_")[1];
 const playerscore = location.hash.substring(1).split("_")[2];
+
+async function loadNextLevel() {
+	currentLevel++;
+	taskIndex = -1;
+	if(!TASKS[currentLevel]) {
+		allowUnload = true;
+		ipcRenderer.send("close");
+		return;
+	}
+	document.querySelector("#taskname").innerText = TASKS[currentLevel].name;
+	nextTask();
+	fromXml(startXML);
+	document.querySelector("#greenflag").disabled = true;
+	document.querySelector("#reset").style.display = "";
+	document.querySelector("#next").style.display = "none";
+	document.querySelector("#pythontab").style.width = "100%";
+	document.querySelector("#pythontab").style.display = "none";
+	document.querySelector("#code-in-py").style.display = "none";
+	await writePort("\r\x03")
+	allowUnload = false;
+}
 
 function nextTask() {
 	taskIndex++;
@@ -226,7 +361,10 @@ function start() {
 	})
 	document.querySelector("#next").addEventListener("click", async () => {
 		allowUnload = true;
-		location.href = "index.html#level-complete_" + currentLevel + "_" + playername + "_" + playerscore;
+		//console.log("index.html#level-complete_" + currentLevel + "_" + playername + "_" + playerscore);
+		//location.href = "#" + (currentLevel + 1) + "_" + playername + "_" + playerscore;
+		//location.reload();
+		await loadNextLevel();
 	})
 	document.querySelector("#tab-scratch").addEventListener("click", async () => {
 		document.querySelector("#pythontab").style.display = "none";

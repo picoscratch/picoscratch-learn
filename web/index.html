@@ -83,31 +83,31 @@
 			}
 
 			function renderLeaderboard() {
-				while (document.getElementById("leaderboard").firstChild) {
-					document.getElementById("leaderboard").removeChild(document.getElementById("leaderboard").lastChild);
-				}
-				const tr = document.createElement("tr");
-				[langs[lang].place, langs[lang].name, langs[lang].points].forEach(s => {
-					const td = document.createElement("td");
-					td.innerText = s;
-					tr.appendChild(td);
-				})
-				document.getElementById("leaderboard").appendChild(tr);
-				for(let i = 0; i < 10; i++) {
-					if(!leaderboard[i]) break;
-					const player = leaderboard[i];
-					const tr = document.createElement("tr");
-					const place = document.createElement("td");
-					place.innerText = i + 1;
-					tr.appendChild(place);
-					const name = document.createElement("td");
-					name.innerText = player.name;
-					tr.appendChild(name);
-					const score = document.createElement("td");
-					score.innerText = player.score;
-					tr.appendChild(score);
-					document.getElementById("leaderboard").appendChild(tr);
-				}
+//				while (document.getElementById("leaderboard").firstChild) {
+//					document.getElementById("leaderboard").removeChild(document.getElementById("leaderboard").lastChild);
+//				}
+				//const tr = document.createElement("tr");
+//				[langs[lang].place, langs[lang].name, langs[lang].points].forEach(s => {
+//					const td = document.createElement("td");
+//					td.innerText = s;
+//					tr.appendChild(td);
+//				})
+//				document.getElementById("leaderboard").appendChild(tr);
+//				for(let i = 0; i < 10; i++) {
+//					if(!leaderboard[i]) break;
+//					const player = leaderboard[i];
+//					const tr = document.createElement("tr");
+//					const place = document.createElement("td");
+//					place.innerText = i + 1;
+//					tr.appendChild(place);
+//					const name = document.createElement("td");
+//					name.innerText = player.name;
+//					tr.appendChild(name);
+//					const score = document.createElement("td");
+//					score.innerText = player.score;
+//					tr.appendChild(score);
+//					document.getElementById("leaderboard").appendChild(tr);
+//				}
 			}
 
 			if(!USE_SERVER) renderLeaderboard();
@@ -132,38 +132,38 @@
 				}
 			}
 
-			if(location.hash) {
-				if(location.hash.startsWith("#level-complete")) {
-					nextLevel = parseInt(location.hash.split("#level-complete_")[1].split("_")[0]) + 1;
-					playerName = decodeURI(location.hash.split("#level-complete_")[1].split("_")[1]);
-					playerScore = parseInt(location.hash.split("#level-complete_")[1].split("_")[2]);
-					document.querySelector("#pluspoints").innerText = 100;
-					await fade(undefined, "level-up");
-					// new Audio("sound.mp3").play();
-					let pluspoints = 100;
-					for(let i = 0; i < 60; i++) {
-						pluspoints = 100 + randomRange(10, 60);
-						document.querySelector("#pluspoints").innerText = pluspoints;
-						await sleep(10);
-					}
-					document.querySelector("#pluspoints").animate([
-						{
-							fontSize: "3rem"
-						},
-						{
-							fontSize: "5rem"
-						},
-						{
-							fontSize: "3rem"
-						}
-					], { duration: 250 })
-					playerScore += pluspoints;
-				} else {
-					await fade(undefined, location.hash.substring(1));
-				}
-			} else {
+			//if(location.hash) {
+			//	if(location.hash.startsWith("#level-complete")) {
+//					nextLevel = parseInt(location.hash.split("#level-complete_")[1].split("_")[0]) + 1;
+//					playerName = decodeURI(location.hash.split("#level-complete_")[1].split("_")[1]);
+//					playerScore = parseInt(location.hash.split("#level-complete_")[1].split("_")[2]);
+//					document.querySelector("#pluspoints").innerText = 100;
+//					await fade(undefined, "level-up");
+//					// new Audio("sound.mp3").play();
+//					let pluspoints = 100;
+//					for(let i = 0; i < 60; i++) {
+//						pluspoints = 100 + randomRange(10, 60);
+//						document.querySelector("#pluspoints").innerText = pluspoints;
+//						await sleep(10);
+//					}
+//					document.querySelector("#pluspoints").animate([
+//						{
+//							fontSize: "3rem"
+//						},
+//						{
+//							fontSize: "5rem"
+//						},
+//						{
+//							fontSize: "3rem"
+//						}
+//					], { duration: 250 })
+//					playerScore += pluspoints;
+			//	} else {
+			//		await fade(undefined, location.hash.substring(1));
+			//	}
+			//} else {
 				await fade(undefined, "first-screen")
-			}
+			//}
 
 			function reset() {
 				nextLevel = 1;
@@ -255,13 +255,13 @@
 			</button>
 		</div>
 		<div style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
-			<table id="leaderboard" style="font-size: 1.3rem;">
+			<!--<table id="leaderboard" style="font-size: 1.3rem;">
 				<tr>
 					<th data-lang="place"></th>
 					<th data-lang="name"></th>
 					<th data-lang="points"></th>
 				</tr>
-			</table>
+			</table>-->
 		</div>
 	</div>
 	<div id="difficulty-chooser" style="display: none; align-items: center; justify-content: center; flex-direction: column; height: 100vh;">
