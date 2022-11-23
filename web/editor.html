@@ -21,45 +21,51 @@
 </head>
 <body onload="start()">
 	<div id="darken" style="z-index: 999; display: none;">
-		<div class="dialog" id="connect-pico-dialog" style="display: none;">
+		<div class="dialog" id="language-dialog" style="display: none;">
+			<h2 data-lang="dialog-language-title"></h2>
+			<select class="tab" id="lang-selector" style="color: white; margin-top: 10px;">
+				<option value="en">English</option>
+				<option value="de">Deutsch</option>
+			</select>
+			<button id="select-language" data-lang="dialog-language-select" style="font-size: 1.4rem;"></button>
+		</div>
+		<div class="dialog" id="connect-pico-dialog" style="display: none; position: absolute;">
 			<h2 data-lang="dialog-connect-pico-title"></h2>
 			<p data-lang="dialog-connect-pico-text"></p>
 			<object id="connect-pico-obj" data="connectpico.svg" type="image/svg+xml" style="width: 700px; margin-bottom: 15px;"></object>
 		</div>
 		<div class="dialog" id="log-in-dialog" style="display: none;">
-			<h2>Log in</h2>
-			<p>Please enter your name.</p>
-			<input type="text" placeholder="John Doe" style="text-align: center;" id="name">
-			<button id="submit-name" class="btn-green" style="font-size: 1.4rem;">Submit</button>
+			<h2 data-lang="log-in-dialog-title"></h2>
+			<p data-lang="log-in-dialog-text"></p>
+			<input type="text" data-lang-placeholder="log-in-dialog-placeholder" style="text-align: center;" id="name">
+			<button id="submit-name" class="btn-green" style="font-size: 1.4rem;" data-lang="log-in-dialog-submit"></button>
 		</div>
 		<div class="dialog" id="waiting-for-teacher-dialog" style="display: none;">
-			<h2>Waiting for teacher</h2>
-			<p>The teacher hasn't started yet.</p>
+			<h2 data-lang="waiting-for-teacher-dialog-title"></h2>
+			<p data-lang="waiting-for-teacher-dialog-text"></p>
 		</div>
 		<div class="dialog" id="end-dialog" style="display: none;">
-			<h2>The game has ended.</h2>
-			<p>The teacher has ended this game.</p>
+			<h2 data-lang="end-dialog-title"></h2>
+			<p data-lang="end-dialog-text"></p>
 		</div>
 		<div class="dialog" id="done-dialog" style="display: none;">
-			<h2>Done</h2>
-			<p>You have finished all tasks.</p>
+			<h2 data-lang="done-dialog-title"></h2>
+			<p data-lang="done-dialog-text">.</p>
 		</div>
 		<div class="dialog" id="loading-dialog" style="display: none;">
-			<h2>Loading</h2>
+			<h2 data-lang="loading-dialog-title"></h2>
 			<div class="progress-ring spinner-indeter" style="margin-top: 10px">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="ring">
 					<circle class="dynamic" cx="50%" cy="50%" r="43.75%"></circle>
 				</svg>
 			</div>
-			<p style="margin-bottom: 5px;">One moment please.</p>
-			<p id="status" style="color: #acacac; margin: 0; margin-bottom: 10px;">
-				Connecting to Server
-			</p>
+			<p style="margin-bottom: 5px;" data-lang="loading-dialog-text"></p>
+			<p id="status" style="color: #acacac; margin: 0; margin-bottom: 10px;" data-lang="connecting-to-server"></p>
 		</div>
 		<div class="dialog" id="leaderboard-dialog" style="display: none;">
-			<h2>Leaderboard</h2>
+			<h2 data-lang="leaderboard-dialog-title"></h2>
 			<table id="leaderboard"></table>
-			<button id="exit-leaderboard" style="font-size: 1.4rem;">Ok</button>
+			<button id="exit-leaderboard" style="font-size: 1.4rem;" data-lang="leaderboard-dialog-exit-button"></button>
 		</div>
 	</div>
 	<div id="topbar" style="display: flex; gap: 5px; align-items: center;">

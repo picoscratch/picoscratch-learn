@@ -88,6 +88,7 @@ let picoport;
 let port;
 let connectDialogShown = false;
 function connectPort() {
+	if(port && port.isOpen) return;
 	autoDetect().list().then(async ports => {
 		picoport = ports.find(p => p.manufacturer == "MicroPython" || p.manufacturer == "Microsoft");
 		if(!picoport) {
@@ -124,14 +125,13 @@ function connectPort() {
 		})
 	});
 }
-connectPort();
 
 function renderLeaderboard() {
 	while (document.getElementById("leaderboard").firstChild) {
 		document.getElementById("leaderboard").removeChild(document.getElementById("leaderboard").lastChild);
 	}
 	const tr = document.createElement("tr");
-	["Platz", "Name", "Level"].forEach(s => {
+	[langs[lang].place, langs[lang].name, langs[lang].level].forEach(s => {
 		const td = document.createElement("td");
 		td.innerText = s;
 		tr.appendChild(td);
@@ -183,7 +183,7 @@ function updateLanguages() {
 }
 
 function start() {
-	new Dialog("#log-in-dialog").show();
+	new Dialog("#language-dialog").show();
 	// nextTask();
 
 	soundsEnabled = true;
@@ -340,10 +340,19 @@ function start() {
 		document.querySelector("#tab-scratch").classList.remove("selected");
 		document.querySelector("#tab-python").classList.add("selected");
 	})
-	document.querySelector("#tab-language").addEventListener("change", async () => {
+	function langSelectorCallback() {
+		
 		setLocale(document.querySelector("#tab-language").value);
 		lang = document.querySelector("#tab-language").value;
 		updateLanguages();
+	}
+	document.querySelector("#tab-language").addEventListener("change", () => {
+		document.querySelector("#lang-selector").value = document.querySelector("#tab-language").value;
+		langSelectorCallback();
+	})
+	document.querySelector("#lang-selector").addEventListener("change", () => {
+		document.querySelector("#tab-language").value = document.querySelector("#lang-selector").value;
+		langSelectorCallback();
 	})
 	document.querySelector("#submit-name").addEventListener("click", async () => {
 		await new Dialog("#log-in-dialog").hide();
@@ -352,7 +361,7 @@ function start() {
 		ws = new WebSocket(server);
 		ws.addEventListener("open", () => {
 			ws.send("identify " + document.querySelector("#name").value);
-			document.querySelector("#status").innerText = "Loading task";
+			document.querySelector("#status").innerText = langs[lang]["loading-task"];
 			ws.send("task");
 		})
 		ws.addEventListener("message", async (data) => {
@@ -376,6 +385,7 @@ function start() {
 				new Dialog("#waiting-for-teacher-dialog").show();
 			} else if(msg == "end") {
 				await new Dialog("#leaderboard-dialog").hide();
+				await new Dialog("#done-dialog").hide();
 				new Dialog("#end-dialog").show();
 			} else if(msg == "start") {
 				await new Dialog("#waiting-for-teacher-dialog").hide();
@@ -385,8 +395,13 @@ function start() {
 			}
 		})
 	})
-	document.querySelector("#exit-leaderboard").addEventListener("click", () => {
-		new Dialog("#leaderboard-dialog").hide();
+	document.querySelector("#exit-leaderboard").addEventListener("click", async () => {
+		await new Dialog("#leaderboard-dialog").hide();
+		connectPort();
+	})
+	document.querySelector("#select-language").addEventListener("click", async () => {
+		await new Dialog("#language-dialog").hide();
+		new Dialog("#log-in-dialog").show();
 	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {
@@ -402,6 +417,7 @@ function start() {
 	const language = ipcRenderer.sendSync("config.get", "lang");
 	setLocale(language);
 	document.querySelector("#tab-language").value = language;
+	document.querySelector("#lang-selector").value = language;
 	lang = language;
 	updateLanguages();
 
