@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
 const { readFileSync, writeFileSync } = require("fs");
+const path = require("path");
 require('@electron/remote/main').initialize()
 const Store = require('electron-store');
 
@@ -19,7 +20,8 @@ function start() {
 			contextIsolation: false,
 			nodeIntegrationInSubFrames: true,
 		},
-		kiosk: true
+		kiosk: true,
+		icon: path.join(__dirname, "picoscratch.ico")
 	})
 	require('@electron/remote/main').enable(win.webContents)
 

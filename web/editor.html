@@ -5,6 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>PicoScratch</title>
+	<script src="dialog.js"></script>
 	<script src="blockly_compressed_vertical.js"></script>
 	<script src="msg/messages.js"></script>
 	<script src="msg/scratch_msgs.js"></script>
@@ -12,10 +13,19 @@
 	<script src="blocks_compressed_vertical.js"></script>
 	<script src="script.js"></script>
 	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="dialog.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/vs2015.min.css">
 	<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"></script>
+	<link rel="shortcut icon" href="../picoscratch.ico" type="image/x-icon">
 </head>
 <body onload="start()">
+	<div id="darken" style="z-index: 999; display: none;">
+		<div class="dialog" id="connect-pico-dialog" style="display: none;">
+			<h2>Connect pico</h2>
+			<p>Please connect the pico to the computer.</p>
+			<object id="connect-pico-obj" data="connectpico.svg" type="image/svg+xml" style="width: 700px; margin-bottom: 15px;"></object>
+		</div>
+	</div>
 	<div id="topbar" style="display: flex; gap: 5px; align-items: center;">
 		<button id="greenflag" disabled>
 			<img src="media/green-flag.svg" alt="" width="50px">
