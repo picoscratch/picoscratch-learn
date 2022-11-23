@@ -21,8 +21,8 @@
 <body onload="start()">
 	<div id="darken" style="z-index: 999; display: none;">
 		<div class="dialog" id="connect-pico-dialog" style="display: none;">
-			<h2>Connect pico</h2>
-			<p>Please connect the pico to the computer.</p>
+			<h2 data-lang="dialog-connect-pico-title"></h2>
+			<p data-lang="dialog-connect-pico-text"></p>
 			<object id="connect-pico-obj" data="connectpico.svg" type="image/svg+xml" style="width: 700px; margin-bottom: 15px;"></object>
 		</div>
 	</div>
@@ -54,6 +54,6 @@
 	<pre id="console">
 
 	</pre>
-	<input type="text" id="console_input" placeholder="Text zur Konsole senden...">
+	<input type="text" id="console_input" data-lang-placeholder="send-to-console">
 </body>
 </html>

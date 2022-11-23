@@ -1,0 +1,12 @@
+{
+	"en": {
+		"dialog-connect-pico-title": "Connect pico",
+		"dialog-connect-pico-text": "Please connect the pico to the computer.",
+		"send-to-console": "Send to console..."
+	},
+	"de": {
+		"dialog-connect-pico-title": "Pico verbinden",
+		"dialog-connect-pico-text": "Bitte verbine den Pico mit dem Computer.",
+		"send-to-console": "Text zur Konsole senden..."
+	}
+}
