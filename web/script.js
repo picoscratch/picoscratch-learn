@@ -69,6 +69,22 @@ function nextTask() {
 		document.querySelector("#code-in-py").style.display = "";
 		return;
 	}
+	if(task.instructions[taskIndex].type == "dialog") {
+		document.querySelector("#custom-dialog-title").innerHTML = task.instructions[taskIndex].title;
+		document.querySelector("#custom-dialog-text").innerHTML = task.instructions[taskIndex].text;
+		document.querySelector("#custom-dialog-button").innerHTML = task.instructions[taskIndex].closeButton;
+		new Dialog("#custom-dialog").show();
+		return;
+	}
+	if(task.instructions[taskIndex].type == "quiz") {
+		document.querySelector("#quiz-question").innerHTML = task.instructions[taskIndex].question;
+		document.querySelector("#quiz-answer-1").innerHTML = task.instructions[taskIndex].answers[0];
+		document.querySelector("#quiz-answer-2").innerHTML = task.instructions[taskIndex].answers[1];
+		document.querySelector("#quiz-answer-3").innerHTML = task.instructions[taskIndex].answers[2];
+		document.querySelector("#quiz-answer-4").innerHTML = task.instructions[taskIndex].answers[3];
+		new Dialog("#quiz-dialog").show();
+		return;
+	}
 	document.querySelector("#instruction").innerText = task.instructions[taskIndex].text;
 	document.querySelector("#instruction").animate([{
 		fontSize: "1.1rem"
@@ -386,6 +402,7 @@ function start() {
 			} else if(msg == "end") {
 				await new Dialog("#leaderboard-dialog").hide();
 				await new Dialog("#done-dialog").hide();
+				await new Dialog("#custom-dialog").hide();
 				new Dialog("#end-dialog").show();
 			} else if(msg == "start") {
 				await new Dialog("#waiting-for-teacher-dialog").hide();
@@ -402,6 +419,31 @@ function start() {
 	document.querySelector("#select-language").addEventListener("click", async () => {
 		await new Dialog("#language-dialog").hide();
 		new Dialog("#log-in-dialog").show();
+	})
+	document.querySelector("#custom-dialog-button").addEventListener("click", async () => {
+		await new Dialog("#custom-dialog").hide();
+		nextTask();
+	})
+	async function quizAnswerCallback(answer) {
+		if(task.instructions[taskIndex].correct == answer) {
+			await new Dialog("#quiz-dialog").hide();
+			nextTask();
+		} else {
+			document.querySelector("#quiz-answer-" + (answer + 1)).style.backgroundColor = "#C34040";
+			document.querySelector("#quiz-answer-" + (task.instructions[taskIndex].correct + 1)).style.backgroundColor = "#40C340";
+		}
+	}
+	document.querySelector("#quiz-answer-1").addEventListener("click", async () => {
+		quizAnswerCallback(0);
+	})
+	document.querySelector("#quiz-answer-2").addEventListener("click", async () => {
+		quizAnswerCallback(1);
+	})
+	document.querySelector("#quiz-answer-3").addEventListener("click", async () => {
+		quizAnswerCallback(2);
+	})
+	document.querySelector("#quiz-answer-4").addEventListener("click", async () => {
+		quizAnswerCallback(3);
 	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {

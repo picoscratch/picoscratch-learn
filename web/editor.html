@@ -67,6 +67,24 @@
 			<table id="leaderboard"></table>
 			<button id="exit-leaderboard" style="font-size: 1.4rem;" data-lang="leaderboard-dialog-exit-button"></button>
 		</div>
+		<div class="dialog" id="custom-dialog" style="display: none;">
+			<h2 id="custom-dialog-title"></h2>
+			<p id="custom-dialog-text"></p>
+			<button id="custom-dialog-button" style="font-size: 1.4rem;"></button>
+		</div>
+		<div class="dialog" id="quiz-dialog" style="display: none;">
+			<h2 id="quiz-question"></h2>
+			<div style="display: flex;">
+				<div style="display: flex; flex-direction: column; gap: 10px;">
+					<button id="quiz-answer-1" style="font-size: 1.4rem;"></button>
+					<button id="quiz-answer-2" style="font-size: 1.4rem;"></button>
+				</div>
+				<div style="display: flex; flex-direction: column; gap: 10px;">
+					<button id="quiz-answer-3" style="font-size: 1.4rem;"></button>
+					<button id="quiz-answer-4" style="font-size: 1.4rem;"></button>
+				</div>
+			</div>
+		</div>
 	</div>
 	<div id="topbar" style="display: flex; gap: 5px; align-items: center;">
 		<button id="greenflag" disabled>
