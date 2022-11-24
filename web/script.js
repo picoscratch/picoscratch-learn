@@ -29,6 +29,7 @@ let taskIndex = -1;
 let currentLevel = 1;
 // const playername = location.hash.substring(1).split("_")[1];
 // const playerscore = location.hash.substring(1).split("_")[2];
+let wsServer;
 let ws;
 let task;
 
@@ -71,7 +72,7 @@ function nextTask() {
 	}
 	if(task.instructions[taskIndex].type == "dialog") {
 		document.querySelector("#custom-dialog-title").innerHTML = task.instructions[taskIndex].title;
-		document.querySelector("#custom-dialog-text").innerHTML = task.instructions[taskIndex].text;
+		document.querySelector("#custom-dialog-text").innerHTML = task.instructions[taskIndex].text.replaceAll("PICOSCRATCHSERVER", wsServer.replaceAll("ws://", "http://"));
 		document.querySelector("#custom-dialog-button").innerHTML = task.instructions[taskIndex].closeButton;
 		new Dialog("#custom-dialog").show();
 		return;
@@ -108,9 +109,11 @@ function connectPort() {
 	autoDetect().list().then(async ports => {
 		picoport = ports.find(p => p.manufacturer == "MicroPython" || p.manufacturer == "Microsoft");
 		if(!picoport) {
-			connectDialogShown = true;
-			new Dialog("#connect-pico-dialog").show();
-			if(document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb-connected")) document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb-connected").id = "usb";
+			if(Dialog.shown == 0) {
+				connectDialogShown = true;
+				new Dialog("#connect-pico-dialog").show();
+				if(document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb-connected")) document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb-connected").id = "usb";
+			}
 			setTimeout(connectPort, 1000);
 			return;
 		}
@@ -143,7 +146,6 @@ function connectPort() {
 }
 
 function renderLeaderboards() {
-	console.trace("RENDERING LEADERBOARDS");
 	renderLeaderboard(document.querySelector("#leaderboard"));
 	renderLeaderboard(document.querySelector("#leaderboard2"));
 }
@@ -152,7 +154,6 @@ function renderLeaderboard(el) {
 	while(el.firstChild) {
 		el.removeChild(el.lastChild);
 	}
-	console.trace("aa")
 	const tr = document.createElement("tr");
 	[langs[lang].place, langs[lang].name, langs[lang].level].forEach(s => {
 		const td = document.createElement("td");
@@ -381,6 +382,7 @@ function start() {
 		await new Dialog("#log-in-dialog").hide();
 		await new Dialog("#loading-dialog").show();
 		const server = ipcRenderer.sendSync("config.get", "server");
+		wsServer = server;
 		ws = new WebSocket(server);
 		ws.addEventListener("open", () => {
 			ws.send("identify " + document.querySelector("#name").value);
@@ -393,7 +395,6 @@ function start() {
 			if(msg.startsWith("task ")) {
 				task = JSON.parse(msg.split("task ", 2)[1]);
 				taskIndex = -1;
-				nextTask();
 				await new Dialog("#loading-dialog").hide();
 				ws.send("leaderboard");
 				await new Dialog("#leaderboard-dialog").show();
@@ -426,6 +427,7 @@ function start() {
 	document.querySelector("#exit-leaderboard").addEventListener("click", async () => {
 		await new Dialog("#leaderboard-dialog").hide();
 		connectPort();
+		nextTask();
 	})
 	document.querySelector("#select-language").addEventListener("click", async () => {
 		await new Dialog("#language-dialog").hide();
