@@ -142,17 +142,24 @@ function connectPort() {
 	});
 }
 
-function renderLeaderboard() {
-	while (document.getElementById("leaderboard").firstChild) {
-		document.getElementById("leaderboard").removeChild(document.getElementById("leaderboard").lastChild);
+function renderLeaderboards() {
+	console.trace("RENDERING LEADERBOARDS");
+	renderLeaderboard(document.querySelector("#leaderboard"));
+	renderLeaderboard(document.querySelector("#leaderboard2"));
+}
+
+function renderLeaderboard(el) {
+	while(el.firstChild) {
+		el.removeChild(el.lastChild);
 	}
+	console.trace("aa")
 	const tr = document.createElement("tr");
 	[langs[lang].place, langs[lang].name, langs[lang].level].forEach(s => {
 		const td = document.createElement("td");
 		td.innerText = s;
 		tr.appendChild(td);
 	})
-	document.getElementById("leaderboard").appendChild(tr);
+	el.appendChild(tr);
 	for(let i = 0; i < 10; i++) {
 		if(!leaderboard[i]) break;
 		const player = leaderboard[i];
@@ -169,7 +176,7 @@ function renderLeaderboard() {
 		const level = document.createElement("td");
 		level.innerText = player.level;
 		tr.appendChild(level);
-		document.getElementById("leaderboard").appendChild(tr);
+		el.appendChild(tr);
 	}
 }
 
@@ -382,6 +389,7 @@ function start() {
 		})
 		ws.addEventListener("message", async (data) => {
 			const msg = data.data.toString();
+			console.log(msg);
 			if(msg.startsWith("task ")) {
 				task = JSON.parse(msg.split("task ", 2)[1]);
 				taskIndex = -1;
@@ -395,7 +403,7 @@ function start() {
 				new Dialog("#done-dialog").show();
 			} else if(msg.startsWith("leaderboard ")) {
 				leaderboard = JSON.parse(msg.split("leaderboard ", 2)[1]);
-				renderLeaderboard();
+				renderLeaderboards();
 			} else if(msg == "notrunning") {
 				await new Dialog("#loading-dialog").hide();
 				new Dialog("#waiting-for-teacher-dialog").show();
@@ -409,6 +417,9 @@ function start() {
 				await new Dialog("#end-dialog").hide();
 				new Dialog("#loading-dialog").show();
 				ws.send("task");
+			} else if(msg.startsWith("update ")) {
+				leaderboard = JSON.parse(msg.split("update ", 2)[1]);
+				renderLeaderboards();
 			}
 		})
 	})
