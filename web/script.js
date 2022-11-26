@@ -83,6 +83,14 @@ function nextTask() {
 		document.querySelector("#quiz-answer-2").innerHTML = task.instructions[taskIndex].answers[1];
 		document.querySelector("#quiz-answer-3").innerHTML = task.instructions[taskIndex].answers[2];
 		document.querySelector("#quiz-answer-4").innerHTML = task.instructions[taskIndex].answers[3];
+		document.querySelector("#quiz-answer-1").classList.remove("btn-green");
+		document.querySelector("#quiz-answer-1").classList.remove("btn-red");
+		document.querySelector("#quiz-answer-2").classList.remove("btn-green");
+		document.querySelector("#quiz-answer-2").classList.remove("btn-red");
+		document.querySelector("#quiz-answer-3").classList.remove("btn-green");
+		document.querySelector("#quiz-answer-3").classList.remove("btn-red");
+		document.querySelector("#quiz-answer-4").classList.remove("btn-green");
+		document.querySelector("#quiz-answer-4").classList.remove("btn-red");
 		new Dialog("#quiz-dialog").show();
 		return;
 	}
@@ -442,8 +450,8 @@ function start() {
 			await new Dialog("#quiz-dialog").hide();
 			nextTask();
 		} else {
-			document.querySelector("#quiz-answer-" + (answer + 1)).style.backgroundColor = "#C34040";
-			document.querySelector("#quiz-answer-" + (task.instructions[taskIndex].correct + 1)).style.backgroundColor = "#40C340";
+			document.querySelector("#quiz-answer-" + (answer + 1)).classList.add("btn-red");
+			document.querySelector("#quiz-answer-" + (task.instructions[taskIndex].correct + 1)).classList.add("btn-green");
 		}
 	}
 	document.querySelector("#quiz-answer-1").addEventListener("click", async () => {

@@ -133,6 +133,13 @@ button {
 	color: black;
 }
 
+.btn-red {
+	background-color: #F55050;
+	border-color: #F55050;
+	border-bottom-color: #C34040;
+	color: black;
+}
+
 #tabswitcher {
 	display: flex;
 	gap: 10px;
