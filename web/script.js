@@ -318,12 +318,12 @@ async function runBlock(hat) {
 			case "pico_internalledon":
 				// await writePort("machine.Pin('LED').on()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25") + ").on()\r\n";
+				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25, machine.Pin.OUT") + ").on()\r\n";
 				break;
 			case "pico_internalledoff":
 				// await writePort("machine.Pin('LED').off()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25") + ").off()\r\n";
+				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25, machine.Pin.OUT") + ").off()\r\n";
 				break;
 			case "control_wait":
 				// await sleep(blk.value[0].shadow[0].field[0]._ * 1000);
