@@ -439,10 +439,26 @@ async function runBlock(hat) {
 			case "pico_setledbrightness":
 				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + await solveNumber(blk.value[1]) + " * " + await solveNumber(blk.value[1]) + ")\r\n"
 				break;
+			case "pico_rgb_led":
+				const rgb = hexToRgb(blk.value[3].shadow[0].field[0]._);
+				if(rgb == null) break;
+				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + rgb.r + " * " + rgb.r + ")\r\n"
+				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[1]) + ")).duty_u16(" + rgb.g + " * " + rgb.g + ")\r\n"
+				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[2]) + ")).duty_u16(" + rgb.b + " * " + rgb.b + ")\r\n"
+				break;
 		}
 		// workspace.glowBlock(blk.$.id, false);
 		block = blk.next;
 	}
+}
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
 }
 
 async function solveCondition(conditionBlock) {
@@ -540,6 +556,8 @@ async function solveNumber(val) {
 		case "pico_ledbrightness":
 			return "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16() / 255"
 		case "pico_potentiometer":
+			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
+		case "pico_photoresistor":
 			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
 	}
 }
