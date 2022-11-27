@@ -38,7 +38,8 @@
 		"leaderboard-dialog-title": "Leaderboard",
 		"leaderboard-dialog-exit-button": "Ok",
 		"dialog-language-title": "Language selection",
-		"dialog-language-select": "Ok"
+		"dialog-language-select": "Ok",
+		"quizpercentage": "Quiz %"
 	},
 	"de": {
 		"start": "Start",
@@ -79,6 +80,7 @@
 		"leaderboard-dialog-title": "Rangliste",
 		"leaderboard-dialog-exit-button": "Ok",
 		"dialog-language-title": "Sprachauswahl",
-		"dialog-language-select": "Ok"
+		"dialog-language-select": "Ok",
+		"quizpercentage": "Quiz %"
 	}
 }

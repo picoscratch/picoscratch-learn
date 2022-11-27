@@ -32,10 +32,14 @@ let currentLevel = 1;
 let wsServer;
 let ws;
 let task;
+let blockTags = {};
+let answeredqs = 0;
+let correctqs = 0;
 
 async function loadNextLevel() {
 	currentLevel++;
 	taskIndex = -1;
+	blockTags = {};
 	// if(!TASKS[currentLevel]) {
 	// 	allowUnload = true;
 	// 	ipcRenderer.send("close");
@@ -44,7 +48,9 @@ async function loadNextLevel() {
 	// document.querySelector("#taskname").innerText = task.name;
 	// nextTask();
 	await new Dialog("#loading-dialog").show()
-	ws.send("done");
+	ws.send("done " + answeredqs + " " + correctqs);
+	answeredqs = 0;
+	correctqs = 0;
 	ws.send("task");
 	fromXml(startXML);
 	document.querySelector("#greenflag").disabled = true;
@@ -163,7 +169,7 @@ function renderLeaderboard(el) {
 		el.removeChild(el.lastChild);
 	}
 	const tr = document.createElement("tr");
-	[langs[lang].place, langs[lang].name, langs[lang].level].forEach(s => {
+	[langs[lang].place, langs[lang].name, langs[lang].level, langs[lang].quizpercentage].forEach(s => {
 		const td = document.createElement("td");
 		td.innerText = s;
 		tr.appendChild(td);
@@ -185,6 +191,9 @@ function renderLeaderboard(el) {
 		const level = document.createElement("td");
 		level.innerText = player.level;
 		tr.appendChild(level);
+		const percentage = document.createElement("td");
+		percentage.innerText = player.percentage;
+		tr.appendChild(percentage);
 		el.appendChild(tr);
 	}
 }
@@ -277,6 +286,7 @@ function start() {
 			if(workspace.getBlockById(e.blockId).startHat_) return;
 			const INSTRUCTION = task.instructions[taskIndex];
 			let allow = true;
+			if(INSTRUCTION.type == "changeblock") allow = false;
 			if(INSTRUCTION.block && workspace.getBlockById(e.blockId).type !== INSTRUCTION.block) {
 				allow = false;
 			}
@@ -296,6 +306,9 @@ function start() {
 				}
 			}
 			if(allow) {
+				if(INSTRUCTION.blockTag) {
+					blockTags[INSTRUCTION.blockTag] = e.blockId;
+				}
 				nextTask();
 			} else {
 				workspace.getBlockById(e.blockId).dispose(true, true);
@@ -322,6 +335,30 @@ function start() {
 				{
 					duration: 1000
 				})
+			}
+		}
+		if(e instanceof Blockly.Events.Change) {
+			const INSTRUCTION = task.instructions[taskIndex];
+			if(INSTRUCTION.type != "changeblock") return;
+			if(e.element != "field") return;
+			if(!INSTRUCTION.targetBlockTag) {
+				console.warn("No target block tag set to task index " + taskIndex);
+				return;
+			}
+			if(!blockTags[INSTRUCTION.targetBlockTag]) {
+				console.warn("Block tag " + INSTRUCTION.targetBlockTag + " doesn't exist");
+				return;
+			}
+			if(workspace.getBlockById(e.blockId).getParent().id != blockTags[INSTRUCTION.targetBlockTag]) {
+				console.log(workspace.getBlockById(e.blockId).getParent().id + " expected but got " + blockTags[INSTRUCTION.targetBlockTag]);
+				return;
+			}
+			if(e.name != INSTRUCTION.name) {
+				console.log(e.name + " expected but got " + INSTRUCTION.name);
+				return;
+			}
+			if(e.newValue == INSTRUCTION.to) {
+				nextTask();
 			}
 		}
 	})
@@ -446,12 +483,26 @@ function start() {
 		nextTask();
 	})
 	async function quizAnswerCallback(answer) {
+		answeredqs++;
 		if(task.instructions[taskIndex].correct == answer) {
+			correctqs++;
 			await new Dialog("#quiz-dialog").hide();
 			nextTask();
 		} else {
 			document.querySelector("#quiz-answer-" + (answer + 1)).classList.add("btn-red");
 			document.querySelector("#quiz-answer-" + (task.instructions[taskIndex].correct + 1)).classList.add("btn-green");
+			document.querySelector("#quiz-answer-1").disabled = true;
+			document.querySelector("#quiz-answer-2").disabled = true;
+			document.querySelector("#quiz-answer-3").disabled = true;
+			document.querySelector("#quiz-answer-4").disabled = true;
+			setTimeout(async () => {
+				document.querySelector("#quiz-answer-1").disabled = false;
+				document.querySelector("#quiz-answer-2").disabled = false;
+				document.querySelector("#quiz-answer-3").disabled = false;
+				document.querySelector("#quiz-answer-4").disabled = false;
+				await new Dialog("#quiz-dialog").hide();
+				nextTask();
+			}, 3000);
 		}
 	}
 	document.querySelector("#quiz-answer-1").addEventListener("click", async () => {
