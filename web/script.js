@@ -117,6 +117,7 @@ function nextTask() {
 
 let picoport;
 let port;
+let picoW = true;
 let connectDialogShown = false;
 function connectPort() {
 	if(port && port.isOpen) return;
@@ -517,6 +518,30 @@ function start() {
 	document.querySelector("#quiz-answer-4").addEventListener("click", async () => {
 		quizAnswerCallback(3);
 	})
+	document.querySelector("#pico").addEventListener("click", () => {
+		document.querySelector("#pico-w").style.backgroundColor = "";
+		document.querySelector("#pico").style.backgroundColor = "#0e0e0e";
+		picoW = false;
+	})
+	document.querySelector("#pico-w").addEventListener("click", () => {
+		document.querySelector("#pico").style.backgroundColor = "";
+		document.querySelector("#pico-w").style.backgroundColor = "#0e0e0e";
+		picoW = true;
+		document.querySelector("#pico-w3").style.display = "none";
+		document.querySelector("#pico-w0").style.display = "";
+		setTimeout(() => {
+			document.querySelector("#pico-w0").style.display = "none";
+			document.querySelector("#pico-w1").style.display = "";
+			setTimeout(() => {
+				document.querySelector("#pico-w1").style.display = "none";
+				document.querySelector("#pico-w2").style.display = "";
+				setTimeout(() => {
+					document.querySelector("#pico-w2").style.display = "none";
+					document.querySelector("#pico-w3").style.display = "";
+				}, 80);
+			}, 80);
+		}, 80);
+	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {
 		prompt({
@@ -648,14 +673,14 @@ async function runBlock(hat) {
 				finalCode += indent + "machine.Pin(0, machine.Pin.OUT).off() # Führt die Funktion \"off\" aus beim Pin 0 von der Bibliothek \"machine\"\r\n"
 				break;
 			case "pico_internalledon":
-				// await writePort("machine.Pin('LED').on()\r\n"); //! TODO: Check or ask if regular pico to use pin 25!!!!
+				// await writePort("machine.Pin('LED').on()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin('LED').on() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
+				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25") + ").on() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
 				break;
 			case "pico_internalledoff":
 				// await writePort("machine.Pin('LED').off()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin('LED').off() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
+				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25") + ").off() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
 				break;
 			case "control_wait":
 				// await sleep(blk.value[0].shadow[0].field[0]._ * 1000);
