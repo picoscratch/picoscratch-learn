@@ -665,12 +665,12 @@ async function runBlock(hat) {
 			case "pico_ledon":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(0, machine.Pin.OUT).on() # Führt die Funktion \"on\" aus beim Pin 0 von der Bibliothek \"machine\"\r\n"
+				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on() # Führt die Funktion \"on\" aus beim Pin 0 von der Bibliothek \"machine\"\r\n"
 				break;
 			case "pico_ledoff":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(0, machine.Pin.OUT).off() # Führt die Funktion \"off\" aus beim Pin 0 von der Bibliothek \"machine\"\r\n"
+				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off() # Führt die Funktion \"off\" aus beim Pin 0 von der Bibliothek \"machine\"\r\n"
 				break;
 			case "pico_internalledon":
 				// await writePort("machine.Pin('LED').on()\r\n");
@@ -794,12 +794,28 @@ async function runBlock(hat) {
 				finalCode += indent + blk.value[0].shadow[0].field[0]._ + "# Führt Python Code aus\r\n";
 				break;
 			case "pico_setledbrightness":
-				finalCode += indent + "machine.PWM(machine.Pin(0)).duty_u16(" + await solveNumber(blk.value[0]) + " * " + await solveNumber(blk.value[0]) + ") # Setzt die Helligkeit der LED auf Pin 0 zu " + await solveNumber(blk.value[0]) + "\r\n"
+				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + await solveNumber(blk.value[0]) + " * " + await solveNumber(blk.value[0]) + ") # Setzt die Helligkeit der LED auf Pin 0 zu " + await solveNumber(blk.value[0]) + "\r\n"
+				break;
+			case "pico_rgb_led":
+				const rgb = hexToRgb(blk.value[3].shadow[0].field[0]._);
+				if(rgb == null) break;
+				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + rgb.r + " * " + rgb.r + ") # Setze die Farbe der RGB R LED\r\n"
+				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[1]) + ")).duty_u16(" + rgb.g + " * " + rgb.g + ") # Setze die Farbe der RGB G LED\r\n"
+				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[2]) + ")).duty_u16(" + rgb.b + " * " + rgb.b + ") # Setze die Farbe der RGB B LED\r\n"
 				break;
 		}
 		// workspace.glowBlock(blk.$.id, false);
 		block = blk.next;
 	}
+}
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
 }
 
 async function solveCondition(conditionBlock) {
@@ -846,7 +862,7 @@ async function solveCondition(conditionBlock) {
 			// await writePort("\r\n");
 			// await readPortReponse();
 			// return await readPortReponse() == 1;
-			return "machine.Pin(0, machine.Pin.OUT).value() == 1"
+			return "machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.OUT).value() == 1"
 		case "pico_internalledstatus":
 			// await writePort("machine.Pin('LED').value()")
 			// await writePort("\r\n");
@@ -854,7 +870,7 @@ async function solveCondition(conditionBlock) {
 			// return await readPortReponse() == 1;
 			return "machine.Pin(\"LED\").value() == 1"
 		case "pico_buttonstatus":
-			return "machine.Pin(1, machine.Pin.IN, machine.Pin.PULL_DOWN).value() == 1"
+			return "machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.IN, machine.Pin.PULL_DOWN).value() == 1"
 	}
 	return false;
 }
@@ -895,9 +911,11 @@ async function solveNumber(val) {
 			// return lists.find(v => v.name == blk.field[0]._).value.length;
 			return "len(" + blk.field[0]._ + ")";
 		case "pico_ledbrightness":
-			return "machine.PWM(machine.Pin(0)).duty_u16() / 255"
+			return "machine.PWM(machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ")).duty_u16() / 255"
 		case "pico_potentiometer":
-			return "int(round(machine.ADC(machine.Pin(26)).read_u16() / 65535 * 255, 0))"
+			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
+		case "pico_photoresistor":
+			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
 	}
 }
 
