@@ -675,12 +675,12 @@ async function runBlock(hat) {
 			case "pico_internalledon":
 				// await writePort("machine.Pin('LED').on()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25") + ").on() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
+				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25, machine.Pin.OUT") + ").on() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
 				break;
 			case "pico_internalledoff":
 				// await writePort("machine.Pin('LED').off()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25") + ").off() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
+				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25, machine.Pin.OUT") + ").off() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
 				break;
 			case "control_wait":
 				// await sleep(blk.value[0].shadow[0].field[0]._ * 1000);
