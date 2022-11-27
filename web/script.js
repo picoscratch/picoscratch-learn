@@ -9,6 +9,7 @@ const langs = require("./lang.json");
 
 let picoport;
 let port;
+let picoW = true;
 let connectDialogShown = false;
 function connectPort() {
 	autoDetect().list().then(async ports => {
@@ -171,6 +172,30 @@ function start() {
 		lang = document.querySelector("#tab-language").value;
 		updateLanguages();
 	})
+	document.querySelector("#pico").addEventListener("click", () => {
+		document.querySelector("#pico-w").style.backgroundColor = "";
+		document.querySelector("#pico").style.backgroundColor = "#0e0e0e";
+		picoW = false;
+	})
+	document.querySelector("#pico-w").addEventListener("click", () => {
+		document.querySelector("#pico").style.backgroundColor = "";
+		document.querySelector("#pico-w").style.backgroundColor = "#0e0e0e";
+		picoW = true;
+		document.querySelector("#pico-w3").style.display = "none";
+		document.querySelector("#pico-w0").style.display = "";
+		setTimeout(() => {
+			document.querySelector("#pico-w0").style.display = "none";
+			document.querySelector("#pico-w1").style.display = "";
+			setTimeout(() => {
+				document.querySelector("#pico-w1").style.display = "none";
+				document.querySelector("#pico-w2").style.display = "";
+				setTimeout(() => {
+					document.querySelector("#pico-w2").style.display = "none";
+					document.querySelector("#pico-w3").style.display = "";
+				}, 80);
+			}, 80);
+		}, 80);
+	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {
 		prompt({
@@ -291,14 +316,14 @@ async function runBlock(hat) {
 				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off()\r\n"
 				break;
 			case "pico_internalledon":
-				// await writePort("machine.Pin('LED').on()\r\n"); //! TODO: Check or ask if regular pico to use pin 25!!!!
+				// await writePort("machine.Pin('LED').on()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin('LED').on()\r\n";
+				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25") + ").on()\r\n";
 				break;
 			case "pico_internalledoff":
 				// await writePort("machine.Pin('LED').off()\r\n");
 				addImport("machine");
-				finalCode += indent + "machine.Pin('LED').off()\r\n";
+				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25") + ").off()\r\n";
 				break;
 			case "control_wait":
 				// await sleep(blk.value[0].shadow[0].field[0]._ * 1000);
