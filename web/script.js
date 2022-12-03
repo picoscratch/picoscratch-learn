@@ -549,6 +549,9 @@ async function runBlock(hat) {
 				}
 				finalCode += ")\r\n";
 				break;
+			case "procedures_return":
+				finalCode += indent + "return\r\n";
+				break;
 		}
 		// workspace.glowBlock(blk.$.id, false);
 		block = blk.next;
