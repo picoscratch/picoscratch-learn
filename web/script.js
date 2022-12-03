@@ -315,6 +315,7 @@ let cancel = false;
 let finalCode = "import machine\r\nimport random\r\nimport time\r\n";
 let imports = [];
 let indent = "";
+let usedVars = [];
 
 async function addImport(lib) {
 	if(!imports.includes(lib)) imports.push(lib);
@@ -338,11 +339,12 @@ async function makeCode() {
 	// vars = [];
 	// lists = [];
 	if(res.xml.variables[0] != "") {
-		res.xml.variables.filter(v => v.variable[0].$.type == "").forEach(v => {
-			finalCode += v.variable[0]._ + " = \"\"\r\n"
+		console.log("VARS", res.xml.variables[0].variable);
+		res.xml.variables[0].variable.filter(v => v.$.type == "").forEach(v => {
+			finalCode += v._ + " = \"\"\r\n"
 		})
-		res.xml.variables.filter(v => v.variable[0].$.type == "list").forEach(v => {
-			finalCode += v.variable[0]._ + " = []\r\n"
+		res.xml.variables[0].variable.filter(v => v.$.type == "list").forEach(v => {
+			finalCode += v._ + " = []\r\n"
 		})
 		// vars = res.xml.variables.filter(v => v.variable[0].$.type == "").map(v => {
 		// 	return { name: v.variable[0]._, value: "" };
@@ -359,7 +361,8 @@ async function makeCode() {
 		console.log(hat);
 		if(hat.$.type == "event_whenflagclicked") {
 			// workspace.glowStack(hat.$.id, true);
-			await runBlock(hat.next);
+			usedVars = [];
+			finalCode += await runBlock(hat.next);
 			// workspace.glowStack(hat.$.id, false);
 		} else if(hat.$.type == "procedures_definition") {
 			console.log("CB!", hat);
@@ -369,7 +372,17 @@ async function makeCode() {
 			}
 			finalCode += "):\r\n"
 			indent += "\t";
-			if(hat.next) await runBlock(hat.next);
+			usedVars = [];
+			// res.xml.variables[0].variable.forEach(v => {
+			// 	finalCode += indent + "global " + v._ + "\r\n"
+			// })
+			if(hat.next) {
+				let code = await runBlock(hat.next);
+				usedVars.forEach(v => {
+					finalCode += indent + "global " + v + "\r\n";
+				});
+				finalCode += code;
+			}
 			else finalCode += indent + "pass\r\n";
 			indent = indent.substring(1);
 		}
@@ -377,6 +390,7 @@ async function makeCode() {
 }
 
 async function runBlock(hat) {
+	let finalCode = "";
 	let block = hat;
 	while(block != null) {
 		if(cancel) return;
@@ -416,7 +430,7 @@ async function runBlock(hat) {
 				// console.log(blk);
 				if(blk.statement) {
 					// for(let i = 0; i < amount; i++) {
-					await runBlock(blk.statement[0].block[0]);
+					finalCode += await runBlock(blk.statement[0].block[0]);
 					// }
 				}
 				indent = indent.substring(1);
@@ -426,7 +440,7 @@ async function runBlock(hat) {
 				indent += "\t";
 				if(blk.statement) {
 					// while(!cancel) {
-					await runBlock(blk.statement[0].block[0]);
+					finalCode += await runBlock(blk.statement[0].block[0]);
 					// }
 				}
 				indent = indent.substring(1);
@@ -440,7 +454,7 @@ async function runBlock(hat) {
 				finalCode += indent + "if " + await solveCondition(blk.value[0].block[0]) + ":\r\n";
 				indent += "\t";
 				if(blk.statement) {
-					await runBlock(blk.statement[0].block[0]);
+					finalCode += await runBlock(blk.statement[0].block[0]);
 				}
 				indent = indent.substring(1);
 				break;
@@ -456,7 +470,7 @@ async function runBlock(hat) {
 				finalCode += indent + "if " + await solveCondition(blk.value[0].block[0]) + ":\r\n";
 				indent += "\t";
 				if(blk.statement) {
-					await runBlock(blk.statement[0].block[0]);
+					finalCode += await runBlock(blk.statement[0].block[0]);
 				} else {
 					finalCode += indent + "pass\r\n"
 				}
@@ -464,7 +478,7 @@ async function runBlock(hat) {
 				finalCode += indent + "else:\r\n"
 				indent += "\t";
 				if(blk.statement) {
-					await runBlock(blk.statement[1].block[0]);
+					finalCode += await runBlock(blk.statement[1].block[0]);
 				} else {
 					finalCode += indent + "pass\r\n"
 				}
@@ -478,7 +492,7 @@ async function runBlock(hat) {
 			case "data_setvariableto":
 				// vars.find(v => v.name == blk.field[0]._).value = await solveString(blk.value[0]);
 				let val = await solveString(blk.value[0]);
-				if(!isNaN(val.substring(1, val.length - 1))) val = parseInt(val.substring(1, val.length - 1));
+				if(!isNaN(val.substring(1, val.length - 1))) val = parseFloat(val.substring(1, val.length - 1));
 				finalCode += indent + blk.field[0]._ + " = " + val + "\r\n";
 				break;
 			case "data_changevariableby":
@@ -528,8 +542,8 @@ async function runBlock(hat) {
 				finalCode += indent + blk.mutation[0].$.proccode.split(" ")[0] + "(";
 				if(blk.value) {
 					finalCode += (await Promise.all(blk.value.map(async v => {
-						let val = await solveString(blk.value[0]);
-						if(!isNaN(val.substring(1, val.length - 1))) val = parseInt(val.substring(1, val.length - 1));
+						let val = await solveString(v);
+						if(!isNaN(val.substring(1, val.length - 1))) val = parseFloat(val.substring(1, val.length - 1));
 						return val;
 					}))).join(", ");
 				}
@@ -539,6 +553,7 @@ async function runBlock(hat) {
 		// workspace.glowBlock(blk.$.id, false);
 		block = blk.next;
 	}
+	return finalCode;
 }
 
 function hexToRgb(hex) {
@@ -557,9 +572,9 @@ async function solveCondition(conditionBlock) {
 			// const v2 = conditionBlock.value[1].shadow[0].field[0]._;
 			// return v1 == v2;
 			let val = await solveString(conditionBlock.value[0]);
-			if(!isNaN(val.substring(1, val.length - 1))) val = parseInt(val.substring(1, val.length - 1));
+			if(!isNaN(val.substring(1, val.length - 1))) val = parseFloat(val.substring(1, val.length - 1));
 			let val2 = await solveString(conditionBlock.value[1]);
-			if(!isNaN(val2.substring(1, val2.length - 1))) val2 = parseInt(val2.substring(1, val2.length - 1));
+			if(!isNaN(val2.substring(1, val2.length - 1))) val2 = parseFloat(val2.substring(1, val2.length - 1));
 			return val + " == " + val2;
 		}
 		case "operator_and": {
@@ -631,6 +646,7 @@ async function solveNumber(val) {
 			// const val = vars.find(v => v.name == blk.field[0]._) ? vars.find(v => v.name == blk.field[0]._).value : 0;
 			// console.log(val, typeof val, parseInt(val), typeof parseInt(val));
 			// return parseInt(val);
+			usedVars.push(blk.field[0]._)
 			return blk.field[0]._;
 		case "argument_reporter_string_number":
 			return blk.field[0]._;
@@ -668,6 +684,7 @@ async function solveString(val) {
 			return "len(" + await solveString(blk.value[0]) + "\")";
 		case "data_variable":
 			// return vars.find(v => v.name == blk.field[0]._) ? vars.find(v => v.name == blk.field[0]._).value : "";
+			usedVars.push(blk.field[0]._)
 			return blk.field[0]._;
 		case "argument_reporter_string_number":
 			return blk.field[0]._;
