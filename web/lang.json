@@ -2,11 +2,13 @@
 	"en": {
 		"dialog-connect-pico-title": "Connect pico",
 		"dialog-connect-pico-text": "Please connect the pico to the computer.",
-		"send-to-console": "Send to console..."
+		"send-to-console": "Send to console...",
+		"new-block-title": "New Block"
 	},
 	"de": {
 		"dialog-connect-pico-title": "Pico verbinden",
 		"dialog-connect-pico-text": "Bitte verbine den Pico mit dem Computer.",
-		"send-to-console": "Text zur Konsole senden..."
+		"send-to-console": "Text zur Konsole senden...",
+		"new-block-title": "Neuer Block"
 	}
 }

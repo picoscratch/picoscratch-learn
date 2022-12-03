@@ -25,6 +25,15 @@
 			<p data-lang="dialog-connect-pico-text"></p>
 			<object id="connect-pico-obj" data="connectpico.svg" type="image/svg+xml" style="width: 700px; margin-bottom: 15px;"></object>
 		</div>
+		<div class="dialog" id="new-block-dialog" style="display: none;">
+			<h2 data-lang="new-block-title"></h2>
+			<div id="newBlockWorkspace"></div>
+			<button id="text_number" onclick="addTextNumber()">Add text/number input</button>
+			<button id="boolean" onclick="addBoolean()">Add boolean input</button>
+			<button id="label" onclick="addLabel()">Add label</button>
+			<button id="cancelButton" onclick="cancelBlockCreation()">cancel</button>
+			<button id="okButton" onclick="applyMutation()">ok</button>
+		</div>
 	</div>
 	<button id="greenflag">
 		<img src="media/green-flag.svg" alt="" width="50px">

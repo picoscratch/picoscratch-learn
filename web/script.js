@@ -55,6 +55,9 @@ window.addEventListener("beforeunload", () => {
 })
 
 let workspace = null;
+let newBlockWorkspace = null;
+let newBlock = null; // newBlock
+let newBlockCallback = null;
 let soundsEnabled = true;
 let running = false;
 
@@ -125,6 +128,25 @@ function start() {
 			dragShadowOpacity: 0.6
 		}
 	});
+
+	Blockly.Procedures.externalProcedureDefCallback = function (mutation, cb) {
+		new Dialog("#new-block-dialog").show();
+		newBlockWorkspace = Blockly.inject("newBlockWorkspace", { media: "media/" });
+		document.querySelector("#newBlockWorkspace .blocklyFlyout").remove();
+		document.querySelector("#newBlockWorkspace .blocklyFlyoutScrollbar").remove();
+		document.querySelector("#newBlockWorkspace .blocklyToolboxDiv").remove();
+		newBlockWorkspace.addChangeListener(function(e) {
+			if(newBlock) {
+				newBlock.onChangeFn();
+			}
+		});
+		newBlockCallback = cb;
+		newBlockWorkspace.clear();
+		newBlock = newBlockWorkspace.newBlock('procedures_declaration');
+		newBlock.domToMutation(mutation);
+		newBlock.initSvg();
+		newBlock.render(false);
+	}
 
 	workspace.addChangeListener((e) => {
 		if(e instanceof Blockly.Events.Create || e instanceof Blockly.Events.Delete || e instanceof Blockly.Events.Change || e instanceof Blockly.Events.Move || e instanceof Blockly.Events.VarDelete || e instanceof Blockly.Events.VarRename) {
@@ -211,6 +233,47 @@ function start() {
 
 }
 
+function applyMutation() {
+	for(const id of newBlock.argumentIds_) {
+		newBlock.getInputTargetBlock(id).inputList[0].fieldRow[0].setText(newBlock.getInputTargetBlock(id).inputList[0].fieldRow[0].getText().replaceAll(" ", ""));
+	}
+	newBlock.getField().setText(newBlock.getField().getText().replaceAll(" ", ""));
+	newBlock.onChangeFn();
+	var mutation = newBlock.mutationToDom(/* opt_generateShadows */ true)
+	console.log(mutation);
+	newBlockCallback(mutation);
+	newBlockCallback = null;
+	newBlock = null;
+	newBlockWorkspace.clear();
+	while(document.querySelector("#newBlockWorkspace").firstChild) {
+		document.querySelector("#newBlockWorkspace").firstChild.remove();
+	}
+	workspace.refreshToolboxSelection_()
+	new Dialog("#new-block-dialog").hide();
+}
+
+function addLabel() {
+	newBlock.addLabelExternal();
+}
+
+function addBoolean() {
+	newBlock.addBooleanExternal();
+}
+
+function addTextNumber() {
+	newBlock.addStringNumberExternal();
+}
+
+function cancelBlockCreation() {
+	newBlockCallback = null;
+	newBlock = null;
+	while(document.querySelector("#newBlockWorkspace").firstChild) {
+		document.querySelector("#newBlockWorkspace").firstChild.remove();
+	}
+	workspace.refreshToolboxSelection_()
+	new Dialog("#new-block-dialog").hide();
+}
+
 function getToolboxElement() {
 	return document.getElementById('toolbox-categories');
 }
@@ -288,12 +351,27 @@ async function makeCode() {
 		// 	return { name: v.variable[0]._, value: [] };
 		// });
 	}
-	for(const hat of res.xml.block) {
+	const order = { "event_whenflagclicked": 100, "procedures_definition": 1, default: 10000 }
+	console.log(res.xml.block);
+	for(const hat of res.xml.block.sort((a, b) => {
+		return (order[a.$.type] || order.default) - (order[b.$.type] || order.default);
+	})) {
 		console.log(hat);
 		if(hat.$.type == "event_whenflagclicked") {
 			// workspace.glowStack(hat.$.id, true);
 			await runBlock(hat.next);
 			// workspace.glowStack(hat.$.id, false);
+		} else if(hat.$.type == "procedures_definition") {
+			console.log("CB!", hat);
+			finalCode += indent + "def " + hat.statement[0].shadow[0].mutation[0].$.proccode.split(" ")[0] + "(";
+			if(hat.statement[0].shadow[0].value) {
+				finalCode += hat.statement[0].shadow[0].value.map(v => v.shadow[0].field[0]._).join(", ");
+			}
+			finalCode += "):\r\n"
+			indent += "\t";
+			if(hat.next) await runBlock(hat.next);
+			else finalCode += indent + "pass\r\n";
+			indent = indent.substring(1);
 		}
 	}
 }
@@ -446,6 +524,17 @@ async function runBlock(hat) {
 				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[1]) + ")).duty_u16(" + rgb.g + " * " + rgb.g + ")\r\n"
 				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[2]) + ")).duty_u16(" + rgb.b + " * " + rgb.b + ")\r\n"
 				break;
+			case "procedures_call":
+				finalCode += indent + blk.mutation[0].$.proccode.split(" ")[0] + "(";
+				if(blk.value) {
+					finalCode += (await Promise.all(blk.value.map(async v => {
+						let val = await solveString(blk.value[0]);
+						if(!isNaN(val.substring(1, val.length - 1))) val = parseInt(val.substring(1, val.length - 1));
+						return val;
+					}))).join(", ");
+				}
+				finalCode += ")\r\n";
+				break;
 		}
 		// workspace.glowBlock(blk.$.id, false);
 		block = blk.next;
@@ -543,6 +632,8 @@ async function solveNumber(val) {
 			// console.log(val, typeof val, parseInt(val), typeof parseInt(val));
 			// return parseInt(val);
 			return blk.field[0]._;
+		case "argument_reporter_string_number":
+			return blk.field[0]._;
 		case "data_listcontents":
 			// return parseInt(lists.find(v => v.name == blk.field[0]._).value.join(""))
 			return blk.field[0]._;
@@ -577,6 +668,8 @@ async function solveString(val) {
 			return "len(" + await solveString(blk.value[0]) + "\")";
 		case "data_variable":
 			// return vars.find(v => v.name == blk.field[0]._) ? vars.find(v => v.name == blk.field[0]._).value : "";
+			return blk.field[0]._;
+		case "argument_reporter_string_number":
 			return blk.field[0]._;
 		case "data_listcontents":
 			// return lists.find(v => v.name == blk.field[0]._).value.join(" ")

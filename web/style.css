@@ -107,6 +107,11 @@ h1 {
 	width: 100%;
 }
 
+#newBlockWorkspace {
+	height: 30vh;
+	width: 100vh;
+}
+
 .injectionDiv {
 	border-radius: 10px;
 }
