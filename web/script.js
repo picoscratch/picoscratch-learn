@@ -397,22 +397,22 @@ async function runBlock(hat) {
 		const blk = block[0] ? block[0]["block"][0] : block;
 		// workspace.glowBlock(blk.$.id, true);
 		switch (blk.$.type) {
-			case "pico_ledon":
+			case "components_ledon":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on()\r\n");
 				addImport("machine");
 				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on()\r\n"
 				break;
-			case "pico_ledoff":
+			case "components_ledoff":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off()\r\n");
 				addImport("machine");
 				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off()\r\n"
 				break;
-			case "pico_internalledon":
+			case "components_internalledon":
 				// await writePort("machine.Pin('LED').on()\r\n");
 				addImport("machine");
 				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25, machine.Pin.OUT") + ").on()\r\n";
 				break;
-			case "pico_internalledoff":
+			case "components_internalledoff":
 				// await writePort("machine.Pin('LED').off()\r\n");
 				addImport("machine");
 				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25, machine.Pin.OUT") + ").off()\r\n";
@@ -528,10 +528,10 @@ async function runBlock(hat) {
 			case "debug_python":
 				finalCode += indent + blk.value[0].shadow[0].field[0]._ + "\r\n";
 				break;
-			case "pico_setledbrightness":
+			case "components_setledbrightness":
 				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + await solveNumber(blk.value[1]) + " * " + await solveNumber(blk.value[1]) + ")\r\n"
 				break;
-			case "pico_rgb_led":
+			case "components_rgb_led":
 				const rgb = hexToRgb(blk.value[3].shadow[0].field[0]._);
 				if(rgb == null) break;
 				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + rgb.r + " * " + rgb.r + ")\r\n"
@@ -607,19 +607,19 @@ async function solveCondition(conditionBlock) {
 			// return lists.find(v => v.name == conditionBlock.field[0]._).value.includes(await solveString(conditionBlock.value[0]));
 			return await solveString(conditionBlock.value[0]) + " in " + conditionBlock.field[0]._;
 		}
-		case "pico_ledstatus":
+		case "components_ledstatus":
 			// await writePort("machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.OUT).value()")
 			// await writePort("\r\n");
 			// await readPortReponse();
 			// return await readPortReponse() == 1;
 			return "machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.OUT).value() == 1"
-		case "pico_internalledstatus":
+		case "components_internalledstatus":
 			// await writePort("machine.Pin('LED').value()")
 			// await writePort("\r\n");
 			// await readPortReponse();
 			// return await readPortReponse() == 1;
 			return "machine.Pin(\"LED\").value() == 1"
-		case "pico_buttonstatus":
+		case "components_buttonstatus":
 			return "machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.IN, machine.Pin.PULL_DOWN).value() == 1"
 	}
 	return false;
@@ -663,11 +663,11 @@ async function solveNumber(val) {
 		case "data_lengthoflist":
 			// return lists.find(v => v.name == blk.field[0]._).value.length;
 			return "len(" + blk.field[0]._ + ")";
-		case "pico_ledbrightness":
+		case "components_ledbrightness":
 			return "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16() / 255"
-		case "pico_potentiometer":
+		case "components_potentiometer":
 			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
-		case "pico_photoresistor":
+		case "components_photoresistor":
 			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
 	}
 }
