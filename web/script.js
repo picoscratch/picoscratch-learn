@@ -52,7 +52,6 @@ async function loadNextLevel() {
 	answeredqs = 0;
 	correctqs = 0;
 	ws.send("task");
-	fromXml(startXML);
 	document.querySelector("#greenflag").disabled = true;
 	document.querySelector("#reset").style.display = "";
 	document.querySelector("#next").style.display = "none";
@@ -180,7 +179,7 @@ function renderLeaderboard(el) {
 		if(!leaderboard[i]) break;
 		const player = leaderboard[i];
 		const tr = document.createElement("tr");
-		if(player.name == document.querySelector("#name").value) {
+		if(player.name == capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ")) {
 			tr.style.backgroundColor = "#1d1d1d";
 		}
 		const place = document.createElement("td");
@@ -213,6 +212,7 @@ const startXML = `<xml xmlns="http://www.w3.org/1999/xhtml">
 <variables></variables>
 <block type="event_whenflagclicked" id="{!5G[{H3qE2[NMQ;pK)W" x="300" y="400"></block>
 </xml>`
+let taskXML = startXML;
 let lang = "en";
 
 function updateLanguages() {
@@ -222,6 +222,12 @@ function updateLanguages() {
 	document.querySelectorAll("[data-lang-placeholder]").forEach(e => {
 		e.placeholder = langs[lang][e.getAttribute("data-lang-placeholder")];
 	})
+}
+
+function capitalizeWords(arr) {
+  return arr.map(element => {
+    return element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
+  });
 }
 
 function start() {
@@ -386,7 +392,7 @@ function start() {
 	// 	if(v != null) fromXml(v);
 	// })
 	document.querySelector("#reset").addEventListener("click", async () => {
-		fromXml(startXML);
+		fromXml(taskXML);
 		taskIndex = -1;
 		nextTask();
 	})
@@ -437,10 +443,19 @@ function start() {
 		})
 		ws.addEventListener("message", async (data) => {
 			const msg = data.data.toString();
-			console.log(msg);
+			console.log("MESSAGE: " + msg);
 			if(msg.startsWith("task ")) {
 				task = JSON.parse(msg.split("task ", 2)[1]);
 				taskIndex = -1;
+				if(task.noclear) {
+					if(toXml().trim().replaceAll("\n", "").replaceAll("\r", "").replaceAll("  ", "") == startXML.trim().replaceAll("\n", "").replaceAll("\r", "").replaceAll("  ", "")) {
+						fromXml(task.startxml);
+					}
+					taskXML = toXml()
+				} else {
+					fromXml(startXML);
+					taskXML = startXML;
+				}
 				await new Dialog("#loading-dialog").hide();
 				ws.send("leaderboard");
 				await new Dialog("#leaderboard-dialog").show();
@@ -467,6 +482,9 @@ function start() {
 			} else if(msg.startsWith("update ")) {
 				leaderboard = JSON.parse(msg.split("update ", 2)[1]);
 				renderLeaderboards();
+			} else if(msg == "kick") {
+				await Dialog.hideall();
+				new Dialog("#kick-dialog").show();
 			}
 		})
 	})
@@ -541,6 +559,9 @@ function start() {
 				}, 80);
 			}, 80);
 		}, 80);
+	})
+	document.querySelector("#kick-dialog-button").addEventListener("click", async () => {
+		location.reload();
 	})
 
 	Blockly.prompt = (msg, defaultValue, callback) => {

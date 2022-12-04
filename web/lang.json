@@ -39,7 +39,10 @@
 		"leaderboard-dialog-exit-button": "Ok",
 		"dialog-language-title": "Language selection",
 		"dialog-language-select": "Ok",
-		"quizpercentage": "Quiz %"
+		"quizpercentage": "Quiz %",
+		"kick-dialog-title": "You have been kicked!",
+		"kick-dialog-text": "Your teacher has kicked you from the game!",
+		"kick-dialog-button": "Ok"
 	},
 	"de": {
 		"start": "Start",
@@ -81,6 +84,9 @@
 		"leaderboard-dialog-exit-button": "Ok",
 		"dialog-language-title": "Sprachauswahl",
 		"dialog-language-select": "Ok",
-		"quizpercentage": "Quiz %"
+		"quizpercentage": "Quiz %",
+		"kick-dialog-title": "Du wurdest rausgeworfen!",
+		"kick-dialog-text": "Dein Lehrer hat dich vom Spiel rausgeworfen!",
+		"kick-dialog-button": "Ok"
 	}
 }
