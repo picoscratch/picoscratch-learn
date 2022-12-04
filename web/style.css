@@ -107,6 +107,14 @@ h1 {
 	width: 100%;
 }
 
+.blocklyToolboxDiv::-webkit-scrollbar-thumb {
+	background-color: transparent !important;
+}
+
+.blocklyToolboxDiv::-webkit-scrollbar-track {
+	background-color: transparent !important;
+}
+
 #newBlockWorkspace {
 	height: 30vh;
 	width: 100vh;
