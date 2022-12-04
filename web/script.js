@@ -871,6 +871,7 @@ async function runBlock(hat) {
 				// vars.find(v => v.name == blk.field[0]._).value = await solveString(blk.value[0]);
 				let val = await solveString(blk.value[0]);
 				if(!isNaN(val.substring(1, val.length - 1))) val = parseFloat(val.substring(1, val.length - 1));
+				usedVars.push(blk.field[0]._)
 				finalCode += indent + blk.field[0]._ + " = " + val + " # Setzt die Variable " + blk.field[0]._ + " zu " + val + "\r\n";
 				break;
 			case "data_changevariableby":
@@ -880,26 +881,32 @@ async function runBlock(hat) {
 				// console.log(val + await solveNumber(blk.value[0]));
 				// val = val + await solveNumber(blk.value[0]);
 				// vars.find(v => v.name == blk.field[0]._).value = val + "";
+				usedVars.push(blk.field[0]._)
 				finalCode += indent + blk.field[0]._ + " += " + await solveNumber(blk.value[0]) + " # Ändert den Wert der Variable " + blk.field[0]._ + " um " + val + "\r\n";
 				break;
 			case "data_addtolist":
 				// lists.find(v => v.name == blk.field[0]._).value.push(await solveString(blk.value[0]))
+				usedVars.push(blk.field[0]._)
 				finalCode += indent + blk.field[0]._ + ".append(" + await solveString(blk.value[0]) + ") # Fügt " + await solveString(blk.value[0]) + " zur Liste " + blk.field[0]._ + " hinzu\r\n";
 				break;
 			case "data_deleteoflist":
 				// lists.find(v => v.name == blk.field[0]._).value.splice(await solveNumber(blk.value[0]) - 1, 1);
+				usedVars.push(blk.field[0]._)
 				finalCode += indent + blk.field[0]._ + ".pop(" + await solveNumber(blk.value[0]) + ") # Entfernt ein Element von der Liste " + blk.field[0]._ + "\r\n";
 				break;
 			case "data_deletealloflist":
 				// lists.find(v => v.name == blk.field[0]._).value = [];
+				usedVars.push(blk.field[0]._)
 				finalCode += indent + blk.field[0]._ + " = [] # Leert die Liste " + blk.field[0]._ + "\r\n";
 				break;
 			case "data_insertatlist":
 				// lists.find(v => v.name == blk.field[0]._).value.splice(await solveNumber(blk.value[1]) - 1, 0, await solveString(blk.value[0]));
+				usedVars.push(blk.field[0]._)
 				finalCode += indent + blk.field[0]._ + ".insert(" + await solveNumber(blk.value[1]) + ", " + await solveString(blk.value[0]) + ") # Fügt " + await solveString(blk.value[0]) + " zur Liste " + blk.field[0]._ + " an stelle " + await solveNumber(blk.value[1]) + " zu\r\n";
 				break;
 			case "data_replaceitemoflist":
 				// lists.find(v => v.name == blk.field[0]._).value.splice(await solveNumber(blk.value[0]) - 1, 1, await solveString(blk.value[1]));
+				usedVars.push(blk.field[0]._)
 				finalCode += indent + blk.field[0]._ + ".pop(" + await solveNumber(blk.value[0]) + ") # Entfernt ein Element von der Liste " + blk.field[0]._ + "\r\n";
 				finalCode += indent + blk.field[0]._ + ".insert(" + await solveNumber(blk.value[0]) + ", " + await solveString(blk.value[1]) + ") # Fügt " + await solveString(blk.value[0]) + " zur Liste " + blk.field[0]._ + " an stelle " + await solveNumber(blk.value[1]) + " zu\r\n";
 				break;
@@ -983,6 +990,7 @@ async function solveCondition(conditionBlock) {
 		}
 		case "data_listcontainsitem": {
 			// return lists.find(v => v.name == conditionBlock.field[0]._).value.includes(await solveString(conditionBlock.value[0]));
+			usedVars.push(conditionBlock.field[0]._)
 			return await solveString(conditionBlock.value[0]) + " in " + conditionBlock.field[0]._;
 		}
 		case "components_ledstatus":
@@ -1033,13 +1041,16 @@ async function solveNumber(val) {
 			return blk.field[0]._;
 		case "data_listcontents":
 			// return parseInt(lists.find(v => v.name == blk.field[0]._).value.join(""))
+			usedVars.push(blk.field[0]._)
 			return blk.field[0]._;
 		case "data_itemnumoflist":
 			// const arg = await solveString(blk.value[0])
 			// return lists.find(v => v.name == blk.field[0]._).value.findIndex(i => i == arg) + 1;
+			usedVars.push(blk.field[0]._)
 			return blk.field[0]._ + ".index(\"" + await solveString(blk.value[0]) + "\")";
 		case "data_lengthoflist":
 			// return lists.find(v => v.name == blk.field[0]._).value.length;
+			usedVars.push(blk.field[0]._)
 			return "len(" + blk.field[0]._ + ")";
 		case "components_ledbrightness":
 			return "machine.PWM(machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ")).duty_u16() / 255"
@@ -1071,9 +1082,11 @@ async function solveString(val) {
 			return blk.field[0]._;
 		case "data_listcontents":
 			// return lists.find(v => v.name == blk.field[0]._).value.join(" ")
+			usedVars.push(blk.field[0]._)
 			return blk.field[0]._;
 		case "data_itemoflist":
 			// return lists.find(v => v.name == blk.field[0]._).value[await solveNumber(blk.value[0]) - 1];
+			usedVars.push(blk.field[0]._)
 			return blk.field[0]._ + "[" + await solveNumber(blk.value[0]) + "]";
 		case "debug_read_console":
 			return "input(" + await solveString(blk.value[0]) + ")"
