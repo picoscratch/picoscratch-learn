@@ -43,7 +43,10 @@
 		"kick-dialog-title": "You have been kicked!",
 		"kick-dialog-text": "Your teacher has kicked you from the game!",
 		"kick-dialog-button": "Ok",
-		"new-block-title": "New Block"
+		"new-block-title": "New Block",
+		"new-block-add-input": "Add input",
+		"new-block-cancel": "Cancel",
+		"new-block-create": "Ok"
 	},
 	"de": {
 		"start": "Start",
@@ -89,6 +92,9 @@
 		"kick-dialog-title": "Du wurdest rausgeworfen!",
 		"kick-dialog-text": "Dein Lehrer hat dich vom Spiel rausgeworfen!",
 		"kick-dialog-button": "Ok",
-		"new-block-title": "Neuer Block"
+		"new-block-title": "Neuer Block",
+		"new-block-add-input": "Input hinzufügen",
+		"new-block-cancel": "Abbruch",
+		"new-block-create": "Ok"
 	}
 }
