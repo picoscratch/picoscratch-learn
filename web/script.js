@@ -205,6 +205,9 @@ window.addEventListener("beforeunload", async () => {
 })
 
 let workspace = null;
+let newBlockWorkspace = null;
+let newBlock = null; // newBlock
+let newBlockCallback = null;
 let soundsEnabled = true;
 let running = false;
 
@@ -283,6 +286,25 @@ function start() {
 			dragShadowOpacity: 0.6
 		}
 	});
+
+	Blockly.Procedures.externalProcedureDefCallback = function (mutation, cb) {
+		new Dialog("#new-block-dialog").show();
+		newBlockWorkspace = Blockly.inject("newBlockWorkspace", { media: "media/" });
+		document.querySelector("#newBlockWorkspace .blocklyFlyout").remove();
+		document.querySelector("#newBlockWorkspace .blocklyFlyoutScrollbar").remove();
+		document.querySelector("#newBlockWorkspace .blocklyToolboxDiv").remove();
+		newBlockWorkspace.addChangeListener(function(e) {
+			if(newBlock) {
+				newBlock.onChangeFn();
+			}
+		});
+		newBlockCallback = cb;
+		newBlockWorkspace.clear();
+		newBlock = newBlockWorkspace.newBlock('procedures_declaration');
+		newBlock.domToMutation(mutation);
+		newBlock.initSvg();
+		newBlock.render(false);
+	}
 
 	workspace.addChangeListener((e) => {
 		if(e instanceof Blockly.Events.Create || e instanceof Blockly.Events.Delete || e instanceof Blockly.Events.Change || e instanceof Blockly.Events.Move || e instanceof Blockly.Events.VarDelete || e instanceof Blockly.Events.VarRename) {
@@ -589,6 +611,47 @@ async function updatePythonTab() {
 	hljs.highlightElement(document.querySelector("#pythontab").getElementsByTagName("code")[0]);
 }
 
+function applyMutation() {
+	for(const id of newBlock.argumentIds_) {
+		newBlock.getInputTargetBlock(id).inputList[0].fieldRow[0].setText(newBlock.getInputTargetBlock(id).inputList[0].fieldRow[0].getText().replaceAll(" ", ""));
+	}
+	newBlock.getField().setText(newBlock.getField().getText().replaceAll(" ", ""));
+	newBlock.onChangeFn();
+	var mutation = newBlock.mutationToDom(/* opt_generateShadows */ true)
+	console.log(mutation);
+	newBlockCallback(mutation);
+	newBlockCallback = null;
+	newBlock = null;
+	newBlockWorkspace.clear();
+	while(document.querySelector("#newBlockWorkspace").firstChild) {
+		document.querySelector("#newBlockWorkspace").firstChild.remove();
+	}
+	workspace.refreshToolboxSelection_()
+	new Dialog("#new-block-dialog").hide();
+}
+
+function addLabel() {
+	newBlock.addLabelExternal();
+}
+
+function addBoolean() {
+	newBlock.addBooleanExternal();
+}
+
+function addTextNumber() {
+	newBlock.addStringNumberExternal();
+}
+
+function cancelBlockCreation() {
+	newBlockCallback = null;
+	newBlock = null;
+	while(document.querySelector("#newBlockWorkspace").firstChild) {
+		document.querySelector("#newBlockWorkspace").firstChild.remove();
+	}
+	workspace.refreshToolboxSelection_()
+	new Dialog("#new-block-dialog").hide();
+}
+
 function getToolboxElement() {
 	return document.getElementById('toolbox-categories');
 }
@@ -630,6 +693,7 @@ let cancel = false;
 let finalCode = "";
 let imports = [];
 let indent = "";
+let usedVars = [];
 
 async function addImport(lib) {
 	if(!imports.includes(lib)) imports.push(lib);
@@ -653,11 +717,12 @@ async function makeCode() {
 	// vars = [];
 	// lists = [];
 	if(res.xml.variables[0] != "") {
-		res.xml.variables.filter(v => v.variable[0].$.type == "").forEach(v => {
-			finalCode += v.variable[0]._ + " = \"\"\r\n"
+		console.log("VARS", res.xml.variables[0].variable);
+		res.xml.variables[0].variable.filter(v => v.$.type == "").forEach(v => {
+			finalCode += v._ + " = \"\"\r\n"
 		})
-		res.xml.variables.filter(v => v.variable[0].$.type == "list").forEach(v => {
-			finalCode += v.variable[0]._ + " = []\r\n"
+		res.xml.variables[0].variable.filter(v => v.$.type == "list").forEach(v => {
+			finalCode += v._ + " = []\r\n"
 		})
 		// vars = res.xml.variables.filter(v => v.variable[0].$.type == "").map(v => {
 		// 	return { name: v.variable[0]._, value: "" };
@@ -666,39 +731,66 @@ async function makeCode() {
 		// 	return { name: v.variable[0]._, value: [] };
 		// });
 	}
-	for(const hat of res.xml.block) {
+	const order = { "event_whenflagclicked": 100, "procedures_definition": 1, default: 10000 }
+	console.log(res.xml.block);
+	for(const hat of res.xml.block.sort((a, b) => {
+		return (order[a.$.type] || order.default) - (order[b.$.type] || order.default);
+	})) {
 		console.log(hat);
 		if(hat.$.type == "event_whenflagclicked") {
 			// workspace.glowStack(hat.$.id, true);
-			await runBlock(hat.next);
+			usedVars = [];
+			finalCode += await runBlock(hat.next);
 			// workspace.glowStack(hat.$.id, false);
+		} else if(hat.$.type == "procedures_definition") {
+			console.log("CB!", hat);
+			finalCode += indent + "def " + hat.statement[0].shadow[0].mutation[0].$.proccode.split(" ")[0] + "(";
+			if(hat.statement[0].shadow[0].value) {
+				finalCode += hat.statement[0].shadow[0].value.map(v => v.shadow[0].field[0]._).join(", ");
+			}
+			finalCode += "):\r\n"
+			indent += "\t";
+			usedVars = [];
+			// res.xml.variables[0].variable.forEach(v => {
+			// 	finalCode += indent + "global " + v._ + "\r\n"
+			// })
+			if(hat.next) {
+				let code = await runBlock(hat.next);
+				usedVars.forEach(v => {
+					finalCode += indent + "global " + v + "\r\n";
+				});
+				finalCode += code;
+			}
+			else finalCode += indent + "pass\r\n";
+			indent = indent.substring(1);
 		}
 	}
 }
 
 async function runBlock(hat) {
+	let finalCode = "";
 	let block = hat;
 	while(block != null) {
 		if(cancel) return;
 		const blk = block[0] ? block[0]["block"][0] : block;
 		// workspace.glowBlock(blk.$.id, true);
 		switch (blk.$.type) {
-			case "pico_ledon":
+			case "components_ledon":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on()\r\n");
 				addImport("machine");
 				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).on() # Führt die Funktion \"on\" aus beim Pin 0 von der Bibliothek \"machine\"\r\n"
 				break;
-			case "pico_ledoff":
+			case "components_ledoff":
 				// await writePort("machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off()\r\n");
 				addImport("machine");
 				finalCode += indent + "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.OUT).off() # Führt die Funktion \"off\" aus beim Pin 0 von der Bibliothek \"machine\"\r\n"
 				break;
-			case "pico_internalledon":
+			case "components_internalledon":
 				// await writePort("machine.Pin('LED').on()\r\n");
 				addImport("machine");
 				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25, machine.Pin.OUT") + ").on() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
 				break;
-			case "pico_internalledoff":
+			case "components_internalledoff":
 				// await writePort("machine.Pin('LED').off()\r\n");
 				addImport("machine");
 				finalCode += indent + "machine.Pin(" + (picoW ? "'LED'" : "25, machine.Pin.OUT") + ").off() # Führt die Funktion \"on\" aus beim Pin der internen LED von der Bibliothek \"machine\"\r\n";
@@ -716,7 +808,7 @@ async function runBlock(hat) {
 				// console.log(blk);
 				if(blk.statement) {
 					// for(let i = 0; i < amount; i++) {
-					await runBlock(blk.statement[0].block[0]);
+					finalCode += await runBlock(blk.statement[0].block[0]);
 					// }
 				}
 				indent = indent.substring(1);
@@ -726,7 +818,7 @@ async function runBlock(hat) {
 				indent += "\t";
 				if(blk.statement) {
 					// while(!cancel) {
-					await runBlock(blk.statement[0].block[0]);
+					finalCode += await runBlock(blk.statement[0].block[0]);
 					// }
 				}
 				indent = indent.substring(1);
@@ -740,7 +832,7 @@ async function runBlock(hat) {
 				finalCode += indent + "if " + await solveCondition(blk.value[0].block[0]) + ": # Alles hier drunter wird nur ausgeführt wenn die Bedingung wahr ist\r\n";
 				indent += "\t";
 				if(blk.statement) {
-					await runBlock(blk.statement[0].block[0]);
+					finalCode += await runBlock(blk.statement[0].block[0]);
 				}
 				indent = indent.substring(1);
 				break;
@@ -756,7 +848,7 @@ async function runBlock(hat) {
 				finalCode += indent + "if " + await solveCondition(blk.value[0].block[0]) + ": # Alles hier drunter wird nur ausgeführt wenn die Bedingung wahr ist\r\n";
 				indent += "\t";
 				if(blk.statement) {
-					await runBlock(blk.statement[0].block[0]);
+					finalCode += await runBlock(blk.statement[0].block[0]);
 				} else {
 					finalCode += indent + "pass\r\n"
 				}
@@ -764,7 +856,7 @@ async function runBlock(hat) {
 				finalCode += indent + "else: # Alles hier drunter wird nur ausgeführt wenn die Bedingung falsch ist\r\n"
 				indent += "\t";
 				if(blk.statement) {
-					await runBlock(blk.statement[1].block[0]);
+					finalCode += await runBlock(blk.statement[1].block[0]);
 				} else {
 					finalCode += indent + "pass\r\n"
 				}
@@ -778,7 +870,7 @@ async function runBlock(hat) {
 			case "data_setvariableto":
 				// vars.find(v => v.name == blk.field[0]._).value = await solveString(blk.value[0]);
 				let val = await solveString(blk.value[0]);
-				if(!isNaN(val.substring(1, val.length - 1))) val = parseInt(val.substring(1, val.length - 1));
+				if(!isNaN(val.substring(1, val.length - 1))) val = parseFloat(val.substring(1, val.length - 1));
 				finalCode += indent + blk.field[0]._ + " = " + val + " # Setzt die Variable " + blk.field[0]._ + " zu " + val + "\r\n";
 				break;
 			case "data_changevariableby":
@@ -814,20 +906,35 @@ async function runBlock(hat) {
 			case "debug_python":
 				finalCode += indent + blk.value[0].shadow[0].field[0]._ + "# Führt Python Code aus\r\n";
 				break;
-			case "pico_setledbrightness":
+			case "components_setledbrightness":
 				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + await solveNumber(blk.value[0]) + " * " + await solveNumber(blk.value[0]) + ") # Setzt die Helligkeit der LED auf Pin 0 zu " + await solveNumber(blk.value[0]) + "\r\n"
 				break;
-			case "pico_rgb_led":
+			case "components_rgb_led":
 				const rgb = hexToRgb(blk.value[3].shadow[0].field[0]._);
 				if(rgb == null) break;
 				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + rgb.r + " * " + rgb.r + ") # Setze die Farbe der RGB R LED\r\n"
 				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[1]) + ")).duty_u16(" + rgb.g + " * " + rgb.g + ") # Setze die Farbe der RGB G LED\r\n"
 				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[2]) + ")).duty_u16(" + rgb.b + " * " + rgb.b + ") # Setze die Farbe der RGB B LED\r\n"
 				break;
+			case "procedures_call":
+				finalCode += indent + blk.mutation[0].$.proccode.split(" ")[0] + "(";
+				if(blk.value) {
+					finalCode += (await Promise.all(blk.value.map(async v => {
+						let val = await solveString(v);
+						if(!isNaN(val.substring(1, val.length - 1))) val = parseFloat(val.substring(1, val.length - 1));
+						return val;
+					}))).join(", ");
+				}
+				finalCode += ")\r\n";
+				break;
+			case "procedures_return":
+				finalCode += indent + "return\r\n";
+				break;
 		}
 		// workspace.glowBlock(blk.$.id, false);
 		block = blk.next;
 	}
+	return finalCode;
 }
 
 function hexToRgb(hex) {
@@ -846,9 +953,9 @@ async function solveCondition(conditionBlock) {
 			// const v2 = conditionBlock.value[1].shadow[0].field[0]._;
 			// return v1 == v2;
 			let val = await solveString(conditionBlock.value[0]);
-			if(!isNaN(val.substring(1, val.length - 1))) val = parseInt(val.substring(1, val.length - 1));
+			if(!isNaN(val.substring(1, val.length - 1))) val = parseFloat(val.substring(1, val.length - 1));
 			let val2 = await solveString(conditionBlock.value[1]);
-			if(!isNaN(val2.substring(1, val2.length - 1))) val2 = parseInt(val2.substring(1, val2.length - 1));
+			if(!isNaN(val2.substring(1, val2.length - 1))) val2 = parseFloat(val2.substring(1, val2.length - 1));
 			return val + " == " + val2;
 		}
 		case "operator_and": {
@@ -878,19 +985,19 @@ async function solveCondition(conditionBlock) {
 			// return lists.find(v => v.name == conditionBlock.field[0]._).value.includes(await solveString(conditionBlock.value[0]));
 			return await solveString(conditionBlock.value[0]) + " in " + conditionBlock.field[0]._;
 		}
-		case "pico_ledstatus":
+		case "components_ledstatus":
 			// await writePort("machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.OUT).value()")
 			// await writePort("\r\n");
 			// await readPortReponse();
 			// return await readPortReponse() == 1;
 			return "machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.OUT).value() == 1"
-		case "pico_internalledstatus":
+		case "components_internalledstatus":
 			// await writePort("machine.Pin('LED').value()")
 			// await writePort("\r\n");
 			// await readPortReponse();
 			// return await readPortReponse() == 1;
 			return "machine.Pin(\"LED\").value() == 1"
-		case "pico_buttonstatus":
+		case "components_buttonstatus":
 			return "machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ", machine.Pin.IN, machine.Pin.PULL_DOWN).value() == 1"
 	}
 	return false;
@@ -920,6 +1027,9 @@ async function solveNumber(val) {
 			// const val = vars.find(v => v.name == blk.field[0]._) ? vars.find(v => v.name == blk.field[0]._).value : 0;
 			// console.log(val, typeof val, parseInt(val), typeof parseInt(val));
 			// return parseInt(val);
+			usedVars.push(blk.field[0]._)
+			return blk.field[0]._;
+		case "argument_reporter_string_number":
 			return blk.field[0]._;
 		case "data_listcontents":
 			// return parseInt(lists.find(v => v.name == blk.field[0]._).value.join(""))
@@ -931,11 +1041,11 @@ async function solveNumber(val) {
 		case "data_lengthoflist":
 			// return lists.find(v => v.name == blk.field[0]._).value.length;
 			return "len(" + blk.field[0]._ + ")";
-		case "pico_ledbrightness":
+		case "components_ledbrightness":
 			return "machine.PWM(machine.Pin(" + await solveNumber(conditionBlock.value[0]) + ")).duty_u16() / 255"
-		case "pico_potentiometer":
+		case "components_potentiometer":
 			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
-		case "pico_photoresistor":
+		case "components_photoresistor":
 			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
 	}
 }
@@ -955,6 +1065,9 @@ async function solveString(val) {
 			return "len(" + await solveString(blk.value[0]) + "\")";
 		case "data_variable":
 			// return vars.find(v => v.name == blk.field[0]._) ? vars.find(v => v.name == blk.field[0]._).value : "";
+			usedVars.push(blk.field[0]._)
+			return blk.field[0]._;
+		case "argument_reporter_string_number":
 			return blk.field[0]._;
 		case "data_listcontents":
 			// return lists.find(v => v.name == blk.field[0]._).value.join(" ")
