@@ -183,7 +183,7 @@ function start() {
 	})
 	document.querySelector("#tab-python").addEventListener("click", async () => {
 		await makeCode();
-		document.querySelector("#pythontab").getElementsByTagName("code")[0].innerText = imports.map(l => { return "import " + l + "\n" }).join("") + finalCode;
+		document.querySelector("#pythontab").getElementsByTagName("code")[0].innerText = imports.map(l => { return "import " + l + "\n" }).join("") + Object.values(funcs).map(l => { return l + "\n" }).join("") + finalCode;
 		document.querySelector("#blocklyDiv").style.display = "none";
 		document.querySelector("#pythontab").style.display = "";
 		document.querySelector("#tab-scratch").classList.remove("selected");
@@ -316,9 +316,14 @@ let finalCode = "import machine\r\nimport random\r\nimport time\r\n";
 let imports = [];
 let indent = "";
 let usedVars = [];
+let funcs = {};
 
 async function addImport(lib) {
 	if(!imports.includes(lib)) imports.push(lib);
+}
+
+async function addFunction(key, val) {
+	if(!Object.keys(funcs).includes(key)) funcs[key] = val;
 }
 
 async function run() {
@@ -326,6 +331,9 @@ async function run() {
 	await writePort("\r\x05")
 	for(const lib of imports) {
 		await writePort("import " + lib + "\r\n");
+	}
+	for(const func of Object.values(funcs)) {
+		await writePort(func + "\r\n");
 	}
 	await writePort(finalCode);
 	await writePort("\r\x04");
@@ -680,6 +688,25 @@ async function solveNumber(val) {
 			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
 		case "components_photoresistor":
 			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0))"
+		case "components_ultrasonic":
+			addImport("machine");
+			addImport("time");
+			addFunction("ultrasonic", `def ultra(triggerpin, echopin):
+	trigger = machine.Pin(triggerpin, machine.Pin.OUT)
+	echo = machine.Pin(echopin, machine.Pin.IN)
+	trigger.low()
+	time.sleep_us(2)
+	trigger.high()
+	time.sleep_us(100)
+	trigger.low()
+	while echo.value() == 0:
+		signaloff = time.ticks_us()
+	while echo.value() == 1:
+		signalon = time.ticks_us()
+	timepassed = signalon - signaloff
+	distance = int((timepassed * 0.0343) / 2)
+	return distance`)
+			return "ultra(" + await solveNumber(blk.value[0]) + ", " + await solveNumber(blk.value[1]) + ")";
 	}
 }
 
@@ -714,7 +741,7 @@ async function solveString(val) {
 			return "input(" + await solveString(blk.value[0]) + ")"
 	}
 	const num = await solveNumber(val);
-	return num == undefined ? "" : num;
+	return num == undefined ? "" : "str(" + num + ")";
 }
 
 // function randomNumber(min, max) { 
