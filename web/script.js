@@ -33,13 +33,13 @@ let wsServer;
 let ws;
 let task;
 let blockTags = {};
+let varTags = {};
 let answeredqs = 0;
 let correctqs = 0;
 
 async function loadNextLevel() {
 	currentLevel++;
 	taskIndex = -1;
-	blockTags = {};
 	// if(!TASKS[currentLevel]) {
 	// 	allowUnload = true;
 	// 	ipcRenderer.send("close");
@@ -73,6 +73,11 @@ function nextTask() {
 		document.querySelector("#pythontab").style.width = "40%";
 		document.querySelector("#pythontab").style.display = "flex";
 		document.querySelector("#code-in-py").style.display = "";
+		return;
+	}
+	if(task.instructions[taskIndex].type == "comment") {
+		workspace.getBlockById(blockTags[task.instructions[taskIndex].blockTag]).setCommentText(task.instructions[taskIndex].content);
+		nextTask();
 		return;
 	}
 	if(task.instructions[taskIndex].type == "dialog") {
@@ -310,19 +315,32 @@ function start() {
 		if(e instanceof Blockly.Events.Create || e instanceof Blockly.Events.Delete || e instanceof Blockly.Events.Change || e instanceof Blockly.Events.Move || e instanceof Blockly.Events.VarDelete || e instanceof Blockly.Events.VarRename) {
 			if(running) cancel = true;
 		}
+		console.log(e);
 		if(e instanceof Blockly.Events.EndBlockDrag) {
 			if(!workspace.getBlockById(e.blockId)) return;
 			if(workspace.getBlockById(e.blockId).startHat_) return;
 			const INSTRUCTION = task.instructions[taskIndex];
 			let allow = true;
 			if(INSTRUCTION.type == "changeblock") allow = false;
+			if(INSTRUCTION.type == "varcreate") allow = false;
 			if(INSTRUCTION.block && workspace.getBlockById(e.blockId).type !== INSTRUCTION.block) {
+				console.log(INSTRUCTION.block + " wanted but " + workspace.getBlockById(e.blockId).type + " given");
 				allow = false;
 			}
 			if(INSTRUCTION.previousBlock && workspace.getBlockById(e.blockId).getPreviousBlock().type !== INSTRUCTION.previousBlock) {
+				console.log(INSTRUCTION.previousBlock + " wanted as previous block but " + workspace.getBlockById(e.blockId).getPreviousBlock().type + " given");
 				allow = false;
 			}
 			if(INSTRUCTION.parentBlock && workspace.getBlockById(e.blockId).getParent().type !== INSTRUCTION.parentBlock) {
+				console.log(INSTRUCTION.parentBlock + " wanted as parent block but " + workspace.getBlockById(e.blockId).getParent().type + " given");
+				allow = false;
+			}
+			if(INSTRUCTION.parentTag && blockTags[INSTRUCTION.parentTag] != workspace.getBlockById(e.blockId).getParent().id) {
+				console.log(blockTags[INSTRUCTION.parentTag] + " wanted as parent tag but " + workspace.getBlockById(e.blockId).getParent().id + " given");
+				allow = false;
+			}
+			if(INSTRUCTION.previousTag && blockTags[INSTRUCTION.previousTag] != workspace.getBlockById(e.blockId).getPreviousBlock().id) {
+				console.log(blockTags[INSTRUCTION.previousTag] + " wanted as previous tag but " + workspace.getBlockById(e.blockId).getPreviousBlock().id + " given");
 				allow = false;
 			}
 			if(INSTRUCTION.parentStack) {
@@ -334,6 +352,29 @@ function start() {
 					}
 				}
 			}
+			if(INSTRUCTION.type == "varblock") {
+				if(workspace.getBlockById(e.blockId).type != "data_variable") {
+					allow = false;
+				}	
+				if(varTags[INSTRUCTION.varTag] != workspace.getBlockById(e.blockId).getVars()[0]) {
+					allow = false;
+				}
+			}
+			if(INSTRUCTION.type == "customblockcall") {
+				if(workspace.getBlockById(e.blockId).type != "procedures_call") {
+					allow = false;
+				}
+			}
+			if(INSTRUCTION.type == "customblockarg") {
+				if(workspace.getBlockById(e.blockId).type != "argument_reporter_string_number") {
+					allow = false;
+				}
+			}
+			if(INSTRUCTION.type == "move") {
+				if(e.blockId != blockTags[INSTRUCTION.fromBlockTag]) return;
+				if(e.newParentId != blockTags[INSTRUCTION.toBlockTag]) return;
+				console.log("Passed move test!");
+			}
 			if(allow) {
 				if(INSTRUCTION.blockTag) {
 					blockTags[INSTRUCTION.blockTag] = e.blockId;
@@ -341,6 +382,124 @@ function start() {
 				nextTask();
 			} else {
 				workspace.getBlockById(e.blockId).dispose(true, true);
+				document.querySelector("#instruction").animate([{
+					color: "white",
+					fontSize: "1.1rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "white",
+					fontSize: "1.1rem"
+				}],
+				{
+					duration: 1000
+				})
+			}
+		}
+		if(e instanceof Blockly.Events.Delete) {
+			const INSTRUCTION = task.instructions[taskIndex];
+			if(INSTRUCTION.type != "delete") return;
+			console.log(e.ids.find((e) => e == blockTags[INSTRUCTION.targetBlockTag]), "IDS");
+			if(e.ids.find((e) => e == blockTags[INSTRUCTION.targetBlockTag])) nextTask();
+		}
+		if(e instanceof Blockly.Events.Create) {
+			if(!workspace.getBlockById(e.blockId)) return;
+			const INSTRUCTION = task.instructions[taskIndex];
+			let allow = true;
+			if(INSTRUCTION.type != "customblock") return;
+			if(workspace.getBlockById(e.blockId).type != "procedures_definition") {
+				allow = false;
+			}
+			if(workspace.getBlockById(e.blockId).childBlocks_[0].procCode_.split("").filter((e) => e == '%').length != INSTRUCTION.args) {
+				allow = false;
+			}
+			if(allow) {
+				if(INSTRUCTION.blockTag) {
+					blockTags[INSTRUCTION.blockTag] = e.blockId;
+				}
+				nextTask();
+			} else {
+				workspace.getBlockById(e.blockId).dispose(true, true);
+				document.querySelector("#instruction").animate([{
+					color: "white",
+					fontSize: "1.1rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "white",
+					fontSize: "1.1rem"
+				}],
+				{
+					duration: 1000
+				})
+			}
+		}
+		if(e instanceof Blockly.Events.VarDelete) {
+			const INSTRUCTION = task.instructions[taskIndex];
+			if(INSTRUCTION.type != "vardelete") return;
+			let allow = true;
+			if(e.varId != varTags[INSTRUCTION.targetVarTag]) allow = false;
+			if(allow) {
+				nextTask();
+			} else {
+				document.querySelector("#instruction").animate([{
+					color: "white",
+					fontSize: "1.1rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "white",
+					fontSize: "1.1rem"
+				}],
+				{
+					duration: 1000
+				})
+			}
+		}
+		if(e instanceof Blockly.Events.VarCreate) {
+			const INSTRUCTION = task.instructions[taskIndex];
+			if(INSTRUCTION.type != "varcreate") return;
+			let allow = true;
+			if(e.varType != INSTRUCTION.vartype) allow = false;
+			if(allow) {
+				if(INSTRUCTION.varTag) {
+					varTags[INSTRUCTION.varTag] = e.varId;
+				}
+				nextTask();
+			} else {
 				document.querySelector("#instruction").animate([{
 					color: "white",
 					fontSize: "1.1rem"
@@ -378,7 +537,7 @@ function start() {
 				console.warn("Block tag " + INSTRUCTION.targetBlockTag + " doesn't exist");
 				return;
 			}
-			if(workspace.getBlockById(e.blockId).getParent().id != blockTags[INSTRUCTION.targetBlockTag]) {
+			if(workspace.getBlockById(e.blockId).getParent().id != blockTags[INSTRUCTION.targetBlockTag] && e.blockId != blockTags[INSTRUCTION.targetBlockTag]) {
 				console.log(workspace.getBlockById(e.blockId).getParent().id + " expected but got " + blockTags[INSTRUCTION.targetBlockTag]);
 				return;
 			}
@@ -386,7 +545,7 @@ function start() {
 				console.log(e.name + " expected but got " + INSTRUCTION.name);
 				return;
 			}
-			if(e.newValue == INSTRUCTION.to) {
+			if(e.newValue == INSTRUCTION.to || (INSTRUCTION.valueVarTag && e.newValue == varTags[INSTRUCTION.valueVarTag]) || (INSTRUCTION.valueBlockTag && e.newValue == blockTags[INSTRUCTION.valueBlockTag])) {
 				nextTask();
 			}
 		}
@@ -472,11 +631,15 @@ function start() {
 				if(task.noclear) {
 					if(toXml().trim().replaceAll("\n", "").replaceAll("\r", "").replaceAll("  ", "") == startXML.trim().replaceAll("\n", "").replaceAll("\r", "").replaceAll("  ", "")) {
 						fromXml(task.startxml);
+						varTags = task.varTags
+						blockTags = task.blockTags
 					}
 					taskXML = toXml()
 				} else {
 					fromXml(startXML);
 					taskXML = startXML;
+					blockTags = {};
+					varTags = {};
 				}
 				await new Dialog("#loading-dialog").hide();
 				ws.send("leaderboard");
@@ -882,7 +1045,7 @@ async function runBlock(hat) {
 				// val = val + await solveNumber(blk.value[0]);
 				// vars.find(v => v.name == blk.field[0]._).value = val + "";
 				usedVars.push(blk.field[0]._)
-				finalCode += indent + blk.field[0]._ + " += " + await solveNumber(blk.value[0]) + " # Ändert den Wert der Variable " + blk.field[0]._ + " um " + val + "\r\n";
+				finalCode += indent + blk.field[0]._ + " += " + await solveNumber(blk.value[0]) + " # Ändert den Wert der Variable " + blk.field[0]._ + " um " + await solveNumber(blk.value[0]) + "\r\n";
 				break;
 			case "data_addtolist":
 				// lists.find(v => v.name == blk.field[0]._).value.push(await solveString(blk.value[0]))
@@ -914,7 +1077,7 @@ async function runBlock(hat) {
 				finalCode += indent + blk.value[0].shadow[0].field[0]._ + "# Führt Python Code aus\r\n";
 				break;
 			case "components_setledbrightness":
-				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + await solveNumber(blk.value[0]) + " * " + await solveNumber(blk.value[0]) + ") # Setzt die Helligkeit der LED auf Pin 0 zu " + await solveNumber(blk.value[0]) + "\r\n"
+				finalCode += indent + "machine.PWM(machine.Pin(" + await solveNumber(blk.value[0]) + ")).duty_u16(" + await solveNumber(blk.value[1]) + " * " + await solveNumber(blk.value[1]) + ") # Setzt die Helligkeit der LED auf Pin 0 zu " + await solveNumber(blk.value[1]) + "\r\n"
 				break;
 			case "components_rgb_led":
 				const rgb = hexToRgb(blk.value[3].shadow[0].field[0]._);
