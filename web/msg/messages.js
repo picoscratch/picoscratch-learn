@@ -366,6 +366,7 @@ Blockly.Msg.BUTTON_STATUS = "%1 %2 Is button %3 pressed down?";
 Blockly.Msg.POTENTIOMETER = "%1 %2 Potentiometer %3 value";
 Blockly.Msg.POTENTIOMETER = "Photoresistor %1 light level";
 Blockly.Msg.RGBLED = "%1 %2 Set RGB LED R: %3 G: %4 B: %5 color to %6";
+Blockly.Msg.ULTRASONIC = "Ultrasonic Trigger: %1 Echo: %2 Distance reading";
 
 // Debug blocks
 Blockly.Msg.PRINT = "Print %1 to the console";
