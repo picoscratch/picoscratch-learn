@@ -94,11 +94,13 @@
 		<div class="dialog" id="new-block-dialog" style="display: none;">
 			<h2 data-lang="new-block-title"></h2>
 			<div id="newBlockWorkspace"></div>
-			<button id="text_number" onclick="addTextNumber()">Add text/number input</button>
-			<button id="boolean" onclick="addBoolean()">Add boolean input</button>
-			<button id="label" onclick="addLabel()">Add label</button>
-			<button id="cancelButton" onclick="cancelBlockCreation()">cancel</button>
-			<button id="okButton" onclick="applyMutation()">ok</button>
+			<div style="display: flex; gap: 10px;">
+				<button id="cancelButton" style="font-size: 1.5rem; color: white;" data-lang="new-block-cancel" onclick="cancelBlockCreation()"></button>
+				<button id="text_number" style="font-size: 1.5rem; color: white;" data-lang="new-block-add-input" onclick="addTextNumber()"></button>
+				<!-- <button id="boolean" onclick="addBoolean()">Add boolean input</button>
+				<button id="label" onclick="addLabel()">Add label</button> -->
+				<button id="okButton" style="font-size: 1.5rem; color: white;" data-lang="new-block-create" onclick="applyMutation()"></button>
+			</div>
 		</div>
 	</div>
 	<div id="topbar" style="display: flex; gap: 5px; align-items: center;">
