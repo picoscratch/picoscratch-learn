@@ -42,7 +42,8 @@
 		"quizpercentage": "Quiz %",
 		"kick-dialog-title": "You have been kicked!",
 		"kick-dialog-text": "Your teacher has kicked you from the game!",
-		"kick-dialog-button": "Ok"
+		"kick-dialog-button": "Ok",
+		"new-block-title": "New Block"
 	},
 	"de": {
 		"start": "Start",
@@ -87,6 +88,7 @@
 		"quizpercentage": "Quiz %",
 		"kick-dialog-title": "Du wurdest rausgeworfen!",
 		"kick-dialog-text": "Dein Lehrer hat dich vom Spiel rausgeworfen!",
-		"kick-dialog-button": "Ok"
+		"kick-dialog-button": "Ok",
+		"new-block-title": "Neuer Block"
 	}
 }
