@@ -97,6 +97,10 @@ input {
 	fill: white;
 }
 
+.valueReportBox {
+	color: black;
+}
+
 h1 {
 	font-weight: normal;
 	font-size: 140%;

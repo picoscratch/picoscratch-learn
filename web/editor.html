@@ -11,7 +11,7 @@
 	<script src="msg/scratch_msgs.js"></script>
 	<script src="blocks_compressed.js"></script>
 	<script src="blocks_compressed_vertical.js"></script>
-	<script src="script.js"></script>
+	<script src="js/script.js" type="module" defer></script>
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="dialog.css">
 	<link rel="stylesheet" href="spinner.css">
@@ -19,7 +19,7 @@
 	<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"></script>
 	<link rel="shortcut icon" href="../picoscratch.ico" type="image/x-icon">
 </head>
-<body onload="start()">
+<body>
 	<div id="darken" style="z-index: 999; display: none;">
 		<div class="dialog" id="language-dialog" style="display: none;">
 			<h2 data-lang="dialog-language-title"></h2>
@@ -95,11 +95,11 @@
 			<h2 data-lang="new-block-title"></h2>
 			<div id="newBlockWorkspace"></div>
 			<div style="display: flex; gap: 10px;">
-				<button id="cancelButton" style="font-size: 1.5rem; color: white;" data-lang="new-block-cancel" onclick="cancelBlockCreation()"></button>
-				<button id="text_number" style="font-size: 1.5rem; color: white;" data-lang="new-block-add-input" onclick="addTextNumber()"></button>
+				<button id="cancelBlockCreation" style="font-size: 1.5rem; color: white;" data-lang="new-block-cancel"></button>
+				<button id="addBlockInput" style="font-size: 1.5rem; color: white;" data-lang="new-block-add-input"></button>
 				<!-- <button id="boolean" onclick="addBoolean()">Add boolean input</button>
 				<button id="label" onclick="addLabel()">Add label</button> -->
-				<button id="okButton" style="font-size: 1.5rem; color: white;" data-lang="new-block-create" onclick="applyMutation()"></button>
+				<button id="createBlock" style="font-size: 1.5rem; color: white;" data-lang="new-block-create"></button>
 			</div>
 		</div>
 	</div>
