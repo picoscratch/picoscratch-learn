@@ -48,11 +48,6 @@
 			<h2 data-lang="end-dialog-title"></h2>
 			<p data-lang="end-dialog-text"></p>
 		</div>
-		<div class="dialog" id="done-dialog" style="display: none;">
-			<h2 data-lang="done-dialog-title"></h2>
-			<p data-lang="done-dialog-text">.</p>
-			<table id="leaderboard2"></table>
-		</div>
 		<div class="dialog" id="loading-dialog" style="display: none;">
 			<h2 data-lang="loading-dialog-title"></h2>
 			<div class="progress-ring spinner-indeter" style="margin-top: 10px">
@@ -63,11 +58,11 @@
 			<p style="margin-bottom: 5px;" data-lang="loading-dialog-text"></p>
 			<p id="status" style="color: #acacac; margin: 0; margin-bottom: 10px;" data-lang="connecting-to-server"></p>
 		</div>
-		<div class="dialog" id="leaderboard-dialog" style="display: none;">
+		<!-- <div class="dialog" id="leaderboard-dialog" style="display: none;">
 			<h2 data-lang="leaderboard-dialog-title"></h2>
 			<table id="leaderboard"></table>
 			<button id="exit-leaderboard" style="font-size: 1.4rem;" data-lang="leaderboard-dialog-exit-button"></button>
-		</div>
+		</div> -->
 		<div class="dialog" id="custom-dialog" style="display: none;">
 			<h2 id="custom-dialog-title"></h2>
 			<p id="custom-dialog-text" style="text-align: center;"></p>
@@ -103,58 +98,237 @@
 			</div>
 		</div>
 	</div>
-	<div id="topbar" style="display: flex; gap: 5px; align-items: center;">
-		<button id="greenflag" disabled>
-			<img src="media/green-flag.svg" alt="" width="50px">
-		</button>
-		<!-- <button id="stop">
-			<img src="media/icons/control_stop.svg" alt="" width="50px">
-		</button> -->
-		<!-- <button id="save">
-			<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6.75 3h-1A2.75 2.75 0 0 0 3 5.75v12.5A2.75 2.75 0 0 0 5.75 21H6v-6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 15v6h.25A2.75 2.75 0 0 0 21 18.25V8.286a3.25 3.25 0 0 0-.952-2.299l-2.035-2.035A3.25 3.25 0 0 0 15.75 3v4.5a2.25 2.25 0 0 1-2.25 2.25H9A2.25 2.25 0 0 1 6.75 7.5V3Z" fill="#6060F8"/><path d="M14.25 3v4.5a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75V3h6ZM16.5 21v-6a.75.75 0 0 0-.75-.75h-7.5a.75.75 0 0 0-.75.75v6h9Z" fill="#5050F5"/></svg>
-		</button>
-		<button id="load">
-			<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 6.25A2.25 2.25 0 0 1 4.25 4h3.956a2.25 2.25 0 0 1 1.438.52l2.381 1.98h5.725A2.25 2.25 0 0 1 20 8.75v.752H6.422a2.25 2.25 0 0 0-2.183 1.705l-1.923 7.7c.043-.171 0 .005 0 0a2.24 2.24 0 0 1-.32-1.158L2 6.25Z" fill="#C3C340"/><path d="M3.745 19.379A.5.5 0 0 0 4.23 20h14.24a1.75 1.75 0 0 0 1.698-1.326l1.763-7.05a.5.5 0 0 0-.485-.622H6.422a.75.75 0 0 0-.728.568L3.745 19.38Z" fill="#F5F550"/></svg>
-		</button> -->
-		<button id="reset">
-			<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.207 2.543a1 1 0 0 1 0 1.414L5.414 5.75h7.836a8 8 0 1 1-8 8 1 1 0 1 1 2 0 6 6 0 1 0 6-6H5.414l1.793 1.793a1 1 0 0 1-1.414 1.414l-3.5-3.5a1 1 0 0 1 0-1.414l3.5-3.5a1 1 0 0 1 1.414 0Z" fill="#C34040"/></svg>
-		</button>
-		<button id="next" style="display: none;">
-			<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m8.5 16.586-3.793-3.793a1 1 0 0 0-1.414 1.414l4.5 4.5a1 1 0 0 0 1.414 0l11-11a1 1 0 0 0-1.414-1.414L8.5 16.586Z" fill="#4040C3"/></svg>
-		</button>
-		<div id="task" style="margin-left: auto; font-size: 1.1rem;">
-			<div id="taskname" style="text-align: right; font-size: 1.4rem;"></div>
-			<div id="instruction"></div>
-		</div>
-	</div>
-	<div id="tabswitcher">
-		<div class="tab selected" id="tab-scratch">Scratch</div>
-		<div class="tab" id="tab-python">Python</div>
-		<div style="margin-left: auto;">
-			<button style="background-color: #0e0e0e; margin: 0;" id="pico-w">
-				<svg id="pico-w0" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.96 18.568a1.501 1.501 0 1 0 2.122-2.123 1.501 1.501 0 0 0-2.123 2.123Z" fill="#fff"/></svg>
-				<svg id="pico-w1" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.938 16.446a1.501 1.501 0 1 1 2.123 2.123 1.501 1.501 0 0 1-2.123-2.123Zm-2.603-2.742a5.233 5.233 0 0 1 7.4 0c.46.461.838 1.025 1.101 1.625a1 1 0 0 1-1.832.803 3.356 3.356 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.255 3.255 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.613Z" fill="#fff"/></svg>
-				<svg id="pico-w2" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.96 16.44a1.501 1.501 0 1 1 2.122 2.122 1.501 1.501 0 0 1-2.123-2.122Zm-2.604-2.742a5.233 5.233 0 0 1 7.4 0c.46.461.838 1.025 1.101 1.625a1 1 0 1 1-1.832.803 3.358 3.358 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.254 3.254 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.613ZM6.31 10.707a8.128 8.128 0 0 1 11.495 0 8.353 8.353 0 0 1 1.503 2.085 1 1 0 0 1-1.78.91 6.357 6.357 0 0 0-1.137-1.581 6.128 6.128 0 0 0-9.8 1.562 1 1 0 1 1-1.785-.902 8.08 8.08 0 0 1 1.504-2.074Z" fill="#fff"/></svg>
-				<svg id="pico-w3" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.784 10.708a8.35 8.35 0 0 1 1.504 2.085 1 1 0 0 1-1.781.91 6.353 6.353 0 0 0-1.137-1.58 6.128 6.128 0 0 0-9.8 1.562 1 1 0 0 1-1.784-.903 8.128 8.128 0 0 1 12.998-2.074ZM15.735 13.7c.46.46.838 1.024 1.101 1.624a1 1 0 1 1-1.832.803 3.36 3.36 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.257 3.257 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.612 5.233 5.233 0 0 1 7.4 0Zm4.684-5.401c.508.508.987 1.087 1.404 1.691a1 1 0 0 1-1.646 1.136c-.35-.506-.752-.993-1.172-1.413-3.872-3.872-10.15-3.872-14.023 0-.4.399-.797.886-1.16 1.41a1 1 0 0 1-1.644-1.14c.428-.618.9-1.195 1.39-1.684 4.653-4.654 12.198-4.654 16.851 0Zm-7.358 8.142a1.501 1.501 0 1 1-2.122 2.123 1.501 1.501 0 0 1 2.122-2.123Z" fill="#fff"/></svg>
+	<div id="editor" style="display: none;">
+		<div id="topbar" style="display: flex; gap: 5px; align-items: center;">
+			<button id="greenflag" disabled>
+				<img src="media/green-flag.svg" alt="" width="50px">
 			</button>
-			<button style="margin: 0;" id="pico"><svg width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12.858 14.273 7.434 7.434a1 1 0 0 0 1.414-1.414l-17.999-18a1 1 0 1 0-1.414 1.414L5.39 6.804c-.643.429-1.254.927-1.821 1.495a12.382 12.382 0 0 0-1.39 1.683 1 1 0 0 0 1.644 1.14c.363-.524.761-1.01 1.16-1.41a9.94 9.94 0 0 1 1.855-1.46L7.99 9.405a8.14 8.14 0 0 0-3.203 3.377 1 1 0 0 0 1.784.903 6.08 6.08 0 0 1 1.133-1.563 6.116 6.116 0 0 1 1.77-1.234l1.407 1.407A5.208 5.208 0 0 0 8.336 13.7a5.25 5.25 0 0 0-1.09 1.612 1 1 0 0 0 1.832.802c.167-.381.394-.722.672-1a3.23 3.23 0 0 1 3.108-.841Zm-1.332-5.93 2.228 2.229a6.1 6.1 0 0 1 2.616 1.55c.444.444.837.995 1.137 1.582a1 1 0 1 0 1.78-.911 8.353 8.353 0 0 0-1.503-2.085 8.108 8.108 0 0 0-6.258-2.365ZM8.51 5.327l1.651 1.651a9.904 9.904 0 0 1 10.016 4.148 1 1 0 1 0 1.646-1.136A11.912 11.912 0 0 0 8.51 5.327Zm4.552 11.114a1.501 1.501 0 1 1-2.123 2.123 1.501 1.501 0 0 1 2.123-2.123Z" fill="#fff"/></svg></button>
+			<!-- <button id="stop">
+				<img src="media/icons/control_stop.svg" alt="" width="50px">
+			</button> -->
+			<!-- <button id="save">
+				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6.75 3h-1A2.75 2.75 0 0 0 3 5.75v12.5A2.75 2.75 0 0 0 5.75 21H6v-6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 15v6h.25A2.75 2.75 0 0 0 21 18.25V8.286a3.25 3.25 0 0 0-.952-2.299l-2.035-2.035A3.25 3.25 0 0 0 15.75 3v4.5a2.25 2.25 0 0 1-2.25 2.25H9A2.25 2.25 0 0 1 6.75 7.5V3Z" fill="#6060F8"/><path d="M14.25 3v4.5a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75V3h6ZM16.5 21v-6a.75.75 0 0 0-.75-.75h-7.5a.75.75 0 0 0-.75.75v6h9Z" fill="#5050F5"/></svg>
+			</button>
+			<button id="load">
+				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 6.25A2.25 2.25 0 0 1 4.25 4h3.956a2.25 2.25 0 0 1 1.438.52l2.381 1.98h5.725A2.25 2.25 0 0 1 20 8.75v.752H6.422a2.25 2.25 0 0 0-2.183 1.705l-1.923 7.7c.043-.171 0 .005 0 0a2.24 2.24 0 0 1-.32-1.158L2 6.25Z" fill="#C3C340"/><path d="M3.745 19.379A.5.5 0 0 0 4.23 20h14.24a1.75 1.75 0 0 0 1.698-1.326l1.763-7.05a.5.5 0 0 0-.485-.622H6.422a.75.75 0 0 0-.728.568L3.745 19.38Z" fill="#F5F550"/></svg>
+			</button> -->
+			<button id="reset">
+				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.207 2.543a1 1 0 0 1 0 1.414L5.414 5.75h7.836a8 8 0 1 1-8 8 1 1 0 1 1 2 0 6 6 0 1 0 6-6H5.414l1.793 1.793a1 1 0 0 1-1.414 1.414l-3.5-3.5a1 1 0 0 1 0-1.414l3.5-3.5a1 1 0 0 1 1.414 0Z" fill="#C34040"/></svg>
+			</button>
+			<button id="next" style="display: none;">
+				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m8.5 16.586-3.793-3.793a1 1 0 0 0-1.414 1.414l4.5 4.5a1 1 0 0 0 1.414 0l11-11a1 1 0 0 0-1.414-1.414L8.5 16.586Z" fill="#4040C3"/></svg>
+			</button>
+			<div id="task" style="margin-left: auto; font-size: 1.1rem;">
+				<div id="taskname" style="text-align: right; font-size: 1.4rem;"></div>
+				<div id="instruction"></div>
+			</div>
 		</div>
-		<select class="tab" id="tab-language" style="color: white">
-			<option value="en">English</option>
-			<option value="de">Deutsch</option>
-		</select>
-	</div>
-	<div id="tabs" style="display: flex; gap: 10px;">
-		<div id="blocklyDiv"></div>
-		<pre id="pythontab" style="display: none; width: 100%; height: 65%; flex-direction: column; gap: 5px;">
-			<span style="display: none;" id="code-in-py">Dies ist dein Code aber in der Programmiersprache Python:</span>
-			<code class="language-python" style="width: 100%; height: 100%;"></code>
-		</pre>
-	</div>
+		<div id="tabswitcher">
+			<div class="tab selected" id="tab-scratch">Scratch</div>
+			<div class="tab" id="tab-python">Python</div>
+			<div style="margin-left: auto;">
+				<button style="background-color: #0e0e0e; margin: 0;" id="pico-w">
+					<svg id="pico-w0" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.96 18.568a1.501 1.501 0 1 0 2.122-2.123 1.501 1.501 0 0 0-2.123 2.123Z" fill="#fff"/></svg>
+					<svg id="pico-w1" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.938 16.446a1.501 1.501 0 1 1 2.123 2.123 1.501 1.501 0 0 1-2.123-2.123Zm-2.603-2.742a5.233 5.233 0 0 1 7.4 0c.46.461.838 1.025 1.101 1.625a1 1 0 0 1-1.832.803 3.356 3.356 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.255 3.255 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.613Z" fill="#fff"/></svg>
+					<svg id="pico-w2" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.96 16.44a1.501 1.501 0 1 1 2.122 2.122 1.501 1.501 0 0 1-2.123-2.122Zm-2.604-2.742a5.233 5.233 0 0 1 7.4 0c.46.461.838 1.025 1.101 1.625a1 1 0 1 1-1.832.803 3.358 3.358 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.254 3.254 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.613ZM6.31 10.707a8.128 8.128 0 0 1 11.495 0 8.353 8.353 0 0 1 1.503 2.085 1 1 0 0 1-1.78.91 6.357 6.357 0 0 0-1.137-1.581 6.128 6.128 0 0 0-9.8 1.562 1 1 0 1 1-1.785-.902 8.08 8.08 0 0 1 1.504-2.074Z" fill="#fff"/></svg>
+					<svg id="pico-w3" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.784 10.708a8.35 8.35 0 0 1 1.504 2.085 1 1 0 0 1-1.781.91 6.353 6.353 0 0 0-1.137-1.58 6.128 6.128 0 0 0-9.8 1.562 1 1 0 0 1-1.784-.903 8.128 8.128 0 0 1 12.998-2.074ZM15.735 13.7c.46.46.838 1.024 1.101 1.624a1 1 0 1 1-1.832.803 3.36 3.36 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.257 3.257 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.612 5.233 5.233 0 0 1 7.4 0Zm4.684-5.401c.508.508.987 1.087 1.404 1.691a1 1 0 0 1-1.646 1.136c-.35-.506-.752-.993-1.172-1.413-3.872-3.872-10.15-3.872-14.023 0-.4.399-.797.886-1.16 1.41a1 1 0 0 1-1.644-1.14c.428-.618.9-1.195 1.39-1.684 4.653-4.654 12.198-4.654 16.851 0Zm-7.358 8.142a1.501 1.501 0 1 1-2.122 2.123 1.501 1.501 0 0 1 2.122-2.123Z" fill="#fff"/></svg>
+				</button>
+				<button style="margin: 0;" id="pico"><svg width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12.858 14.273 7.434 7.434a1 1 0 0 0 1.414-1.414l-17.999-18a1 1 0 1 0-1.414 1.414L5.39 6.804c-.643.429-1.254.927-1.821 1.495a12.382 12.382 0 0 0-1.39 1.683 1 1 0 0 0 1.644 1.14c.363-.524.761-1.01 1.16-1.41a9.94 9.94 0 0 1 1.855-1.46L7.99 9.405a8.14 8.14 0 0 0-3.203 3.377 1 1 0 0 0 1.784.903 6.08 6.08 0 0 1 1.133-1.563 6.116 6.116 0 0 1 1.77-1.234l1.407 1.407A5.208 5.208 0 0 0 8.336 13.7a5.25 5.25 0 0 0-1.09 1.612 1 1 0 0 0 1.832.802c.167-.381.394-.722.672-1a3.23 3.23 0 0 1 3.108-.841Zm-1.332-5.93 2.228 2.229a6.1 6.1 0 0 1 2.616 1.55c.444.444.837.995 1.137 1.582a1 1 0 1 0 1.78-.911 8.353 8.353 0 0 0-1.503-2.085 8.108 8.108 0 0 0-6.258-2.365ZM8.51 5.327l1.651 1.651a9.904 9.904 0 0 1 10.016 4.148 1 1 0 1 0 1.646-1.136A11.912 11.912 0 0 0 8.51 5.327Zm4.552 11.114a1.501 1.501 0 1 1-2.123 2.123 1.501 1.501 0 0 1 2.123-2.123Z" fill="#fff"/></svg></button>
+			</div>
+			<select class="tab" id="tab-language" style="color: white">
+				<option value="en">English</option>
+				<option value="de">Deutsch</option>
+			</select>
+		</div>
+		<div id="tabs" style="display: flex; gap: 10px;">
+			<div id="blocklyDiv"></div>
+			<pre id="pythontab" style="display: none; width: 100%; height: 65%; flex-direction: column; gap: 5px;">
+				<span style="display: none;" id="code-in-py">Dies ist dein Code aber in der Programmiersprache Python:</span>
+				<code class="language-python" style="width: 100%; height: 100%;"></code>
+			</pre>
+		</div>
+		
+		<pre id="console">
 	
-	<pre id="console">
+		</pre>
+		<input type="text" id="console_input" data-lang-placeholder="send-to-console">
+	</div>
+	<div id="levelpath">
+		<svg style="display: none;" id="btnComplete" width="70" height="71" viewBox="0 0 70 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<ellipse cx="35" cy="38.5" rx="35" ry="32.5" fill="#E69F00"/>
+			<ellipse class="moving" cx="35" cy="32.5" rx="35" ry="32.5" fill="#FFC800"/>
+			<g class="moving" clip-path="url(#clip0_806_120)">
+				<path d="M41.9026 10.6048C43.0995 9.35808 42.4237 7.30687 40.7031 7.15872C39.4853 7.05385 38.2474 7 36.9931 7C18.7715 7 4 18.366 4 32.3868C4 36.2679 5.1319 39.9457 7.15553 43.2352C7.85021 44.3644 9.41077 44.4463 10.3287 43.4903L41.9026 10.6048Z" fill="#FFE700"/>
+				<path d="M64.9985 20.8843C63.0714 17.6578 59.1563 14.6204 56.2814 12.7771C55.1962 12.0814 53.7962 12.2889 52.8932 13.2094C42.2003 24.1103 24.3022 42.3117 17.3411 49.1778C16.1481 50.3546 16.1742 52.3111 17.5614 53.2504C21.9658 56.2325 27.1527 57.54 30.0015 57.8971C30.7766 57.9944 31.5299 57.6961 32.0873 57.148C42.5009 46.9057 59.5831 29.0647 64.5791 23.7279C65.3122 22.9451 65.5487 21.8054 64.9985 20.8843Z" fill="#FFE700"/>
+			</g>
+			<path class="moving" fill-rule="evenodd" clip-rule="evenodd" d="M30.3754 34.9063L25.1781 29.6975C23.5889 28.1048 21.0122 28.1048 19.4229 29.6975C17.8336 31.2903 17.8336 33.8727 19.4229 35.4655L27.3584 43.4187C28.186 44.2481 29.2813 44.6456 30.3656 44.6112C31.456 44.6509 32.5593 44.2535 33.3917 43.4193L47.6991 29.0802C49.2883 27.4875 49.2883 24.9051 47.6991 23.3122C46.1099 21.7194 43.5332 21.7194 41.9439 23.3122L30.3754 34.9063Z" fill="#CD7900"/>
+			<defs>
+				<clipPath id="clip0_806_120">
+					<rect width="62" height="51" fill="white" transform="translate(4 7)"/>
+				</clipPath>
+			</defs>
+		</svg>
+		
+		<svg style="display: none;" id="btnStart" width="70" height="71" viewBox="0 0 70 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<ellipse cx="35" cy="38.5" rx="35" ry="32.5" fill="#3030A0"/>
+			<ellipse class="moving" cx="35" cy="32.5" rx="35" ry="32.5" fill="#4040C3"/>
+			<g class="moving" clip-path="url(#clip0_808_164)">
+				<path d="M41.9026 10.6048C43.0995 9.35808 42.4237 7.30687 40.7031 7.15872C39.4853 7.05385 38.2474 7 36.9931 7C18.7715 7 4 18.366 4 32.3868C4 36.2679 5.1319 39.9457 7.15553 43.2352C7.85021 44.3644 9.41077 44.4463 10.3287 43.4903L41.9026 10.6048Z" fill="#5050F5"/>
+				<path d="M64.9985 20.8843C63.0714 17.6578 59.1563 14.6204 56.2814 12.7771C55.1962 12.0814 53.7962 12.2889 52.8932 13.2094C42.2003 24.1103 24.3022 42.3117 17.3411 49.1778C16.1481 50.3545 16.1742 52.3111 17.5614 53.2503C21.9658 56.2325 27.1527 57.54 30.0015 57.8971C30.7766 57.9943 31.5299 57.6961 32.0873 57.148C42.5009 46.9057 59.5831 29.0647 64.5791 23.7279C65.3122 22.945 65.5487 21.8054 64.9985 20.8843Z" fill="#5050F5"/>
+			</g>
+			<path class="moving" d="M21.1666 20.669C21.1666 17.5395 24.5143 15.5503 27.2625 17.0445L49.9261 29.3755C52.7971 30.9393 52.7971 35.0607 49.9261 36.6227L27.2625 48.9537C24.5143 50.4497 21.1666 48.4587 21.1666 45.331V20.669Z" fill="white"/>
+			<defs>
+				<clipPath id="clip0_808_164">
+					<rect width="62" height="51" fill="white" transform="translate(4 7)"/>
+				</clipPath>
+			</defs>
+		</svg>
+		
+		<svg style="display: none;" id="btnLocked" width="70" height="71" viewBox="0 0 70 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<ellipse cx="35" cy="38.5" rx="35" ry="32.5" fill="#B7B7B7"/>
+			<ellipse class="moving" cx="35" cy="32.5" rx="35" ry="32.5" fill="#E5E5E5"/>
+			<path class="moving" fill-rule="evenodd" clip-rule="evenodd" d="M34.3217 14.4068C28.8035 14.4068 24.3301 18.6222 24.3301 23.8221V27.0348C24.3301 27.1133 24.3312 27.1917 24.3332 27.2696H24.2521C21.652 27.2696 19.5442 29.388 19.5442 32.001V44.6237C19.5442 47.2368 21.652 49.3551 24.2521 49.3551H44.3972C46.9974 49.3551 49.1053 47.2368 49.1053 44.6237V32.0011C49.1053 29.388 46.9974 27.2696 44.3972 27.2696H44.3104C44.3124 27.1917 44.3134 27.1133 44.3134 27.0348V23.8221C44.3134 18.6221 39.84 14.4068 34.3217 14.4068ZM39.3902 27.2696C39.3942 27.1918 39.3963 27.1136 39.3963 27.0348V23.8221C39.3963 21.1812 37.1244 19.0403 34.3217 19.0403C31.5192 19.0403 29.2473 21.1812 29.2473 23.8221V27.0348C29.2473 27.1136 29.2493 27.1918 29.2533 27.2696H39.3902Z" fill="#AFAFAF"/>
+		</svg>
+		
+		<div id="startWindow" style="display: none; transform: scale(0);">
+			<h1>RGB LED</h1>
+			<p>Steuere eine RGB LED an!</p>
+			<button class="btn-green" id="start-btn" style="font-size: 1.5rem; display: flex; gap: 5px; justify-content: center; align-items: center;">
+				<svg width="1.5rem" height="1.5rem" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000000"/></svg>
+				Start
+			</button>
+		</div>
 
-	</pre>
-	<input type="text" id="console_input" data-lang-placeholder="send-to-console">
+		<div style="position: sticky; top: 10px;">
+			<h1 style="font-size: 2rem; margin: 10px; margin-bottom: 5px;">PicoScratch</h1>
+			<h2 style="font-size: 1.4rem; font-weight: normal; margin: 10px;" id="school"></h2>
+		</div>
+
+		<div id="levelpath-levels"></div>
+
+		<div style="position: absolute; top: 5px; right: 15px;">
+			<div style="display: flex; gap: 15px; align-items: center; justify-content: right;">
+				<button>
+					<svg width="40px" height="40px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3.747a.75.75 0 0 1 .75-.75h16.504a.75.75 0 0 1 .6 1.2L16.69 9.748l4.164 5.552a.75.75 0 0 1-.6 1.2H4.5v4.749a.75.75 0 0 1-.648.743L3.75 22a.75.75 0 0 1-.743-.648L3 21.249V3.747Z" fill="#C34040"/></svg>
+				</button>
+				<div style="text-align: right;">
+					<h3 style="font-size: 1.8rem; margin: 0;">Cfp</h3>
+					<p style="margin: 0; margin-top: 5px;">35434 XP</p>
+				</div>
+			</div>
+			<div style="background-color: #1D1D1D; border: solid 2px #2e2e2e; border-radius: 10px; width: 300px; display: flex; flex-direction: column; justify-content: center; text-align: center; gap: 5px; padding-right: 10px;">
+				<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;">Top 10</h2>
+				<div id="leaderboard">
+
+				</div>
+				<!-- <div style="display: flex; gap: 5px; align-items: center;">
+					<svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.31177 18.4663H31.876V38.4086C31.876 39.844 30.4566 40.8481 29.1031 40.3701L20.0939 37.1888L11.0847 40.3701C9.73119 40.8481 8.31177 39.844 8.31177 38.4086V18.4663Z" fill="#FFC800"/><circle cx="20.0943" cy="20.0941" r="14.4004" transform="rotate(35.6401 20.0943 20.0941)" fill="#FFD900"/><path d="M11.7032 31.7972C18.1667 36.4314 27.1631 34.9486 31.7973 28.4851L8.39111 11.7031C3.75689 18.1666 5.23977 27.163 11.7032 31.7972Z" fill="#FEEA66"/><path d="M18.945 24.776C18.945 25.604 19.467 26.108 20.205 26.108C20.925 26.108 21.465 25.604 21.465 24.776V15.182C21.465 14.264 20.925 13.652 20.061 13.652C19.485 13.652 18.999 13.886 18.531 14.21L16.605 15.542C16.173 15.83 15.975 16.226 15.975 16.604C15.975 17.216 16.443 17.666 17.019 17.666C17.271 17.666 17.541 17.594 17.775 17.432L18.909 16.658H18.945V24.776Z" fill="#FF9600"/><circle cx="20.0943" cy="20.0941" r="12.9004" transform="rotate(35.6401 20.0943 20.0941)" stroke="#FFC800" stroke-width="3"/></svg>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.31201 18.4663H31.8763V38.4086C31.8763 39.844 30.4569 40.8481 29.1033 40.3701L20.0941 37.1888L11.085 40.3701C9.73144 40.8481 8.31201 39.844 8.31201 38.4086V18.4663Z" fill="#AAC1D4"/><circle cx="20.0943" cy="20.0941" r="14.4004" transform="rotate(35.6401 20.0943 20.0941)" fill="#C2D1DD"/><path d="M11.7032 31.7972C18.1667 36.4314 27.1631 34.9486 31.7973 28.4851L8.39111 11.7031C3.75689 18.1666 5.23977 27.163 11.7032 31.7972Z" fill="#D6E4EF"/><path d="M16.0073 24.92C16.0073 25.55 16.4573 26 17.1773 26H22.7933C23.5313 26 23.9453 25.568 23.9453 24.938C23.9453 24.29 23.5313 23.858 22.7933 23.858H19.3553V23.822L22.5773 20.024C23.3333 19.124 23.8193 18.224 23.8193 17.054C23.8193 15.074 22.3793 13.562 20.0573 13.562C17.8793 13.562 16.5113 14.786 16.2413 16.1C16.2233 16.208 16.2053 16.316 16.2053 16.406C16.2053 17.072 16.6913 17.522 17.3393 17.522C17.8433 17.522 18.2213 17.234 18.4733 16.712C18.7973 16.046 19.2473 15.686 19.9493 15.686C20.8133 15.686 21.2993 16.28 21.2993 17.09C21.2993 17.72 21.0473 18.224 20.5793 18.782L16.7633 23.354C16.2053 24.02 16.0073 24.398 16.0073 24.92Z" fill="#849FB5"/><circle cx="20.0946" cy="20.0941" r="12.9004" transform="rotate(35.6401 20.0946 20.0941)" stroke="#AAC1D4" stroke-width="3"/></svg>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.31152 19.4663H31.8758V38.4086C31.8758 39.844 30.4564 40.8481 29.1029 40.3701L20.0937 37.1888L11.0845 40.3701C9.73095 40.8481 8.31152 39.844 8.31152 38.4086V19.4663Z" fill="#D7975D"/><circle cx="20.0941" cy="20.0941" r="14.4004" transform="rotate(35.6401 20.0941 20.0941)" fill="#E5AE7C"/><path d="M11.703 31.7972C18.1664 36.4314 27.1628 34.9486 31.7971 28.4851L8.39087 11.7031C3.75665 18.1666 5.23953 27.163 11.703 31.7972Z" fill="#F7BE8B"/><path d="M16.4038 24.326C16.9258 25.514 18.2218 26.198 19.9858 26.198C22.2898 26.198 23.9818 24.686 23.9818 22.454C23.9818 20.852 23.1358 19.862 22.3798 19.502V19.466C23.2618 18.89 23.7478 17.99 23.7478 16.946C23.7478 14.984 22.3618 13.562 19.9678 13.562C18.2038 13.562 16.9798 14.372 16.5298 15.398C16.4398 15.614 16.3858 15.83 16.3858 16.028C16.3858 16.676 16.8538 17.144 17.5018 17.144C17.9518 17.144 18.3838 16.892 18.6178 16.424C18.7978 16.046 19.1398 15.686 19.8598 15.686C20.6878 15.686 21.2278 16.262 21.2278 17.126C21.2278 18.062 20.6518 18.638 19.8418 18.638H19.7158C19.0678 18.638 18.6178 19.07 18.6178 19.7C18.6178 20.33 19.0678 20.762 19.7158 20.762H19.8418C20.7238 20.762 21.4618 21.41 21.4618 22.472C21.4618 23.408 20.8858 24.074 19.9498 24.074C19.3198 24.074 18.8518 23.786 18.5638 23.318C18.2758 22.85 17.8618 22.598 17.4118 22.598C16.7098 22.598 16.2778 23.084 16.2778 23.714C16.2778 23.912 16.3138 24.128 16.4038 24.326Z" fill="#CD7900"/><circle cx="20.0941" cy="20.0941" r="12.9004" transform="rotate(35.6401 20.0941 20.0941)" stroke="#D7975D" stroke-width="3"/></svg>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">4</h1>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">5</h1>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">6</h1>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">7</h1>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">8</h1>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">9</h1>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 4px; margin-left: 4px;">10</h1>
+					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				</div> -->
+			</div>
+			<div style="background-color: #1D1D1D; border: solid 2px #2e2e2e; border-radius: 10px; width: 300px; display: flex; flex-direction: column; justify-content: center; text-align: center; gap: 5px; margin-top: 10px; padding: 5px;">
+				<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;">Abzeichen</h2>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<svg width="90px" viewBox="0 0 58 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<g clip-path="url(#clip0_803_63)">
+							<path d="M11.1233 0H46.8767C53.02 0 58 5.01441 58 11.2V60.8C58 66.9856 53.02 72 46.8767 72H11.1233C4.98007 72 0 66.9856 0 60.8V11.2C0 5.01441 4.98007 0 11.1233 0Z" fill="#C93939"/>
+							<path d="M11.1233 0H46.8767C53.02 0 58 5.01441 58 11.2V57.6C58 63.7856 53.02 68.8 46.8767 68.8H11.1233C4.98007 68.8 0 63.7856 0 57.6V11.2C0 5.01441 4.98007 0 11.1233 0Z" fill="#FC4848"/>
+							<path d="M29.3973 50.7598C37.2957 50.7598 43.6987 44.7704 43.6987 37.382C43.6987 29.9937 37.2957 24.0042 29.3973 24.0042C21.4989 24.0042 15.0959 29.9937 15.0959 37.382C15.0959 44.7704 21.4989 50.7598 29.3973 50.7598Z" fill="#FF9600"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M31.3155 17.6937L40.6673 29.1465C41.1028 29.6799 41.0265 30.4678 40.4968 30.9063C40.2746 31.0903 39.9958 31.1908 39.7082 31.1908H19.0863C18.4005 31.1908 17.8446 30.6311 17.8446 29.9406C17.8446 29.6509 17.9445 29.3703 18.1272 29.1465L27.479 17.6937C28.35 16.627 29.915 16.4732 30.9744 17.3503C31.0989 17.4534 31.2131 17.5684 31.3155 17.6937Z" fill="#FF9600"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M18.9553 22.3631L29.3013 27.7427C30.0537 28.1339 30.4571 29.0528 30.2024 29.7951C30.1062 30.0755 29.9235 30.3026 29.68 30.4447L17.4672 37.573C16.8225 37.9494 15.9237 37.6465 15.4598 36.8965C15.2846 36.6133 15.1899 36.2927 15.189 35.9796L15.1564 24.5804C15.1517 22.9225 16.081 21.6994 17.6696 21.9595C17.9862 22.0113 18.6555 22.2072 18.9553 22.3631Z" fill="#FF9600"/>
+							<path d="M29.3972 45.6635C32.7823 45.6635 35.5264 43.0966 35.5264 39.9302C35.5264 36.7637 32.7823 34.1968 29.3972 34.1968C26.0122 34.1968 23.2681 36.7637 23.2681 39.9302C23.2681 43.0966 26.0122 45.6635 29.3972 45.6635Z" fill="#FFC800"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M30.3219 31.3409L33.961 36.1545C34.1656 36.425 34.1136 36.8114 33.8449 37.0173C33.7384 37.0989 33.6083 37.1431 33.4745 37.1431H25.2231C24.8854 37.1431 24.6116 36.8675 24.6116 36.5274C24.6116 36.3927 24.6555 36.2617 24.7365 36.1545L28.3756 31.3409C28.7848 30.7997 29.5521 30.695 30.0896 31.1069C30.1771 31.174 30.2553 31.2527 30.3219 31.3409Z" fill="#FFC800"/>
+							<path d="M41.3833 17.1314L39.6978 18.8284C39.0773 19.4533 39.0773 20.4663 39.6978 21.0912L41.3833 22.7882C42.0038 23.4131 43.01 23.4131 43.6305 22.7882L45.3159 21.0912C45.9365 20.4663 45.9365 19.4533 45.3159 18.8284L43.6305 17.1314C43.01 16.5065 42.0038 16.5065 41.3833 17.1314Z" fill="#FDA3A3"/>
+							<path d="M10.6779 43.5799L9.55426 44.7113C9.08884 45.1799 9.08884 45.9397 9.55426 46.4083L10.6779 47.5397C11.1433 48.0083 11.8979 48.0083 12.3633 47.5397L13.4869 46.4083C13.9524 45.9397 13.9524 45.1799 13.4869 44.7113L12.3633 43.5799C11.8979 43.1113 11.1433 43.1113 10.6779 43.5799Z" fill="#FDA3A3"/>
+						</g>
+						<defs>
+							<clipPath id="clip0_803_63">
+								<rect width="58" height="72" fill="white"/>
+							</clipPath>
+						</defs>
+					</svg>
+					<div style="text-align: left;">
+						<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;">Super schnell!</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5 Aufgaben fertig an einem Tag!</h2>
+					</div>
+				</div>
+				<div style="display: flex; gap: 5px; align-items: center;">
+					<svg width="80px" viewBox="0 0 58 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<g clip-path="url(#clip0_804_88)">
+							<path d="M11.1233 0H46.8767C53.02 0 58 5.01441 58 11.2V60.8C58 66.9856 53.02 72 46.8767 72H11.1233C4.98007 72 0 66.9856 0 60.8V11.2C0 5.01441 4.98007 0 11.1233 0Z" fill="#AC68D7"/>
+							<path d="M11.1233 0H46.8767C53.02 0 58 5.01441 58 11.2V57.6C58 63.7856 53.02 68.8 46.8767 68.8H11.1233C4.98007 68.8 0 63.7856 0 57.6V11.2C0 5.01441 4.98007 0 11.1233 0Z" fill="#CE82FF"/>
+							<path d="M12.3151 23.5409H46.3206C47.7621 23.5409 48.9306 24.7175 48.9306 26.1689V30.6222C48.9306 34.5331 45.7819 37.7036 41.8978 37.7036H16.8968C13.0127 37.7036 9.86401 34.5331 9.86401 30.6222V26.0089C9.86401 24.6459 10.9614 23.5409 12.3151 23.5409ZM13.9717 30.6222C13.9717 32.2489 15.2813 33.5676 16.8968 33.5676H41.8978C43.5133 33.5676 44.8229 32.2489 44.8229 30.6222V27.6769H13.9717V30.6222Z" fill="#FFBF00"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M27.3533 36.3395H31.4413V49.7084H27.3533V36.3395Z" fill="#FFBF00"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M22.1149 48.6222V47.4524C22.1149 46.6218 22.7836 45.9484 23.6086 45.9484H35.186C36.011 45.9484 36.6797 46.6218 36.6797 47.4524V48.6222C36.6797 49.4529 36.011 50.1262 35.186 50.1262H23.6086C22.7836 50.1262 22.1149 49.4529 22.1149 48.6222Z" fill="#FFBF00"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M17.6655 50.8782V49.7085C17.6655 48.8778 18.3343 48.2045 19.1592 48.2045H39.6353C40.4603 48.2045 41.129 48.8778 41.129 49.7085V50.8782C41.129 51.7089 40.4603 52.3822 39.6353 52.3822H19.1592C18.3343 52.3822 17.6655 51.7089 17.6655 50.8782Z" fill="#FFBF00"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M18.5116 19.008H40.2828V31.1442C40.2828 37.1976 35.4092 42.1049 29.3972 42.1049C23.3853 42.1049 18.5116 37.1976 18.5116 31.1442V19.008Z" fill="#FFD900"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M19.2569 19.008H25.1431L39.8664 34.1574C38.8521 37.7369 36.076 40.5684 32.5425 41.6404L18.6448 27.3404V20.5872C18.6448 19.978 18.8769 19.4233 19.2569 19.008Z" fill="#FFE659"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M29.7424 24.9692C30.6321 24.9692 31.3534 25.6954 31.3534 26.5913V36.0295C31.3534 36.9253 30.6321 37.6515 29.7424 37.6515C28.8527 37.6515 28.1315 36.9253 28.1315 36.0295V26.5913C28.1315 25.6954 28.8527 24.9692 29.7424 24.9692Z" fill="#F89701"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M24.8637 29.2551C24.4336 28.5284 24.67 27.5882 25.3918 27.1551C25.4026 27.1486 25.4135 27.1422 25.4245 27.136L28.9533 25.1366C29.7094 24.7083 30.6668 24.9652 31.1109 25.7156C31.541 26.4423 31.3045 27.3825 30.5828 27.8156C30.5719 27.8221 30.561 27.8284 30.5501 27.8347L27.0212 29.834C26.2652 30.2624 25.3078 30.0055 24.8637 29.2551Z" fill="#F89701"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M18.5116 20.512H40.2828V23.52H18.5116V20.512Z" fill="#FFBF00"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M26.6048 20.512L29.5282 23.52H18.6448V20.5872C18.6448 20.562 18.6452 20.537 18.646 20.512H26.6048Z" fill="#FFC320"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M17.1723 16H41.6223C42.4473 16 43.116 16.6734 43.116 17.504V19.76C43.116 20.5906 42.4473 21.264 41.6223 21.264H17.1723C16.3473 21.264 15.6786 20.5906 15.6786 19.76V17.504C15.6786 16.6734 16.3473 16 17.1723 16Z" fill="#FFD900"/>
+							<path d="M23.8303 16.752H17.9085C17.496 16.752 17.1616 17.0887 17.1616 17.504V18.256C17.1616 18.6713 17.496 19.008 17.9085 19.008H23.8303C24.2428 19.008 24.5771 18.6713 24.5771 18.256V17.504C24.5771 17.0887 24.2428 16.752 23.8303 16.752Z" fill="#FFF5C0"/>
+						</g>
+						<defs>
+							<clipPath id="clip0_804_88">
+								<rect width="58" height="72" fill="white"/>
+							</clipPath>
+						</defs>
+					</svg>						
+					<div style="text-align: left;">
+						<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;">Erster!</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">Du bist auf dem ersten Platz!</h2>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

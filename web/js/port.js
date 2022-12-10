@@ -1,7 +1,9 @@
+import { nextTask, taskIndex } from './script.js';
+
 const { SerialPort } = require('serialport')
 const { autoDetect } = require("@serialport/bindings-cpp")
 let picoport;
-let port;
+export let port;
 let connectDialogShown = false;
 
 window.addEventListener("beforeunload", () => {
@@ -9,6 +11,7 @@ window.addEventListener("beforeunload", () => {
 })
 
 export function connectPort() {
+	if(port && port.isOpen) return;
 	autoDetect().list().then(async ports => {
 		picoport = ports.find(p => p.manufacturer == "MicroPython" || p.manufacturer == "Microsoft");
 		if(!picoport) {
@@ -21,7 +24,10 @@ export function connectPort() {
 		if(connectDialogShown) {
 			connectDialogShown = false;
 			document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb").id = "usb-connected";
-			setTimeout(() => { new Dialog("#connect-pico-dialog").hide(); }, 500);
+			setTimeout(async () => {
+				await new Dialog("#connect-pico-dialog").hide();
+				if(taskIndex == -1) nextTask();
+			}, 500);
 		}
 		picoport = picoport.path;
 		port = new SerialPort({

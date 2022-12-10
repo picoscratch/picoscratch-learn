@@ -1,4 +1,4 @@
-import { setLocale } from "./workspace.js";
+import { setLocale, workspace } from "./workspace.js";
 
 const ipcRenderer = require("electron/renderer").ipcRenderer;
 
@@ -43,7 +43,7 @@ function updateLanguages() {
 export function setLang(toLang) {
 	lang = toLang;
 	updateLanguages();
-	setLocale(lang);
+	if(workspace) setLocale(lang);
 }
 
 export function getLang() {

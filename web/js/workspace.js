@@ -1,3 +1,4 @@
+import { getLang } from "./lang.js";
 import { loadNextLevel, nextTask, renderLeaderboards, capitalizeWords, leaderboard, taskIndex, currentLevel, wsServer, ws, task, blockTags, varTags, answeredqs, correctqs, setLeaderboard, setTaskIndex, setCurrentLevel, setWSServer, setWS, setTask, setBlockTags, setVarTags, setAnsweredQs, setCorrectQs } from "./script.js";
 export let workspace = null;
 
@@ -9,273 +10,277 @@ export let taskXML = startXML;
 
 export function setTaskXML(newXML) { taskXML = newXML; }
 
-workspace = Blockly.inject("blocklyDiv", {
-	comments: true,
-	disable: false,
-	collapse: false,
-	media: "media/",
-	readOnly: false,
-	rtl: false,
-	scrollbars: true,
-	toolbox: getToolboxElement(),
-	toolboxPosition: "start",
-	horizontalLayout: false,
-	trashcan: false,
-	sounds: true,
-	zoom: {
-		controls: true,
-		wheel: true,
-		startScale: 0.75,
-		maxScale: 4,
-		minScale: 0.25,
-		scaleSpeed: 1.1
-	},
-	colours: {
-		fieldShadow: "rgba(255, 255, 255, 0.3)",
-		dragShadowOpacity: 0.6
-	}
-});
-
-window.workspace = workspace;
-
-workspace.addChangeListener((e) => {
-	console.log(e);
-	if(e instanceof Blockly.Events.EndBlockDrag) {
-		if(!workspace.getBlockById(e.blockId)) return;
-		if(workspace.getBlockById(e.blockId).startHat_) return;
-		const INSTRUCTION = task.instructions[taskIndex];
-		let allow = true;
-		if(INSTRUCTION.type == "changeblock") allow = false;
-		if(INSTRUCTION.type == "varcreate") allow = false;
-		if(INSTRUCTION.block && workspace.getBlockById(e.blockId).type !== INSTRUCTION.block) {
-			console.log(INSTRUCTION.block + " wanted but " + workspace.getBlockById(e.blockId).type + " given");
-			allow = false;
+export function createWorkspace() {
+	workspace = Blockly.inject("blocklyDiv", {
+		comments: true,
+		disable: false,
+		collapse: false,
+		media: "media/",
+		readOnly: false,
+		rtl: false,
+		scrollbars: true,
+		toolbox: getToolboxElement(),
+		toolboxPosition: "start",
+		horizontalLayout: false,
+		trashcan: false,
+		sounds: true,
+		zoom: {
+			controls: true,
+			wheel: true,
+			startScale: 0.75,
+			maxScale: 4,
+			minScale: 0.25,
+			scaleSpeed: 1.1
+		},
+		colours: {
+			fieldShadow: "rgba(255, 255, 255, 0.3)",
+			dragShadowOpacity: 0.6
 		}
-		if(INSTRUCTION.previousBlock && workspace.getBlockById(e.blockId).getPreviousBlock().type !== INSTRUCTION.previousBlock) {
-			console.log(INSTRUCTION.previousBlock + " wanted as previous block but " + workspace.getBlockById(e.blockId).getPreviousBlock().type + " given");
-			allow = false;
-		}
-		if(INSTRUCTION.parentBlock && workspace.getBlockById(e.blockId).getParent().type !== INSTRUCTION.parentBlock) {
-			console.log(INSTRUCTION.parentBlock + " wanted as parent block but " + workspace.getBlockById(e.blockId).getParent().type + " given");
-			allow = false;
-		}
-		if(INSTRUCTION.parentTag && blockTags[INSTRUCTION.parentTag] != workspace.getBlockById(e.blockId).getParent().id) {
-			console.log(blockTags[INSTRUCTION.parentTag] + " wanted as parent tag but " + workspace.getBlockById(e.blockId).getParent().id + " given");
-			allow = false;
-		}
-		if(INSTRUCTION.previousTag && blockTags[INSTRUCTION.previousTag] != workspace.getBlockById(e.blockId).getPreviousBlock().id) {
-			console.log(blockTags[INSTRUCTION.previousTag] + " wanted as previous tag but " + workspace.getBlockById(e.blockId).getPreviousBlock().id + " given");
-			allow = false;
-		}
-		if(INSTRUCTION.parentStack) {
-			if(!workspace.getBlockById(e.blockId).getParent().getInputTargetBlock(INSTRUCTION.parentStack)) {
+	});
+	
+	window.workspace = workspace;
+	
+	workspace.addChangeListener((e) => {
+		console.log(e);
+		if(e instanceof Blockly.Events.EndBlockDrag) {
+			if(!workspace.getBlockById(e.blockId)) return;
+			if(workspace.getBlockById(e.blockId).startHat_) return;
+			const INSTRUCTION = task.instructions[taskIndex];
+			let allow = true;
+			if(INSTRUCTION.type == "changeblock") allow = false;
+			if(INSTRUCTION.type == "varcreate") allow = false;
+			if(INSTRUCTION.block && workspace.getBlockById(e.blockId).type !== INSTRUCTION.block) {
+				console.log(INSTRUCTION.block + " wanted but " + workspace.getBlockById(e.blockId).type + " given");
 				allow = false;
-			} else {
-				if(workspace.getBlockById(e.blockId).getParent().getInputTargetBlock(INSTRUCTION.parentStack).id != e.blockId) {
+			}
+			if(INSTRUCTION.previousBlock && workspace.getBlockById(e.blockId).getPreviousBlock().type !== INSTRUCTION.previousBlock) {
+				console.log(INSTRUCTION.previousBlock + " wanted as previous block but " + workspace.getBlockById(e.blockId).getPreviousBlock().type + " given");
+				allow = false;
+			}
+			if(INSTRUCTION.parentBlock && workspace.getBlockById(e.blockId).getParent().type !== INSTRUCTION.parentBlock) {
+				console.log(INSTRUCTION.parentBlock + " wanted as parent block but " + workspace.getBlockById(e.blockId).getParent().type + " given");
+				allow = false;
+			}
+			if(INSTRUCTION.parentTag && blockTags[INSTRUCTION.parentTag] != workspace.getBlockById(e.blockId).getParent().id) {
+				console.log(blockTags[INSTRUCTION.parentTag] + " wanted as parent tag but " + workspace.getBlockById(e.blockId).getParent().id + " given");
+				allow = false;
+			}
+			if(INSTRUCTION.previousTag && blockTags[INSTRUCTION.previousTag] != workspace.getBlockById(e.blockId).getPreviousBlock().id) {
+				console.log(blockTags[INSTRUCTION.previousTag] + " wanted as previous tag but " + workspace.getBlockById(e.blockId).getPreviousBlock().id + " given");
+				allow = false;
+			}
+			if(INSTRUCTION.parentStack) {
+				if(!workspace.getBlockById(e.blockId).getParent().getInputTargetBlock(INSTRUCTION.parentStack)) {
+					allow = false;
+				} else {
+					if(workspace.getBlockById(e.blockId).getParent().getInputTargetBlock(INSTRUCTION.parentStack).id != e.blockId) {
+						allow = false;
+					}
+				}
+			}
+			if(INSTRUCTION.type == "varblock") {
+				if(workspace.getBlockById(e.blockId).type != "data_variable") {
+					allow = false;
+				}	
+				if(varTags[INSTRUCTION.varTag] != workspace.getBlockById(e.blockId).getVars()[0]) {
 					allow = false;
 				}
 			}
+			if(INSTRUCTION.type == "customblockcall") {
+				if(workspace.getBlockById(e.blockId).type != "procedures_call") {
+					allow = false;
+				}
+			}
+			if(INSTRUCTION.type == "customblockarg") {
+				if(workspace.getBlockById(e.blockId).type != "argument_reporter_string_number") {
+					allow = false;
+				}
+			}
+			if(INSTRUCTION.type == "move") {
+				if(e.blockId != blockTags[INSTRUCTION.fromBlockTag]) return;
+				if(e.newParentId != blockTags[INSTRUCTION.toBlockTag]) return;
+				console.log("Passed move test!");
+			}
+			if(allow) {
+				if(INSTRUCTION.blockTag) {
+					blockTags[INSTRUCTION.blockTag] = e.blockId;
+				}
+				nextTask();
+			} else {
+				workspace.getBlockById(e.blockId).dispose(true, true);
+				document.querySelector("#instruction").animate([{
+					color: "white",
+					fontSize: "1.1rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "white",
+					fontSize: "1.1rem"
+				}],
+				{
+					duration: 1000
+				})
+			}
 		}
-		if(INSTRUCTION.type == "varblock") {
-			if(workspace.getBlockById(e.blockId).type != "data_variable") {
+		if(e instanceof Blockly.Events.Delete) {
+			const INSTRUCTION = task.instructions[taskIndex];
+			if(INSTRUCTION.type != "delete") return;
+			console.log(e.ids.find((e) => e == blockTags[INSTRUCTION.targetBlockTag]), "IDS");
+			if(e.ids.find((e) => e == blockTags[INSTRUCTION.targetBlockTag])) nextTask();
+		}
+		if(e instanceof Blockly.Events.Create) {
+			if(!workspace.getBlockById(e.blockId)) return;
+			const INSTRUCTION = task.instructions[taskIndex];
+			let allow = true;
+			if(INSTRUCTION.type != "customblock") return;
+			if(workspace.getBlockById(e.blockId).type != "procedures_definition") {
 				allow = false;
-			}	
-			if(varTags[INSTRUCTION.varTag] != workspace.getBlockById(e.blockId).getVars()[0]) {
+			}
+			if(workspace.getBlockById(e.blockId).childBlocks_[0].procCode_.split("").filter((e) => e == '%').length != INSTRUCTION.args) {
 				allow = false;
 			}
-		}
-		if(INSTRUCTION.type == "customblockcall") {
-			if(workspace.getBlockById(e.blockId).type != "procedures_call") {
-				allow = false;
+			if(allow) {
+				if(INSTRUCTION.blockTag) {
+					blockTags[INSTRUCTION.blockTag] = e.blockId;
+				}
+				nextTask();
+			} else {
+				workspace.getBlockById(e.blockId).dispose(true, true);
+				document.querySelector("#instruction").animate([{
+					color: "white",
+					fontSize: "1.1rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "white",
+					fontSize: "1.1rem"
+				}],
+				{
+					duration: 1000
+				})
 			}
 		}
-		if(INSTRUCTION.type == "customblockarg") {
-			if(workspace.getBlockById(e.blockId).type != "argument_reporter_string_number") {
-				allow = false;
+		if(e instanceof Blockly.Events.VarDelete) {
+			const INSTRUCTION = task.instructions[taskIndex];
+			if(INSTRUCTION.type != "vardelete") return;
+			let allow = true;
+			if(e.varId != varTags[INSTRUCTION.targetVarTag]) allow = false;
+			if(allow) {
+				nextTask();
+			} else {
+				document.querySelector("#instruction").animate([{
+					color: "white",
+					fontSize: "1.1rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "white",
+					fontSize: "1.1rem"
+				}],
+				{
+					duration: 1000
+				})
 			}
 		}
-		if(INSTRUCTION.type == "move") {
-			if(e.blockId != blockTags[INSTRUCTION.fromBlockTag]) return;
-			if(e.newParentId != blockTags[INSTRUCTION.toBlockTag]) return;
-			console.log("Passed move test!");
-		}
-		if(allow) {
-			if(INSTRUCTION.blockTag) {
-				blockTags[INSTRUCTION.blockTag] = e.blockId;
+		if(e instanceof Blockly.Events.VarCreate) {
+			const INSTRUCTION = task.instructions[taskIndex];
+			if(INSTRUCTION.type != "varcreate") return;
+			let allow = true;
+			if(e.varType != INSTRUCTION.vartype) allow = false;
+			if(allow) {
+				if(INSTRUCTION.varTag) {
+					varTags[INSTRUCTION.varTag] = e.varId;
+				}
+				nextTask();
+			} else {
+				document.querySelector("#instruction").animate([{
+					color: "white",
+					fontSize: "1.1rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "red",
+					fontSize: "1.3rem"
+				},
+				{
+					color: "white",
+					fontSize: "1.1rem"
+				}],
+				{
+					duration: 1000
+				})
 			}
-			nextTask();
-		} else {
-			workspace.getBlockById(e.blockId).dispose(true, true);
-			document.querySelector("#instruction").animate([{
-				color: "white",
-				fontSize: "1.1rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "white",
-				fontSize: "1.1rem"
-			}],
-			{
-				duration: 1000
-			})
 		}
-	}
-	if(e instanceof Blockly.Events.Delete) {
-		const INSTRUCTION = task.instructions[taskIndex];
-		if(INSTRUCTION.type != "delete") return;
-		console.log(e.ids.find((e) => e == blockTags[INSTRUCTION.targetBlockTag]), "IDS");
-		if(e.ids.find((e) => e == blockTags[INSTRUCTION.targetBlockTag])) nextTask();
-	}
-	if(e instanceof Blockly.Events.Create) {
-		if(!workspace.getBlockById(e.blockId)) return;
-		const INSTRUCTION = task.instructions[taskIndex];
-		let allow = true;
-		if(INSTRUCTION.type != "customblock") return;
-		if(workspace.getBlockById(e.blockId).type != "procedures_definition") {
-			allow = false;
-		}
-		if(workspace.getBlockById(e.blockId).childBlocks_[0].procCode_.split("").filter((e) => e == '%').length != INSTRUCTION.args) {
-			allow = false;
-		}
-		if(allow) {
-			if(INSTRUCTION.blockTag) {
-				blockTags[INSTRUCTION.blockTag] = e.blockId;
+		if(e instanceof Blockly.Events.Change) {
+			const INSTRUCTION = task.instructions[taskIndex];
+			if(INSTRUCTION.type != "changeblock") return;
+			if(e.element != "field") return;
+			if(!INSTRUCTION.targetBlockTag) {
+				console.warn("No target block tag set to task index " + taskIndex);
+				return;
 			}
-			nextTask();
-		} else {
-			workspace.getBlockById(e.blockId).dispose(true, true);
-			document.querySelector("#instruction").animate([{
-				color: "white",
-				fontSize: "1.1rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "white",
-				fontSize: "1.1rem"
-			}],
-			{
-				duration: 1000
-			})
-		}
-	}
-	if(e instanceof Blockly.Events.VarDelete) {
-		const INSTRUCTION = task.instructions[taskIndex];
-		if(INSTRUCTION.type != "vardelete") return;
-		let allow = true;
-		if(e.varId != varTags[INSTRUCTION.targetVarTag]) allow = false;
-		if(allow) {
-			nextTask();
-		} else {
-			document.querySelector("#instruction").animate([{
-				color: "white",
-				fontSize: "1.1rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "white",
-				fontSize: "1.1rem"
-			}],
-			{
-				duration: 1000
-			})
-		}
-	}
-	if(e instanceof Blockly.Events.VarCreate) {
-		const INSTRUCTION = task.instructions[taskIndex];
-		if(INSTRUCTION.type != "varcreate") return;
-		let allow = true;
-		if(e.varType != INSTRUCTION.vartype) allow = false;
-		if(allow) {
-			if(INSTRUCTION.varTag) {
-				varTags[INSTRUCTION.varTag] = e.varId;
+			if(!blockTags[INSTRUCTION.targetBlockTag]) {
+				console.warn("Block tag " + INSTRUCTION.targetBlockTag + " doesn't exist");
+				return;
 			}
-			nextTask();
-		} else {
-			document.querySelector("#instruction").animate([{
-				color: "white",
-				fontSize: "1.1rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "red",
-				fontSize: "1.3rem"
-			},
-			{
-				color: "white",
-				fontSize: "1.1rem"
-			}],
-			{
-				duration: 1000
-			})
+			if(workspace.getBlockById(e.blockId).getParent().id != blockTags[INSTRUCTION.targetBlockTag] && e.blockId != blockTags[INSTRUCTION.targetBlockTag]) {
+				console.log(workspace.getBlockById(e.blockId).getParent().id + " expected but got " + blockTags[INSTRUCTION.targetBlockTag]);
+				return;
+			}
+			if(e.name != INSTRUCTION.name) {
+				console.log(e.name + " expected but got " + INSTRUCTION.name);
+				return;
+			}
+			if(e.newValue == INSTRUCTION.to || (INSTRUCTION.valueVarTag && e.newValue == varTags[INSTRUCTION.valueVarTag]) || (INSTRUCTION.valueBlockTag && e.newValue == blockTags[INSTRUCTION.valueBlockTag])) {
+				nextTask();
+			}
 		}
-	}
-	if(e instanceof Blockly.Events.Change) {
-		const INSTRUCTION = task.instructions[taskIndex];
-		if(INSTRUCTION.type != "changeblock") return;
-		if(e.element != "field") return;
-		if(!INSTRUCTION.targetBlockTag) {
-			console.warn("No target block tag set to task index " + taskIndex);
-			return;
-		}
-		if(!blockTags[INSTRUCTION.targetBlockTag]) {
-			console.warn("Block tag " + INSTRUCTION.targetBlockTag + " doesn't exist");
-			return;
-		}
-		if(workspace.getBlockById(e.blockId).getParent().id != blockTags[INSTRUCTION.targetBlockTag] && e.blockId != blockTags[INSTRUCTION.targetBlockTag]) {
-			console.log(workspace.getBlockById(e.blockId).getParent().id + " expected but got " + blockTags[INSTRUCTION.targetBlockTag]);
-			return;
-		}
-		if(e.name != INSTRUCTION.name) {
-			console.log(e.name + " expected but got " + INSTRUCTION.name);
-			return;
-		}
-		if(e.newValue == INSTRUCTION.to || (INSTRUCTION.valueVarTag && e.newValue == varTags[INSTRUCTION.valueVarTag]) || (INSTRUCTION.valueBlockTag && e.newValue == blockTags[INSTRUCTION.valueBlockTag])) {
-			nextTask();
-		}
-	}
-})
+	})
+	
+	fromXml(startXML);
 
-fromXml(startXML);
+	setLocale(getLang());
+}
 
 Blockly.prompt = (msg, defaultValue, callback) => {
 	prompt({

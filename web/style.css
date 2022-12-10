@@ -11,6 +11,12 @@ body {
 	background-color: #0e0e0e;
 	color: white;
 	font-family: Roboto;
+	margin: 0;
+}
+
+#editor {
+	height: 100%;
+	width: 100%;
 	overflow: hidden;
 }
 
@@ -122,6 +128,59 @@ h1 {
 #newBlockWorkspace {
 	height: 30vh;
 	width: 100vh;
+}
+
+.levelpath-button {
+  position: absolute;
+}
+
+#startWindow {
+	position: absolute;
+	background-color: rgba(29, 29, 29, 0.8);
+	backdrop-filter: blur(15px);
+	z-index: 9;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	gap: 5px;
+	font-size: 1.4rem;
+}
+
+.leaderboard-player {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.leaderboard-place {
+	font-size: 1.9rem;
+	margin: 0;
+	margin-right: 14px;
+	margin-left: 11px;
+}
+
+.leaderboard-place-last {
+	margin-right: 4px;
+	margin-left: 4px;
+}
+
+.leaderboard-name {
+	font-weight: normal;
+	font-size: 1.4rem;
+	margin: 0;
+}
+
+.leaderboard-xp {
+	font-weight: normal;
+	font-size: 1.3rem;
+	margin: 0;
+	margin-left: auto;
+}
+
+#startWindow h1,
+#startWindow p {
+	margin: 0;
 }
 
 .injectionDiv {
