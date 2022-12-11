@@ -59,8 +59,7 @@ document.querySelector("#tab-python").addEventListener("click", async () => {
 	document.querySelector("#tab-python").classList.add("selected");
 })
 document.querySelector("#tab-language").addEventListener("change", async () => {
-	lang = document.querySelector("#tab-language").value;
-	setLang(lang);
+	setLang(document.querySelector("#tab-language").value);
 })
 document.querySelector("#pico").addEventListener("click", () => {
 	document.querySelector("#pico-w").style.backgroundColor = "";
