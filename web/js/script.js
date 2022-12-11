@@ -3,7 +3,7 @@ import { setLang, translate, tryGetLanguage } from "./lang.js";
 import { createButtons } from "./levelpath/buttons.js";
 import { connectPort, port, writePort } from "./port.js";
 import { makeCode } from "./run.js";
-import { fromXml, toXml, taskXML, setTaskXML, startXML, createWorkspace } from "./workspace.js";
+import { fromXml, toXml, taskXML, setTaskXML, startXML, createWorkspace, workspace } from "./workspace.js";
 const langs = require("./lang.json");
 
 let picoW = true;
@@ -55,10 +55,16 @@ export async function loadNextLevel() {
 	// allowUnload = false;
 }
 
+let autoBlockGlow;
+
 export function nextTask() {
 	if(taskIndex == -1) {
 		connectPort();
 		if(!(port && port.isOpen)) return;
+	}
+	if(autoBlockGlow) clearTimeout(autoBlockGlow);
+	if(task.instructions[taskIndex] && task.instructions[taskIndex].block) {
+		workspace.glowStack(task.instructions[taskIndex].block, false);
 	}
 	taskIndex++;
 	if(taskIndex >= task.instructions.length) {
@@ -100,6 +106,12 @@ export function nextTask() {
 		document.querySelector("#quiz-answer-4").classList.remove("btn-red");
 		new Dialog("#quiz-dialog").show();
 		return;
+	}
+	if(task.instructions[taskIndex].block) {
+		autoBlockGlow = setTimeout(() => {
+			workspace.glowStack(task.instructions[taskIndex].block, true);
+			new Audio("appear.wav").play();
+		}, 1000*60*2); // 2 minutes
 	}
 	document.querySelector("#instruction").innerText = task.instructions[taskIndex].text;
 	document.querySelector("#instruction").animate([{
