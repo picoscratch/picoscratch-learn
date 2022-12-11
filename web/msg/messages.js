@@ -368,6 +368,8 @@ Blockly.Msg.PHOTORESISTOR = "Photoresistor %1 light level";
 Blockly.Msg.RGBLED = "%1 %2 Set RGB LED R: %3 G: %4 B: %5 color to %6";
 Blockly.Msg.ULTRASONIC = "Ultrasonic Trigger: %1 Echo: %2 Distance reading";
 Blockly.Msg.PIR_SENSOR = "PIR Sensor %1 detection";
+Blockly.Msg.BUZZER_VOLUME = "Set buzzer %1 volume to %2 %";
+Blockly.Msg.BUZZER_FREQ = "Play buzzer %1 note %2";
 
 // Debug blocks
 Blockly.Msg.PRINT = "Print %1 to the console";
