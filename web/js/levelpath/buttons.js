@@ -90,15 +90,17 @@ function createButton(template, locked) {
 	return e;
 }
 
-export function createButtons(complete, locked) {
+export function createButtons(complete, locked, done) {
 	while(document.querySelector("#levelpath-levels").firstChild) {
 		document.querySelector("#levelpath-levels").firstChild.remove();
 	}
 	gi = 0;
+	let start;
 	for(let i = 0; i < complete; i++) {
-		createButton(btnCompleteTemplate);
+		const btn = createButton(btnCompleteTemplate);
+		if(done) start = btn;
 	}
-	const start = createButton(btnStartTemplate)
+	if(!done) start = createButton(btnStartTemplate)
 	for(let i = 0; i < locked; i++) {
 		createButton(btnLockedTemplate, true);
 	}

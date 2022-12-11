@@ -131,7 +131,7 @@ export function renderLeaderboard(el) {
 		a.style.display = "none";
 	}
 	for(const a of achievements) {
-		if(document.querySelector("#achievement-" + a)) document.querySelector("#achievement-" + a).style.display = "";
+		if(document.querySelector("#achievement-" + a)) document.querySelector("#achievement-" + a).style.display = "flex";
 	}
 	for(let i = 0; i < 10; i++) {
 		if(!leaderboard[i]) break;
@@ -373,7 +373,7 @@ document.querySelector("#submit-name").addEventListener("click", async () => {
 			new Dialog("#kick-dialog").show();
 		} else if(msg.startsWith("levelpath ")) {
 			await new Dialog("#loading-dialog").hide();
-			createButtons(msg.split(" ")[1], msg.split(" ")[2]);
+			createButtons(msg.split(" ")[1], msg.split(" ")[2], msg.split(" ")[3] == "1");
 		} else if(msg.startsWith("info ")) {
 			const info = JSON.parse(msg.split("info ", 2)[1]);
 			document.querySelector("#startWindow h1").innerText = info.name;
