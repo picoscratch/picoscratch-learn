@@ -61,6 +61,12 @@ export const CONDITIONS = {
 		code: async (blk) => {
 			return "machine.Pin(" + await solveNumber(blk.value[0]) + ", machine.Pin.IN, machine.Pin.PULL_DOWN).value() == 1"
 		}
+	},
+	components_pir: {
+		import: ["machine"],
+		code: async (blk) => {
+			return "int(round(machine.ADC(machine.Pin(" + await solveNumber(blk.value[0]) + ")).read_u16() / 65535 * 255, 0)) > 10"
+		}
 	}
 }
 
