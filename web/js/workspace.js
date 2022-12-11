@@ -1,3 +1,4 @@
+const prompt = require("electron-prompt");
 import { getLang } from "./lang.js";
 import { loadNextLevel, nextTask, renderLeaderboards, capitalizeWords, leaderboard, taskIndex, currentLevel, wsServer, ws, task, blockTags, varTags, answeredqs, correctqs, setLeaderboard, setTaskIndex, setCurrentLevel, setWSServer, setWS, setTask, setBlockTags, setVarTags, setAnsweredQs, setCorrectQs } from "./script.js";
 export let workspace = null;

@@ -1,4 +1,3 @@
-const prompt = require("electron-prompt");
 const ipcRenderer = require("electron/renderer").ipcRenderer;
 import { setLang, translate, tryGetLanguage } from "./lang.js";
 import { createButtons } from "./levelpath/buttons.js";
