@@ -94,8 +94,8 @@ export async function makeCode(isW) {
 			indent = indent.substring(1);
 		}
 	}
-	finalCode = imports.map(lib => "import " + lib + "\r\n") + finalCode;
-	finalCode = Object.values(helperFuncs).map(func => func + "\r\n") + finalCode;
+	finalCode = imports.map(lib => "import " + lib + "\r\n").join("") + finalCode;
+	finalCode = Object.values(helperFuncs).map(func => func + "\r\n").join("") + finalCode;
 	imports = [];
 	indent = "";
 	usedVars = [];
