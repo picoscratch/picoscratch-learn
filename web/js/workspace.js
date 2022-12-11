@@ -1,3 +1,4 @@
+const prompt = require("electron-prompt");
 export let workspace = null;
 
 const startXML = `<xml xmlns="http://www.w3.org/1999/xhtml">

@@ -1,4 +1,3 @@
-const prompt = require("electron-prompt");
 const ipcRenderer = require("electron/renderer").ipcRenderer;
 import { setLang } from "./lang.js";
 import { connectPort, writePort } from "./port.js";
