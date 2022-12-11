@@ -258,7 +258,6 @@ document.querySelector("#next").addEventListener("click", async () => {
 	document.querySelector("#pythontab").style.display = "none";
 	document.querySelector("#code-in-py").style.display = "none";
 	await writePort("\r\x03")
-	console.log("Next button pressed");
 	ws.send("done " + currentLevel + " " + answeredqs + " " + correctqs);
 	taskIndex = -1;
 	answeredqs = 0;
@@ -297,6 +296,23 @@ document.querySelector("#tab-python").addEventListener("click", async () => {
 	document.querySelector("#pythontab").style.display = "flex";
 	document.querySelector("#tab-scratch").classList.remove("selected");
 	document.querySelector("#tab-python").classList.add("selected");
+})
+document.querySelector("#back").addEventListener("click", async () => {
+	document.querySelector("#editor").style.display = "none";
+	document.querySelector("#levelpath").style.display = "";
+	while(document.querySelector("#blocklyDiv").firstChild) {
+		document.querySelector("#blocklyDiv").firstChild.remove();
+	}
+	document.querySelector("#greenflag").disabled = true;
+	document.querySelector("#reset").style.display = "";
+	document.querySelector("#next").style.display = "none";
+	document.querySelector("#pythontab").style.width = "100%";
+	document.querySelector("#pythontab").style.display = "none";
+	document.querySelector("#code-in-py").style.display = "none";
+	await writePort("\r\x03")
+	taskIndex = -1;
+	answeredqs = 0;
+	correctqs = 0;
 })
 document.querySelector("#pico").addEventListener("click", () => {
 	document.querySelector("#pico-w").style.backgroundColor = "";
