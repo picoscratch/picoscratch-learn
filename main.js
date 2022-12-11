@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
 const { readFileSync, writeFileSync } = require("fs");
 const path = require("path");
+const isPackaged = require("electron-is-packaged").isPackaged;
 require('@electron/remote/main').initialize()
 const Store = require('electron-store');
 
@@ -52,10 +53,12 @@ function start() {
 		start();
 	})
 
+	win.maximize();
+
 	if(!store.has("title")) win.loadFile("web/setup.html");
 	else win.loadFile("web/editor.html");
 
-	win.webContents.openDevTools();
+	if(!isPackaged) win.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
