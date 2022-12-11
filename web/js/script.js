@@ -125,6 +125,15 @@ export function renderLeaderboard(el) {
 	while(el.firstChild) {
 		el.removeChild(el.lastChild);
 	}
+	document.querySelector("#playername").innerText = capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ");
+	document.querySelector("#xp").innerText = leaderboard.find(p => p.name == capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ")).xp + " XP";
+	const achievements = leaderboard.find(p => p.name == capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ")).achievements;
+	for(const a of document.querySelectorAll(".achievement")) {
+		a.style.display = "none";
+	}
+	for(const a of achievements) {
+		if(document.querySelector("#achievement-" + a)) document.querySelector("#achievement-" + a).style.display = "";
+	}
 	for(let i = 0; i < 10; i++) {
 		if(!leaderboard[i]) break;
 		console.log(el);
@@ -147,6 +156,9 @@ export function renderLeaderboard(el) {
 		const name = document.createElement("h2");
 		name.classList.add("leaderboard-name");
 		name.innerText = player.name;
+		if(player.name == capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ")) {
+			div.style.backgroundColor = "#2e2e2e";
+		}
 		div.appendChild(name);
 		const xp = document.createElement("h2");
 		xp.classList.add("leaderboard-xp");

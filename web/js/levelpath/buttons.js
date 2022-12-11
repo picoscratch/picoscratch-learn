@@ -86,6 +86,8 @@ function createButton(template, locked) {
 	}
   
   gi++;
+
+	return e;
 }
 
 export function createButtons(complete, locked) {
@@ -96,10 +98,13 @@ export function createButtons(complete, locked) {
 	for(let i = 0; i < complete; i++) {
 		createButton(btnCompleteTemplate);
 	}
-	createButton(btnStartTemplate);
+	const start = createButton(btnStartTemplate)
 	for(let i = 0; i < locked; i++) {
 		createButton(btnLockedTemplate, true);
 	}
+	requestAnimationFrame(() => {
+		start.scrollIntoView({behavior: "smooth", block: "center"});
+	})
 }
 
 document.addEventListener("click", (e) => {
