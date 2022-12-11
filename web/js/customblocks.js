@@ -2,6 +2,8 @@ let newBlockWorkspace = null;
 let newBlock = null;
 let newBlockCallback = null;
 
+export function setupCustomBlocks() {}
+
 Blockly.Procedures.externalProcedureDefCallback = function (mutation, cb) {
 	new Dialog("#new-block-dialog").show();
 	newBlockWorkspace = Blockly.inject("newBlockWorkspace", { media: "media/" });
@@ -21,9 +23,9 @@ Blockly.Procedures.externalProcedureDefCallback = function (mutation, cb) {
 	newBlock.render(false);
 }
 
-document.querySelector("#cancelBlockCreation", cancelBlockCreation);
-document.querySelector("#addBlockInput", addTextNumber);
-document.querySelector("#createBlock", applyMutation);
+document.querySelector("#cancelBlockCreation").addEventListener("click", cancelBlockCreation);
+document.querySelector("#addBlockInput").addEventListener("click", addTextNumber);
+document.querySelector("#createBlock").addEventListener("click", applyMutation);
 
 function applyMutation() {
 	for(const id of newBlock.argumentIds_) {

@@ -1,3 +1,5 @@
+import { setupCustomBlocks } from "./customblocks.js";
+
 const prompt = require("electron-prompt");
 export let workspace = null;
 
@@ -36,6 +38,7 @@ workspace = Blockly.inject("blocklyDiv", {
 window.workspace = workspace;
 
 fromXml(startXML);
+setupCustomBlocks();
 
 Blockly.prompt = (msg, defaultValue, callback) => {
 	prompt({
