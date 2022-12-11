@@ -1,3 +1,5 @@
+import { setupCustomBlocks } from "./customblocks.js";
+
 const prompt = require("electron-prompt");
 import { getLang } from "./lang.js";
 import { loadNextLevel, nextTask, renderLeaderboards, capitalizeWords, leaderboard, taskIndex, currentLevel, wsServer, ws, task, blockTags, varTags, answeredqs, correctqs, setLeaderboard, setTaskIndex, setCurrentLevel, setWSServer, setWS, setTask, setBlockTags, setVarTags, setAnsweredQs, setCorrectQs } from "./script.js";
@@ -279,6 +281,7 @@ export function createWorkspace() {
 	})
 	
 	fromXml(startXML);
+	setupCustomBlocks();
 
 	setLocale(getLang());
 }
