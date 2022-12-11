@@ -44,7 +44,13 @@
 		"new-block-title": "New Block",
 		"new-block-add-input": "Add input",
 		"new-block-cancel": "Cancel",
-		"new-block-create": "Ok"
+		"new-block-create": "Ok",
+		"top-10": "Top 10",
+		"achievements": "Achievements",
+		"achievement-fast-name": "Super fast!",
+		"achievement-fast-desc": "5 Levels completed on one day!",
+		"achievement-first-name": "First!",
+		"achievement-first-desc": "You are on first place!"
 	},
 	"de": {
 		"start": "Start",
@@ -91,6 +97,12 @@
 		"new-block-title": "Neuer Block",
 		"new-block-add-input": "Input hinzufügen",
 		"new-block-cancel": "Abbruch",
-		"new-block-create": "Ok"
+		"new-block-create": "Ok",
+		"top-10": "Top 10",
+		"achievements": "Abzeichen",
+		"achievement-fast-name": "Super schnell!",
+		"achievement-fast-desc": "5 Aufgaben fertig an einem Tag!",
+		"achievement-first-name": "Erster!",
+		"achievement-first-desc": "Du bist auf dem ersten Platz!"
 	}
 }

@@ -1,4 +1,5 @@
 const ipcRenderer = require("electron/renderer").ipcRenderer;
+const ReconnectingWebSocket = require("reconnecting-websocket");
 import { setLang, translate, tryGetLanguage } from "./lang.js";
 import { createButtons } from "./levelpath/buttons.js";
 import { connectPort, port, writePort } from "./port.js";
@@ -326,15 +327,13 @@ document.querySelector("#start-btn").addEventListener("click", async () => {
 	currentLevel = parseInt(document.querySelector("#start-btn").getAttribute("data-level")) + 1;
 })
 document.querySelector("#submit-name").addEventListener("click", async () => {
-	await new Dialog("#log-in-dialog").hide();
-	await new Dialog("#loading-dialog").show();
+	// await new Dialog("#log-in-dialog").hide();
+	new Dialog("#loading-dialog").show();
 	const server = ipcRenderer.sendSync("config.get", "server");
 	wsServer = server;
-	ws = new WebSocket(server);
-	ws.addEventListener("open", () => {
-		ws.send("identify " + document.querySelector("#name").value);
-		document.querySelector("#status").innerText = translate("loading-tasks");
-	})
+	ws = new ReconnectingWebSocket(server);
+	// ws.addEventListener("open", () => {
+	// })
 	ws.addEventListener("message", async (data) => {
 		const msg = data.data.toString();
 		console.log("MESSAGE: " + msg);
@@ -385,6 +384,7 @@ document.querySelector("#submit-name").addEventListener("click", async () => {
 			new Dialog("#kick-dialog").show();
 		} else if(msg.startsWith("levelpath ")) {
 			await new Dialog("#loading-dialog").hide();
+			document.querySelector("#levelpath").style.display = "";
 			createButtons(msg.split(" ")[1], msg.split(" ")[2], msg.split(" ")[3] == "1");
 		} else if(msg.startsWith("info ")) {
 			const info = JSON.parse(msg.split("info ", 2)[1]);
@@ -392,7 +392,14 @@ document.querySelector("#submit-name").addEventListener("click", async () => {
 			document.querySelector("#startWindow p").innerHTML = info.desc;
 		} else if(msg.startsWith("school ")) {
 			document.querySelector("#school").innerHTML = msg.split("school ", 2)[1];
+			document.querySelector("#login").style.display = "none";
+			ws.send("identify " + document.querySelector("#name").value);
+			document.querySelector("#status").innerText = translate("loading-tasks");
 		}
+	})
+	ws.addEventListener("error", (e) => {
+		if(!new Dialog("#loading-dialog").isShown) new Dialog("#loading-dialog").show();
+		document.querySelector("#status").innerText = translate("connecting-to-server") + " (" + ws.retryCount + ")";
 	})
 })
 // document.querySelector("#exit-leaderboard").addEventListener("click", async () => {
@@ -400,10 +407,10 @@ document.querySelector("#submit-name").addEventListener("click", async () => {
 // 	// connectPort();
 // 	nextTask();
 // })
-document.querySelector("#select-language").addEventListener("click", async () => {
-	await new Dialog("#language-dialog").hide();
-	new Dialog("#log-in-dialog").show();
-})
+// document.querySelector("#select-language").addEventListener("click", async () => {
+// 	await new Dialog("#language-dialog").hide();
+// 	new Dialog("#log-in-dialog").show();
+// })
 document.querySelector("#custom-dialog-button").addEventListener("click", async () => {
 	await new Dialog("#custom-dialog").hide();
 	nextTask();

@@ -6,14 +6,21 @@ const langs = require("./lang.json");
 
 let lang;
 
-new Dialog("#language-dialog").show();
+// new Dialog("#language-dialog").show();
 
 document.querySelector("#tab-language").addEventListener("change", () => {
 	document.querySelector("#lang-selector").value = document.querySelector("#tab-language").value;
+	document.querySelector("#lang-selector2").value = document.querySelector("#tab-language").value;
 	langSelectorCallback();
 })
 document.querySelector("#lang-selector").addEventListener("change", () => {
 	document.querySelector("#tab-language").value = document.querySelector("#lang-selector").value;
+	document.querySelector("#lang-selector2").value = document.querySelector("#lang-selector").value;
+	langSelectorCallback();
+})
+document.querySelector("#lang-selector2").addEventListener("change", () => {
+	document.querySelector("#tab-language").value = document.querySelector("#lang-selector2").value;
+	document.querySelector("#lang-selector2").value = document.querySelector("#lang-selector2").value;
 	langSelectorCallback();
 })
 
@@ -23,12 +30,11 @@ export function tryGetLanguage() {
 	setLang(language);
 	document.querySelector("#tab-language").value = language;
 	document.querySelector("#lang-selector").value = language;
+	document.querySelector("#lang-selector2").value = language;
 }
 
 function langSelectorCallback() {
-	setLocale(document.querySelector("#tab-language").value);
-	lang = document.querySelector("#tab-language").value;
-	updateLanguages();
+	setLang(document.querySelector("#tab-language").value);
 }
 
 function updateLanguages() {

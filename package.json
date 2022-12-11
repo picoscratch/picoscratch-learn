@@ -8,21 +8,28 @@
     "dist": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-	"build": {
-		"appId": "de.cfp.picoscratch.learn",
-		"productName": "PicoScratch Learn",
-		"win": {
-			"target": ["portable", "nsis", "msi"],
-			"publisherName": "cfp",
-			"icon": "picoscratch.ico"
-		},
-		"linux": {
-			"target": ["AppImage", "deb"],
-			"maintainer": "cfp",
-			"icon": "picoscratch.png",
-			"category": "Development"
-		}
-	},
+  "build": {
+    "appId": "de.cfp.picoscratch.learn",
+    "productName": "PicoScratch Learn",
+    "win": {
+      "target": [
+        "portable",
+        "nsis",
+        "msi"
+      ],
+      "publisherName": "cfp",
+      "icon": "picoscratch.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "maintainer": "cfp",
+      "icon": "picoscratch.png",
+      "category": "Development"
+    }
+  },
   "keywords": [],
   "author": "cfp",
   "license": "MIT",
@@ -30,6 +37,7 @@
     "@electron/remote": "^2.0.8",
     "electron-prompt": "^1.7.0",
     "electron-store": "^8.1.0",
+    "reconnecting-websocket": "^4.4.0",
     "serialport": "^10.4.0",
     "xml2js": "^0.4.23"
   },

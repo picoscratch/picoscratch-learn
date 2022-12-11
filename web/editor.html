@@ -21,25 +21,25 @@
 </head>
 <body>
 	<div id="darken" style="z-index: 999; display: none;">
-		<div class="dialog" id="language-dialog" style="display: none;">
+		<!-- <div class="dialog" id="language-dialog" style="display: none;">
 			<h2 data-lang="dialog-language-title"></h2>
 			<select class="tab" id="lang-selector" style="color: white; margin-top: 10px;">
 				<option value="en">English</option>
 				<option value="de">Deutsch</option>
 			</select>
 			<button id="select-language" data-lang="dialog-language-select" style="font-size: 1.4rem;"></button>
-		</div>
+		</div> -->
 		<div class="dialog" id="connect-pico-dialog" style="display: none; position: absolute;">
 			<h2 data-lang="dialog-connect-pico-title"></h2>
 			<p data-lang="dialog-connect-pico-text"></p>
 			<object id="connect-pico-obj" data="connectpico.svg" type="image/svg+xml" style="width: 700px; margin-bottom: 15px;"></object>
 		</div>
-		<div class="dialog" id="log-in-dialog" style="display: none;">
+		<!-- <div class="dialog" id="log-in-dialog" style="display: none;">
 			<h2 data-lang="log-in-dialog-title"></h2>
 			<p data-lang="log-in-dialog-text"></p>
 			<input type="text" data-lang-placeholder="log-in-dialog-placeholder" style="text-align: center;" id="name">
 			<button id="submit-name" class="btn-green" style="font-size: 1.4rem;" data-lang="log-in-dialog-submit"></button>
-		</div>
+		</div> -->
 		<div class="dialog" id="waiting-for-teacher-dialog" style="display: none;">
 			<h2 data-lang="waiting-for-teacher-dialog-title"></h2>
 			<p data-lang="waiting-for-teacher-dialog-text"></p>
@@ -153,7 +153,23 @@
 		</pre>
 		<input type="text" id="console_input" data-lang-placeholder="send-to-console">
 	</div>
-	<div id="levelpath">
+	<div id="login" style="display: flex; align-items: center; justify-content: center; gap: 15px; height: 100vh;">
+		<div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+			<h2 style="margin: 0" data-lang="dialog-language-title"></h2>
+			<select class="tab" id="lang-selector" style="color: white; margin-top: 10px;">
+				<option value="en">English</option>
+				<option value="de">Deutsch</option>
+			</select>
+		</div>
+		<div style="background-color: #1d1d1d; width: 5px; height: 200px; border-radius: 15px; margin: 10px;"></div>
+		<div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+			<h2 style="margin: 0" data-lang="log-in-dialog-title"></h2>
+			<p style="margin: 10px" data-lang="log-in-dialog-text"></p>
+			<input type="text" data-lang-placeholder="log-in-dialog-placeholder" style="text-align: center;" id="name">
+			<button id="submit-name" class="btn-green" style="font-size: 1.4rem;" data-lang="log-in-dialog-submit"></button>
+		</div>
+	</div>
+	<div id="levelpath" style="display: none;">
 		<svg style="display: none;" id="btnComplete" width="70" height="71" viewBox="0 0 70 71" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<ellipse cx="35" cy="38.5" rx="35" ry="32.5" fill="#E69F00"/>
 			<ellipse class="moving" cx="35" cy="32.5" rx="35" ry="32.5" fill="#FFC800"/>
@@ -208,16 +224,20 @@
 
 		<div style="position: fixed; top: 5px; right: 15px;">
 			<div style="display: flex; gap: 15px; align-items: center; justify-content: right;">
-				<button>
+				<!-- <button>
 					<svg width="40px" height="40px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3.747a.75.75 0 0 1 .75-.75h16.504a.75.75 0 0 1 .6 1.2L16.69 9.748l4.164 5.552a.75.75 0 0 1-.6 1.2H4.5v4.749a.75.75 0 0 1-.648.743L3.75 22a.75.75 0 0 1-.743-.648L3 21.249V3.747Z" fill="#C34040"/></svg>
-				</button>
+				</button> -->
+				<select class="tab" id="lang-selector2" style="color: white;">
+					<option value="en">English</option>
+					<option value="de">Deutsch</option>
+				</select>
 				<div style="text-align: right;">
 					<h3 style="font-size: 1.8rem; margin: 0;" id="playername"></h3>
 					<p style="margin: 0; margin-top: 5px;" id="xp"></p>
 				</div>
 			</div>
 			<div style="background-color: #1D1D1D; border: solid 2px #2e2e2e; border-radius: 10px; width: 300px; display: flex; flex-direction: column; justify-content: center; text-align: center; gap: 5px; padding: 5px;">
-				<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;">Top 10</h2>
+				<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;" data-lang="top-10"></h2>
 				<div id="leaderboard">
 
 				</div>
@@ -273,7 +293,7 @@
 				</div> -->
 			</div>
 			<div style="background-color: #1D1D1D; border: solid 2px #2e2e2e; border-radius: 10px; width: 300px; display: flex; flex-direction: column; justify-content: center; text-align: center; gap: 5px; margin-top: 10px; padding: 5px;">
-				<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;">Abzeichen</h2>
+				<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;" data-lang="achievements"></h2>
 				<div style="display: none; gap: 5px; align-items: center;" id="achievement-fast" class="achievement">
 					<svg width="90px" viewBox="0 0 58 72" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<g clip-path="url(#clip0_803_63)">
@@ -294,8 +314,8 @@
 						</defs>
 					</svg>
 					<div style="text-align: left;">
-						<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;">Super schnell!</h2>
-						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5 Aufgaben fertig an einem Tag!</h2>
+						<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;" data-lang="achievement-fast-name"></h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;" data-lang="achievement-fast-desc"></h2>
 					</div>
 				</div>
 				<div style="display: none; gap: 5px; align-items: center;" id="achievement-first" class="achievement">
@@ -323,8 +343,8 @@
 						</defs>
 					</svg>						
 					<div style="text-align: left;">
-						<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;">Erster!</h2>
-						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">Du bist auf dem ersten Platz!</h2>
+						<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;" data-lang="achievement-first-name"></h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;" data-lang="achievement-first-desc"></h2>
 					</div>
 				</div>
 			</div>
