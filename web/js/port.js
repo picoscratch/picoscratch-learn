@@ -48,6 +48,7 @@ export function connectPort() {
 		})
 		port.on("open", () => {
 			console.log("open");
+			if(taskIndex == -1 && !connectDialogShown) nextTask();
 		})
 	});
 }
