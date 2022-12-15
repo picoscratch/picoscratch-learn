@@ -50,7 +50,8 @@
 		"achievement-fast-name": "Super fast!",
 		"achievement-fast-desc": "5 Levels completed on one day!",
 		"achievement-first-name": "First!",
-		"achievement-first-desc": "You are on first place!"
+		"achievement-first-desc": "You are on first place!",
+		"update-notification": "An Update is in progress"
 	},
 	"de": {
 		"start": "Start",
@@ -103,6 +104,7 @@
 		"achievement-fast-name": "Super schnell!",
 		"achievement-fast-desc": "5 Aufgaben fertig an einem Tag!",
 		"achievement-first-name": "Erster!",
-		"achievement-first-desc": "Du bist auf dem ersten Platz!"
+		"achievement-first-desc": "Du bist auf dem ersten Platz!",
+		"update-notification": "Ein Update läuft"
 	}
 }

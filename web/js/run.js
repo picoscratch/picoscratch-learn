@@ -1,6 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 import { toXml, workspace } from "./workspace.js";
+import * as COMPONENTS from "./run/components.js";
+import * as CONTROL from "./run/control.js";
+import * as DATA from "./run/data.js";
+import * as DEBUG from "./run/debug.js";
+import * as OPERATOR from "./run/operator.js";
+import * as PROCEDURES from "./run/procedures.js";
 
 const parseXML = require("xml2js").parseStringPromise;
 export let finalCode = "";
@@ -26,9 +32,15 @@ function addCode(f) {
 	if(f.STRINGS) STRINGS = {...STRINGS, ...f.STRINGS};
 }
 
-fs.readdirSync(path.join("web", "js", "run")).forEach(async (f) => {
-	addCode(await import("./" + path.join("run", f)));
-});
+// fs.readdirSync(path.join("web", "js", "run")).forEach(async (f) => {
+// 	addCode(await import("./" + path.join("run", f)));
+// });
+addCode(COMPONENTS);
+addCode(CONTROL);
+addCode(DATA);
+addCode(DEBUG);
+addCode(OPERATOR);
+addCode(PROCEDURES);
 
 export async function addImport(lib) {
 	if(!imports.includes(lib)) imports.push(lib);
