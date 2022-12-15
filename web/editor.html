@@ -20,6 +20,19 @@
 	<link rel="shortcut icon" href="../picoscratch.ico" type="image/x-icon">
 </head>
 <body>
+	<div id="notifybar">
+		<div class="notification" id="update-notification" style="display: none;">
+			<div class="progress-ring" id="update-ring">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="ring">
+					<circle class="dynamic" cx="50%" cy="50%" r="43.75%"></circle>
+				</svg>
+			</div>
+			<div style="display: flex; flex-direction: column; gap: 10px;">
+				<h2 style="margin: 0;" data-lang="update-notification"></h2>
+				<span id="updateProgress"></span>
+			</div>
+		</div>
+	</div>
 	<div id="darken" style="z-index: 999; display: none;">
 		<!-- <div class="dialog" id="language-dialog" style="display: none;">
 			<h2 data-lang="dialog-language-title"></h2>

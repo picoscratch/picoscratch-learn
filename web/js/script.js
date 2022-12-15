@@ -6,6 +6,7 @@ import { connectPort, port, writePort } from "./port.js";
 import { makeCode } from "./run.js";
 import { fromXml, toXml, taskXML, setTaskXML, startXML, createWorkspace, workspace } from "./workspace.js";
 const langs = require("./lang.json");
+import { setupUpdater } from "./updater.js";
 
 let picoW = true;
 export let leaderboard = [];
@@ -215,6 +216,7 @@ export function capitalizeWords(arr) {
 
 setLang("en");
 tryGetLanguage();
+setupUpdater();
 
 document.querySelector("#greenflag").addEventListener("click", async () => {
 	await run();

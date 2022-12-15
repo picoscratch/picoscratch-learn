@@ -1,21 +1,28 @@
 {
-  "name": "picoscratch",
-  "version": "0.1.0",
-  "description": "Scratch for the Raspberry Pi Pico",
+  "name": "picoscratch-learn",
+  "version": "1.2.0",
+  "description": "Learn Programming and Hardware with Scratch for the Raspberry Pi Pico",
   "main": "main.js",
-  "homepage": "https://github.com/cfpwastaken/picoscratch",
+  "homepage": "https://github.com/cfpwastaken/picoscratch-learn",
   "scripts": {
     "dist": "electron-builder",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://cfp.is-a.dev/update/picoscratch",
+        "useMultipleRangeRequest": false
+      }
+    ],
     "appId": "de.cfp.picoscratch.learn",
     "productName": "PicoScratch Learn",
     "win": {
       "target": [
         "portable",
-        "nsis",
-        "msi"
+        "nsis"
       ],
       "publisherName": "cfp",
       "icon": "picoscratch.ico"
@@ -39,6 +46,7 @@
     "electron-prompt": "^1.7.0",
     "electron-store": "^8.1.0",
     "reconnecting-websocket": "^4.4.0",
+    "electron-updater": "^5.3.0",
     "serialport": "^10.4.0",
     "xml2js": "^0.4.23"
   },
