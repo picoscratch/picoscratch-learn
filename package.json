@@ -13,7 +13,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "https://cfp.is-a.dev/update/picoscratch",
+        "url": "https://cfp.is-a.dev/update/picoscratch-learn",
         "useMultipleRangeRequest": false
       }
     ],
