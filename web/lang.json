@@ -6,7 +6,8 @@
 		"new-block-title": "New Block",
 		"new-block-add-input": "Add input",
 		"new-block-cancel": "Cancel",
-		"new-block-create": "Ok"
+		"new-block-create": "Ok",
+		"update-notification": "An Update is in progress"
 	},
 	"de": {
 		"dialog-connect-pico-title": "Pico verbinden",
@@ -15,6 +16,7 @@
 		"new-block-title": "Neuer Block",
 		"new-block-add-input": "Input hinzufügen",
 		"new-block-cancel": "Abbruch",
-		"new-block-create": "Ok"
+		"new-block-create": "Ok",
+		"update-notification": "Ein Update läuft"
 	}
 }

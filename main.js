@@ -3,6 +3,7 @@ const { readFileSync, writeFileSync } = require("fs");
 const path = require("path");
 const isPackaged = require("electron-is-packaged").isPackaged;
 require('@electron/remote/main').initialize()
+const { autoUpdater } = require("electron-updater");
 
 let win;
 
@@ -41,4 +42,20 @@ app.whenReady().then(() => {
 	win.loadFile("web/editor.html");
 
 	if(!isPackaged) win.webContents.openDevTools();
+
+	autoUpdater.checkForUpdates();
+})
+
+autoUpdater.on("update-available", (info) => {
+	console.log("update-available event", info);
+	win.webContents.send("update", info);
+})
+
+autoUpdater.on("download-progress", (progress) => {
+	console.log("download-progress", progress);
+	win.webContents.send("updateProgress", progress);
+})
+
+autoUpdater.on("update-downloaded", (info) => {
+	autoUpdater.quitAndInstall();
 })

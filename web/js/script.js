@@ -3,11 +3,13 @@ import { setLang } from "./lang.js";
 import { connectPort, writePort } from "./port.js";
 import { makeCode } from "./run.js";
 import { fromXml, toXml } from "./workspace.js";
+import { setupUpdater } from "./updater.js";
 
 let picoW = true;
 connectPort();
 
 setLang("en");
+setupUpdater();
 
 document.querySelector("#greenflag").addEventListener("click", async () => {
 	await run();
