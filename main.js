@@ -3,7 +3,6 @@ const { readFileSync, writeFileSync } = require("fs");
 const path = require("path");
 const isPackaged = require("electron-is-packaged").isPackaged;
 require('@electron/remote/main').initialize()
-const Store = require('electron-store');
 const { autoUpdater } = require("electron-updater");
 const Store = require("electron-store");
 
