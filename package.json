@@ -26,7 +26,8 @@
         "nsis"
       ],
       "publisherName": "cfp",
-      "icon": "picoscratch.ico"
+      "icon": "picoscratch.ico",
+			"verifyUpdateCodeSignature": false
     },
     "linux": {
       "target": [
