@@ -94,3 +94,22 @@ async function run() {
 	await writePort("\r\x04");
 	document.querySelector("#console").innerText = "";
 }
+
+ipcRenderer.on("devmode", (event) => {
+	console.log("%cPicoScratch DevMode", "font-size: 2rem");
+	console.log("%cIf you have no idea what this is, close this menu using the X in the top right corner!", "color: red; font-size: 1.2rem");
+	console.groupCollapsed("%cUseful:", "color: lightblue; font-size: 1.1rem");
+	console.log("%cconst ipc = require(\"electron\").ipcRenderer %cImport ipc to communicate with main process", "font-size: 1rem; padding: 5px; background-color: #1d1d1d; color: white; border-radius: 10px;", "padding-left: 5px; font-style: italic; font-size: 1rem;");
+	console.log("%cipc.send(\"config.set\", \"channel\", \"beta\") %cSet the update channel to beta, can use latest (default), beta and alpha", "font-size: 1rem; padding: 5px; background-color: #1d1d1d; color: white; border-radius: 10px;", "padding-left: 5px; font-style: italic; font-size: 1rem;");
+	console.log("%cipc.send(\"config.has\", \"channel\") %cCheck if a channel entry exists", "font-size: 1rem; padding: 5px; background-color: #1d1d1d; color: white; border-radius: 10px;", "padding-left: 5px; font-style: italic; font-size: 1rem;");
+	console.log("%cipc.send(\"config.get\", \"channel\") %cGet the current value of channel", "font-size: 1rem; padding: 5px; background-color: #1d1d1d; color: white; border-radius: 10px;", "padding-left: 5px; font-style: italic; font-size: 1rem;");
+	console.groupEnd();
+	document.querySelector("#devmode-notification").style.display = "";
+	setTimeout(() => {
+		document.querySelector("#devmode-notification").classList.add("notificationOut");
+	}, 2000);
+	setTimeout(() => {
+		document.querySelector("#devmode-notification").classList.remove("notificationOut");
+		document.querySelector("#devmode-notification").style.display = "none";
+	}, 3000);
+})
