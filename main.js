@@ -5,6 +5,7 @@ const isPackaged = require("electron-is-packaged").isPackaged;
 require('@electron/remote/main').initialize()
 const Store = require('electron-store');
 const { autoUpdater } = require("electron-updater");
+const Store = require("electron-store");
 
 const store = new Store();
 
@@ -53,6 +54,22 @@ function start() {
 		win.close();
 		start();
 	})
+	const STARTCODE = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a", "enter"];
+	let code = [...STARTCODE];
+	win.webContents.on("before-input-event", (e, input) => {
+		if(input.type == "keyUp") return;
+		if(!input.shift) return;
+    if(input.key.toLowerCase() == code[0]) {
+			code.shift();
+			if(code.length == 0) {
+				win.webContents.toggleDevTools();
+				win.webContents.send("devmode");
+				code = [...STARTCODE];
+			}
+    } else {
+			code = [...STARTCODE];
+		}
+  })
 
 	win.maximize();
 
@@ -64,6 +81,12 @@ function start() {
 
 app.whenReady().then(() => {
 	start();
+
+	if(store.has("channel")) {
+		autoUpdater.channel = store.get("channel");
+	} else {
+		autoUpdater.channel = "latest";
+	}
 
 	autoUpdater.checkForUpdates();
 })
