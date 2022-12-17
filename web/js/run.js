@@ -73,11 +73,11 @@ export async function makeCode(isW) {
 		})
 	}
 	const order = { "event_whenflagclicked": 100, "procedures_definition": 1, default: 10000 }
-	console.log(res.xml.block);
+	// console.log(res.xml.block);
 	for(const hat of res.xml.block.sort((a, b) => {
 		return (order[a.$.type] || order.default) - (order[b.$.type] || order.default);
 	})) {
-		console.log(hat);
+		// console.log(hat);
 		if(hat.$.type == "event_whenflagclicked") {
 			// workspace.glowStack(hat.$.id, true);
 			usedVars = [];
