@@ -62,7 +62,6 @@ let autoBlockGlow;
 export function nextTask() {
 	if(taskIndex == -1) {
 		connectPort();
-		if(!(port && port.isOpen)) return;
 	}
 	if(autoBlockGlow) clearTimeout(autoBlockGlow);
 	if(task.instructions[taskIndex] && task.instructions[taskIndex].block) {

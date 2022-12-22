@@ -28,7 +28,7 @@ class Dialog {
 		if(this.el.style.display == "none") return;
 		console.trace("Disappear", this.el.id);
     this.el.style.display = "none";
-    document.getElementById("darken").style.display = "none";
+		if(Dialog.shown == 1) document.getElementById("darken").style.display = "none";
 		Dialog.shown--;
     return this;
   }
@@ -38,10 +38,14 @@ class Dialog {
 		console.trace("Hide", this.el.id);
     this.el.classList.remove("dialog");
     this.el.classList.add("dialogOut");
-    document.getElementById("darken").id = "darkenOut";
-    await new Promise(resolve => setTimeout(resolve, 500));
-    document.getElementById("darkenOut").style.display = "none";
-    document.getElementById("darkenOut").id = "darken";
+    if(Dialog.shown == 1) {
+			document.getElementById("darken").id = "darkenOut";
+			await new Promise(resolve => setTimeout(resolve, 500));
+			document.getElementById("darkenOut").style.display = "none";
+			document.getElementById("darkenOut").id = "darken";
+		} else {
+			await new Promise(resolve => setTimeout(resolve, 500));
+		}
     this.el.style.display = "none";
     this.el.classList.add("dialog");
     this.el.classList.remove("dialogOut");

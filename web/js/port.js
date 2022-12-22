@@ -26,7 +26,6 @@ export function connectPort() {
 			document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb").id = "usb-connected";
 			setTimeout(async () => {
 				await new Dialog("#connect-pico-dialog").hide();
-				if(taskIndex == -1) nextTask();
 			}, 500);
 		}
 		picoport = picoport.path;
