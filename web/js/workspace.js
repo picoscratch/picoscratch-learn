@@ -2,8 +2,10 @@ import { setupCustomBlocks } from "./customblocks.js";
 
 const prompt = require("electron-prompt");
 import { getLang } from "./lang.js";
-import { loadNextLevel, nextTask, renderLeaderboards, capitalizeWords, leaderboard, taskIndex, currentLevel, wsServer, ws, task, blockTags, varTags, answeredqs, correctqs, setLeaderboard, setTaskIndex, setCurrentLevel, setWSServer, setWS, setTask, setBlockTags, setVarTags, setAnsweredQs, setCorrectQs } from "./script.js";
+import { taskIndex, nextTask, task } from "./task/level.js";
 export let workspace = null;
+export let blockTags = {};
+export let varTags = {};
 
 export const startXML = `<xml xmlns="http://www.w3.org/1999/xhtml">
 <variables></variables>
@@ -12,6 +14,8 @@ export const startXML = `<xml xmlns="http://www.w3.org/1999/xhtml">
 export let taskXML = startXML;
 
 export function setTaskXML(newXML) { taskXML = newXML; }
+export function setBlockTags(newBlockTags) { blockTags = newBlockTags; }
+export function setVarTags(newVarTags) { varTags = newVarTags; }
 
 export function createWorkspace() {
 	workspace = Blockly.inject("blocklyDiv", {

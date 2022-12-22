@@ -1,4 +1,4 @@
-import { nextTask, taskIndex } from './script.js';
+import { nextTask, taskIndex } from "./task/level.js";
 
 const { SerialPort } = require('serialport')
 const { autoDetect } = require("@serialport/bindings-cpp")

@@ -1,4 +1,4 @@
-import { ws } from "../script.js";
+import { ws } from "../task/server.js";
 
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
