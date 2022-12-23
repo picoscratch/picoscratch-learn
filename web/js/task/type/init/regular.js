@@ -1,5 +1,5 @@
-import { workspace } from "../../workspace.js";
-import { taskIndex } from "../level.js";
+import { workspace } from "../../../workspace.js";
+import { taskIndex } from "../../level.js";
 
 export let autoBlockGlow;
 

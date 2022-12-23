@@ -2,7 +2,7 @@ const ipcRenderer = require("electron/renderer").ipcRenderer;
 import { setLang, tryGetLanguage } from "./lang.js";
 import { writePort } from "./port.js";
 import { makeCode } from "./run.js";
-import { fromXml, taskXML } from "./workspace.js";
+import { fromXml, setCorrectPoints, taskXML } from "./workspace.js";
 const langs = require("./lang.json");
 import { setupUpdater } from "./updater.js";
 import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask } from "./task/level.js";
@@ -60,6 +60,7 @@ document.querySelector("#next").addEventListener("click", async () => {
 	setTaskIndex(-1);
 	setAnsweredQs(0);
 	setCorrectQs(0);
+	setCorrectPoints([]);
 })
 document.querySelector("#tab-scratch").addEventListener("click", async () => {
 	document.querySelector("#pythontab").style.display = "none";

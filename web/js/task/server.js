@@ -2,7 +2,7 @@ const ipcRenderer = require("electron/renderer").ipcRenderer;
 const ReconnectingWebSocket = require("reconnecting-websocket");
 import { translate } from "../lang.js";
 import { createButtons } from "../levelpath/buttons.js";
-import { createWorkspace, fromXml, setBlockTags, setTaskXML, setVarTags, startXML } from "../workspace.js";
+import { correctPoints, createWorkspace, fromXml, setBlockTags, setTaskXML, setVarTags, startXML, toXml } from "../workspace.js";
 import { renderLeaderboards, setLeaderboard } from "./leaderboard.js";
 import { nextTask, setCurrentLevel, setTask, setTaskIndex, task } from "./level.js";
 
@@ -37,6 +37,7 @@ export function connectServer() {
 				setBlockTags({});
 				setVarTags({});
 			}
+			correctPoints.push(toXml());
 			nextTask();
 		} else if(msg.startsWith("finished")) {
 			await new Dialog("#loading-dialog").hide();

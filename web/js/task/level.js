@@ -1,11 +1,11 @@
 import { connectPort, writePort } from "../port.js";
 import { ws, wsServer } from "../task/server.js";
 import { workspace } from "../workspace.js";
-import { autoBlockGlow } from "./type/regular.js";
-import { init as initComment } from "./type/comment.js"
-import { init as initDialog } from "./type/dialog.js"
-import { init as initQuiz } from "./type/quiz.js"
-import { init as initRegular } from "./type/regular.js"
+import { autoBlockGlow } from "./type/init/regular.js";
+import { init as initComment } from "./type/init/comment.js"
+import { init as initDialog } from "./type/init/dialog.js"
+import { init as initQuiz } from "./type/init/quiz.js"
+import { init as initRegular } from "./type/init/regular.js"
 import { updatePythonTab } from "../script.js";
 
 export let taskIndex = -1;

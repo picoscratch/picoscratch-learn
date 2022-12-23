@@ -1,4 +1,4 @@
-import { taskIndex } from "../level.js";
+import { taskIndex } from "../../level.js";
 
 export function init(task) {
 	document.querySelector("#quiz-question").innerHTML = task.instructions[taskIndex].question;

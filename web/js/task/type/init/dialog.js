@@ -1,5 +1,5 @@
-import { wsServer } from "../server.js";
-import { taskIndex } from "../level.js";
+import { wsServer } from "../../server.js";
+import { taskIndex } from "../../level.js";
 
 export function init(task) {
 	document.querySelector("#custom-dialog-title").innerHTML = task.instructions[taskIndex].title;
