@@ -51,7 +51,7 @@ export function nextTask() {
 	}
 	if(autoBlockGlow) clearTimeout(autoBlockGlow);
 	if(task.instructions[taskIndex] && task.instructions[taskIndex].block) {
-		workspace.glowStack(task.instructions[taskIndex].block, false);
+		if(workspace.getBlockById(task.instructions[taskIndex].block)) workspace.glowStack(task.instructions[taskIndex].block, false);
 	}
 	taskIndex++;
 	if(taskIndex >= task.instructions.length) {
