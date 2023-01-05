@@ -1,4 +1,4 @@
-import { workspace } from "../../../workspace.js";
+import { varTags, workspace } from "../../../workspace.js";
 
 export function event(e, INSTRUCTION) {
 	if(!e instanceof Blockly.Events.EndBlockDrag) return false;
