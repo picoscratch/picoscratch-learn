@@ -3,6 +3,7 @@ import { blockTags, workspace } from "../../../workspace.js";
 export function event(e, INSTRUCTION) {
 	if(!(e instanceof Blockly.Events.EndBlockDrag)) return;
 	console.log("Regular event: ", e, INSTRUCTION);
+	if(!workspace.getBlockById(e.blockId)) return;
 	if(workspace.getBlockById(e.blockId).type == "event_whenflagclicked") return;
 	if(INSTRUCTION.block && workspace.getBlockById(e.blockId).type !== INSTRUCTION.block) {
 		console.log(INSTRUCTION.block + " wanted but " + workspace.getBlockById(e.blockId).type + " given");

@@ -62,6 +62,7 @@ export function createWorkspace() {
 	workspace.addChangeListener((e) => {
 		console.log(e);
 		const INSTRUCTION = task.instructions[taskIndex];
+		if(!INSTRUCTION) return;
 		let allow = true;
 		if(INSTRUCTION.type == "dialog" || INSTRUCTION.type == "quiz" || INSTRUCTION.type == "comment") return;
 		if(e instanceof Blockly.Events.CommentCreate || e instanceof Blockly.Events.CommentDelete || e instanceof Blockly.Events.CommentMove || e instanceof Blockly.Events.CommentChange) return;
