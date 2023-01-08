@@ -2,7 +2,7 @@ const ipcRenderer = require("electron/renderer").ipcRenderer;
 import { setLang, tryGetLanguage } from "./lang.js";
 import { writePort } from "./port.js";
 import { makeCode } from "./run.js";
-import { correctPoints, createWorkspace, fromXml, setCorrectPoints, taskXML, toXml } from "./workspace.js";
+import { correctPoints, createWorkspace, fromXml, setCorrectPoints, taskXML, toXml, workspace } from "./workspace.js";
 const langs = require("./lang.json");
 import { setupUpdater } from "./updater.js";
 import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask } from "./task/level.js";
@@ -133,6 +133,9 @@ document.querySelector("#start-btn").addEventListener("click", async () => {
 	setCurrentLevel(parseInt(document.querySelector("#start-btn").getAttribute("data-level")) + 1);
 })
 document.querySelector("#fix").addEventListener("click", () => {
+	workspace.refreshToolboxSelection_();
+})
+document.querySelector("#fix").addEventListener("doubleclick", () => {
 	const xml = toXml();
 	while(document.querySelector("#blocklyDiv").firstChild) {
 		document.querySelector("#blocklyDiv").firstChild.remove();

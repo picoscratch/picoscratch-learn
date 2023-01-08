@@ -69,6 +69,7 @@ export function createWorkspace() {
 		if(e instanceof Blockly.Events.Ui) return;
 		//if(e instanceof Blockly.Events.Move && !e.oldParentId) return;
 		if(e instanceof Blockly.Events.Move) return;
+		if(e instanceof Blockly.Events.Delete && e.oldXml.tagName == "SHADOW") return;
 		const regularEventResult = regularEvent(e, INSTRUCTION);
 		console.log("regular event result: ", regularEventResult);
 		if(regularEventResult !== undefined && !regularEventResult) {
