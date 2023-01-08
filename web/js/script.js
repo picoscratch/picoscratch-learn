@@ -2,7 +2,7 @@ const ipcRenderer = require("electron/renderer").ipcRenderer;
 import { setLang, tryGetLanguage } from "./lang.js";
 import { writePort } from "./port.js";
 import { makeCode } from "./run.js";
-import { correctPoints, fromXml, setCorrectPoints, taskXML, toXml } from "./workspace.js";
+import { correctPoints, createWorkspace, fromXml, setCorrectPoints, taskXML, toXml } from "./workspace.js";
 const langs = require("./lang.json");
 import { setupUpdater } from "./updater.js";
 import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask } from "./task/level.js";
@@ -127,8 +127,18 @@ document.querySelector("#pico-w").addEventListener("click", () => {
 	}, 80);
 })
 document.querySelector("#start-btn").addEventListener("click", async () => {
+	document.querySelector("#play-btn-svg").style.display = "none";
+	document.querySelector("#level-loader").style.display = "";
 	ws.send("task " + (parseInt(document.querySelector("#start-btn").getAttribute("data-level")) + 1));
 	setCurrentLevel(parseInt(document.querySelector("#start-btn").getAttribute("data-level")) + 1);
+})
+document.querySelector("#fix").addEventListener("click", () => {
+	const xml = toXml();
+	while(document.querySelector("#blocklyDiv").firstChild) {
+		document.querySelector("#blocklyDiv").firstChild.remove();
+	}
+	createWorkspace();
+	fromXml(xml);
 })
 document.querySelector("#submit-name").addEventListener("click", async () => {
 	// await new Dialog("#log-in-dialog").hide();

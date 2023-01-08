@@ -25,6 +25,8 @@ export function connectServer() {
 			document.querySelector("#taskname").innerText = task.name;
 			document.querySelector("#levelpath").style.display = "none";
 			document.querySelector("#editor").style.display = "";
+			document.querySelector("#level-loader").style.display = "none";
+			document.querySelector("#play-btn-svg").style.display = "";
 			createWorkspace();
 			if(task.noclear) {
 				setVarTags(task.varTags)

@@ -67,7 +67,8 @@ export function createWorkspace() {
 		if(INSTRUCTION.type == "dialog" || INSTRUCTION.type == "quiz" || INSTRUCTION.type == "comment") return;
 		if(e instanceof Blockly.Events.CommentCreate || e instanceof Blockly.Events.CommentDelete || e instanceof Blockly.Events.CommentMove || e instanceof Blockly.Events.CommentChange) return;
 		if(e instanceof Blockly.Events.Ui) return;
-		if(e instanceof Blockly.Events.Move && !e.oldParentId) return;
+		//if(e instanceof Blockly.Events.Move && !e.oldParentId) return;
+		if(e instanceof Blockly.Events.Move) return;
 		const regularEventResult = regularEvent(e, INSTRUCTION);
 		console.log("regular event result: ", regularEventResult);
 		if(regularEventResult !== undefined && !regularEventResult) {

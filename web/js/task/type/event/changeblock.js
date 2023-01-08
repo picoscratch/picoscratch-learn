@@ -1,8 +1,8 @@
-import { blockTags, workspace } from "../../../workspace.js";
+import { blockTags, varTags, workspace } from "../../../workspace.js";
 import { taskIndex } from "../../level.js";
 
 export function event(e, INSTRUCTION) {
-	if(!e instanceof Blockly.Events.Change) return false;
+	if(!(e instanceof Blockly.Events.Change)) return false;
 	if(e.element != "field") return false;
 	if(!INSTRUCTION.targetBlockTag) {
 		console.warn("No target block tag set to task index " + taskIndex);
