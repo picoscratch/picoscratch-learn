@@ -51,7 +51,18 @@
 		"achievement-fast-desc": "5 Levels completed on one day!",
 		"achievement-first-name": "First!",
 		"achievement-first-desc": "You are on first place!",
-		"update-notification": "An Update is in progress"
+		"update-notification": "An Update is in progress",
+		"setup": "PicoScratch Learn Setup",
+		"schoolcode": "School Code",
+		"schoolcode-placeholder": "Your school code...",
+		"room": "Room",
+		"no-room": "Select room",
+		"lets-get-started": "Let's get started!",
+		"finish": "Finish",
+		"no-rooms": "No rooms available. Create one in the admin panel.",
+		"no-course-yet": "Course not available yet",
+		"no-course-yet-text": "The teacher hasn't chosen the course yet.",
+		"no-course-yet-close": "Close"
 	},
 	"de": {
 		"start": "Start",
@@ -105,6 +116,17 @@
 		"achievement-fast-desc": "5 Aufgaben fertig an einem Tag!",
 		"achievement-first-name": "Erster!",
 		"achievement-first-desc": "Du bist auf dem ersten Platz!",
-		"update-notification": "Ein Update läuft"
+		"update-notification": "Ein Update läuft",
+		"setup": "PicoScratch Learn Einrichtung",
+		"schoolcode": "Schulcode",
+		"schoolcode-placeholder": "Dein Schulcode...",
+		"room": "Raum",
+		"no-room": "Raum auswählen",
+		"lets-get-started": "Lass uns loslegen!",
+		"finish": "Fertig",
+		"no-rooms": "Keine Räume verfügbar. Erstelle einen im Admin Panel.",
+		"no-course-yet": "Kurs noch nicht verfügbar.",
+		"no-course-yet-text": "Der Lehrer hat noch keinen Kurs ausgewählt.",
+		"no-course-yet-close": "Schließen"
 	}
 }

@@ -9,18 +9,18 @@ let lang;
 // new Dialog("#language-dialog").show();
 
 document.querySelector("#tab-language").addEventListener("change", () => {
-	document.querySelector("#lang-selector").value = document.querySelector("#tab-language").value;
+	// document.querySelector("#lang-selector").value = document.querySelector("#tab-language").value;
 	document.querySelector("#lang-selector2").value = document.querySelector("#tab-language").value;
 	langSelectorCallback();
 })
-document.querySelector("#lang-selector").addEventListener("change", () => {
-	document.querySelector("#tab-language").value = document.querySelector("#lang-selector").value;
-	document.querySelector("#lang-selector2").value = document.querySelector("#lang-selector").value;
-	langSelectorCallback();
-})
+// document.querySelector("#lang-selector").addEventListener("change", () => {
+// 	document.querySelector("#tab-language").value = document.querySelector("#lang-selector").value;
+// 	document.querySelector("#lang-selector2").value = document.querySelector("#lang-selector").value;
+// 	langSelectorCallback();
+// })
 document.querySelector("#lang-selector2").addEventListener("change", () => {
 	document.querySelector("#tab-language").value = document.querySelector("#lang-selector2").value;
-	document.querySelector("#lang-selector2").value = document.querySelector("#lang-selector2").value;
+	// document.querySelector("#lang-selector").value = document.querySelector("#lang-selector2").value;
 	langSelectorCallback();
 })
 
@@ -29,7 +29,7 @@ export function tryGetLanguage() {
 	const language = ipcRenderer.sendSync("config.get", "lang");
 	setLang(language);
 	document.querySelector("#tab-language").value = language;
-	document.querySelector("#lang-selector").value = language;
+	// document.querySelector("#lang-selector").value = language;
 	document.querySelector("#lang-selector2").value = language;
 }
 

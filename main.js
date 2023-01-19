@@ -36,6 +36,12 @@ function start() {
 	ipcMain.on("config.has", (e, key) => {
 		e.returnValue = store.has(key);
 	})
+	ipcMain.on("config.del", (e, key) => {
+		store.delete(key);
+	})
+	ipcMain.on("version", (e) => {
+		e.returnValue = app.getVersion();
+	})
 	ipcMain.on("save", (e, xml) => {
 		const path = dialog.showSaveDialogSync(win, { title: "Projekt speichern...", defaultPath: "project.xml", filters: [{ name: "PicoScratch Projekte", extensions: ["xml"] }] });
 		if(path) {

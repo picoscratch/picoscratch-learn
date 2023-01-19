@@ -20,6 +20,9 @@ export function setTask(newTask) { task = newTask; }
 export function setAnsweredQs(newAnsweredQs) { answeredqs = newAnsweredQs; }
 export function setCorrectQs(newCorrectQs) { correctqs = newCorrectQs; }
 
+/**
+ * @deprecated
+ */
 export async function loadNextLevel() {
 	currentLevel++;
 	taskIndex = -1;
@@ -30,8 +33,8 @@ export async function loadNextLevel() {
 	// }
 	// document.querySelector("#taskname").innerText = task.name;
 	// nextTask();
-	await new Dialog("#loading-dialog").show()
-	ws.send("done " + currentLevel + " " + answeredqs + " " + correctqs);
+	// await new Dialog("#loading-dialog").show()
+	// ws.send("done " + currentLevel + " " + answeredqs + " " + correctqs);
 	answeredqs = 0;
 	correctqs = 0;
 	// ws.send("task");

@@ -2,15 +2,10 @@ html, body {
 	height: 100%;
 }
 
-@font-face {
-	font-family: "Roboto";
-	src: url(Roboto-Regular.ttf);
-}
-
 body {
 	background-color: #0e0e0e;
 	color: white;
-	font-family: Roboto;
+	font-family: "Roboto Round";
 	margin: 0;
 }
 
@@ -318,5 +313,108 @@ button {
 	}
 	100% {
 		right: -500px;
+	}
+}
+
+select {
+	background-color: #1d1d1d;
+	color: white;
+	font-size: 1.7rem;
+	border-radius: 10px;
+}
+
+#rooms {
+	display: flex;
+}
+
+#rooms button {
+	padding: 50px;
+	padding-left: 30px;
+	padding-right: 30px;
+	background-color: #1d1d1d;
+	border: none;
+	border-radius: 0;
+	font-size: 1.8rem;
+	border-right: 2px solid #3f3f3f;
+	transition: background-color 300ms;
+}
+
+#rooms button:first-of-type {
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+#rooms button:last-of-type {
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	border-right: none;
+}
+
+#rooms button:hover {
+	background-color: #3f3f3f;
+}
+
+#rooms button:active {
+	top: 0;
+}
+
+#rooms button.selected {
+	background-color: #2e2e2e;
+}
+
+#start h2 {
+	animation: comeInAndAway 3s forwards;
+	animation-delay: 1s;
+	opacity: 0;
+}
+
+.goAway {
+	animation: goAway 1s forwards;
+	opacity: 1;
+}
+
+.comeIn {
+	animation: comeIn 1s forwards;
+	opacity: 0;
+}
+
+@keyframes comeIn {
+	0% {
+		transform: translateY(-50px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+@keyframes goAway {
+	0% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(50px);
+		opacity: 0;
+	}
+}
+
+@keyframes comeInAndAway {
+	0% {
+		transform: translateY(-50px);
+		opacity: 0;
+	}
+	30% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+	60% {
+		transform: translateY(0px);
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(50px);
+		opacity: 0;
 	}
 }

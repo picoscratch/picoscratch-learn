@@ -114,6 +114,11 @@
 				<button id="createBlock" style="font-size: 1.5rem; color: white;" data-lang="new-block-create"></button>
 			</div>
 		</div>
+		<div class="dialog" id="no-course-yet-dialog" style="display: none;">
+			<h2 data-lang="no-course-yet"></h2>
+			<p data-lang="no-course-yet-text" style="margin-bottom: 5px;"></p>
+			<button id="no-course-yet-close" data-lang="no-course-yet-close" style="font-size: 1.4rem;"></button>
+		</div>
 	</div>
 	<div id="editor" style="display: none;">
 		<div id="topbar" style="display: flex; gap: 5px; align-items: center;">
@@ -176,15 +181,30 @@
 		</pre>
 		<input type="text" id="console_input" data-lang-placeholder="send-to-console">
 	</div>
-	<div id="login" style="display: flex; align-items: center; justify-content: center; gap: 15px; height: 100vh;">
-		<div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+	<div id="setup" style="display: none; align-items: center; justify-content: center; gap: 15px; height: 100vh; flex-direction: column;">
+		<div id="setup-process" class="comeIn">
+			<h2 style="font-size: 2.4rem; margin: 0; text-align: center;" data-lang="setup"></h2>
+			<div id="schoolcode-input" style="display: flex; align-items: center; flex-direction: column;">
+				<h3 data-lang="schoolcode" style="margin: 0; font-size: 1.5rem;"></h3>
+				<input style="font-size: 1.4rem; text-align: center; padding: 2px;" type="text" id="schoolcode" data-lang-placeholder="schoolcode-placeholder" maxlength="7">
+			</div>
+			<div id="room-input" class="comeIn" style="display: none; align-items: center; flex-direction: column;">
+				<h3 data-lang="room" style="margin: 0; font-size: 1.5rem;"></h3>
+				<div id="rooms"></div>
+				<button id="setup-finish" data-lang="finish" style="font-size: 1.4rem; opacity: 0; pointer-events: none;"></button>
+			</div>
+		</div>
+	</div>
+	<div id="login" style="display: none; align-items: center; justify-content: center; gap: 15px; height: 100vh;" class="comeIn">
+		<!-- <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
 			<h2 style="margin: 0" data-lang="dialog-language-title"></h2>
 			<select class="tab" id="lang-selector" style="color: white; margin-top: 10px;">
 				<option value="en">English</option>
 				<option value="de">Deutsch</option>
 			</select>
 		</div>
-		<div style="background-color: #1d1d1d; width: 5px; height: 200px; border-radius: 15px; margin: 10px;"></div>
+		<div style="background-color: #1d1d1d; width: 5px; height: 200px; border-radius: 15px; margin: 10px;"></div> -->
+		<span style="position: fixed; top: 10px; right: 10px; font-size: 1.4rem;" id="version"></span>
 		<div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
 			<h2 style="margin: 0" data-lang="log-in-dialog-title"></h2>
 			<p style="margin: 10px" data-lang="log-in-dialog-text"></p>
@@ -192,7 +212,7 @@
 			<button id="submit-name" class="btn-green" style="font-size: 1.4rem;" data-lang="log-in-dialog-submit"></button>
 		</div>
 	</div>
-	<div id="levelpath" style="display: none;">
+	<div id="levelpath" style="display: none;" class="comeIn">
 		<svg style="display: none;" id="btnComplete" width="70" height="71" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<ellipse cx="29.5775" cy="32.5352" rx="29.5775" ry="27.4648" fill="#30A030"/>
 			<ellipse cx="29.5775" cy="27.4648" rx="29.5775" ry="27.4648" fill="#40C340" class="moving"/>

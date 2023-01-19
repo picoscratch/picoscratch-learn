@@ -81,7 +81,8 @@ function createButton(template, locked) {
 				duration: 150,
 				fill: "forwards"
 			})
-			ws.send("info " + (mi + 1));
+			// ws.send("info " + (mi + 1));
+			ws.send(JSON.stringify({ type: "info", level: mi + 1 }))
 		})
 	}
   
