@@ -418,3 +418,7 @@ select {
 		opacity: 0;
 	}
 }
+
+input {
+	background-color: rgba(29, 29, 29, 0.8);
+}
