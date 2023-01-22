@@ -2,6 +2,7 @@ const ipcRenderer = require("electron/renderer").ipcRenderer;
 const ReconnectingWebSocket = require("reconnecting-websocket");
 import { setLang, translate } from "../lang.js";
 import { createButtons } from "../levelpath/buttons.js";
+import { PSNotification } from "../notification.js";
 import { $ } from "../util.js";
 import { correctPoints, createWorkspace, fromXml, setBlockTags, setTaskXML, setVarTags, startXML, toXml } from "../workspace.js";
 import { renderLeaderboards, setLeaderboard } from "./leaderboard.js";
@@ -41,6 +42,7 @@ export function connectServer(code) {
 			if(ipcRenderer.sendSync("config.has", "room")) ws.send(JSON.stringify({ type: "room", uuid: ipcRenderer.sendSync("config.get", "room") }));
 			$("#school").innerText = packet.schoolname;
 			await new Dialog("#loading-dialog").hide();
+			await new PSNotification("#connection-lost-notification").hide();
 			setLang(packet.lang);
 			// if(ipcRenderer.sendSync("config.has", "device")) {
 			// 	ws.send(JSON.stringify({type: "deviceIdentify", device: ipcRenderer.sendSync("config.get", "device")}));
@@ -116,7 +118,8 @@ export function connectServer(code) {
 	})
 	ws.addEventListener("error", () => {
 		// if(!new Dialog("#loading-dialog").isShown) new Dialog("#loading-dialog").show();
-		document.querySelector("#status").innerText = translate("connecting-to-server") + " (" + (ws.retryCount + 1) + ")";
+		// document.querySelector("#status").innerText = translate("connecting-to-server") + " (" + (ws.retryCount + 1) + ")";
+		new PSNotification("#connection-lost-notification").show();
 	})
 	// const server = ipcRenderer.sendSync("config.get", "server");
 	// wsServer = server;

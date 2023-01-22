@@ -62,7 +62,8 @@
 		"no-rooms": "No rooms available. Create one in the admin panel.",
 		"no-course-yet": "Course not available yet",
 		"no-course-yet-text": "The teacher hasn't chosen the course yet.",
-		"no-course-yet-close": "Close"
+		"no-course-yet-close": "Close",
+		"connection-lost": "Connection to server lost.\nReconecting..."
 	},
 	"de": {
 		"start": "Start",
@@ -127,6 +128,7 @@
 		"no-rooms": "Keine Räume verfügbar. Erstelle einen im Admin Panel.",
 		"no-course-yet": "Kurs noch nicht verfügbar.",
 		"no-course-yet-text": "Der Lehrer hat noch keinen Kurs ausgewählt.",
-		"no-course-yet-close": "Schließen"
+		"no-course-yet-close": "Schließen",
+		"connection-lost": "Verbindung zum Server verloren.\nVersuche die Verbindung wiederherzustellen..."
 	}
 }
