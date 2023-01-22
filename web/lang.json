@@ -63,7 +63,10 @@
 		"no-course-yet": "Course not available yet",
 		"no-course-yet-text": "The teacher hasn't chosen the course yet.",
 		"no-course-yet-close": "Close",
-		"connection-lost": "Connection to server lost.\nReconecting..."
+		"connection-lost": "Connection to server lost.\nReconecting...",
+		"wiring": "Wiring",
+		"wiring-later": "You can view this again later.",
+		"wiring-close": "Close"
 	},
 	"de": {
 		"start": "Start",
@@ -129,6 +132,9 @@
 		"no-course-yet": "Kurs noch nicht verfügbar.",
 		"no-course-yet-text": "Der Lehrer hat noch keinen Kurs ausgewählt.",
 		"no-course-yet-close": "Schließen",
-		"connection-lost": "Verbindung zum Server verloren.\nVersuche die Verbindung wiederherzustellen..."
+		"connection-lost": "Verbindung zum Server verloren.\nVersuche die Verbindung wiederherzustellen...",
+		"wiring": "Verdrahtung",
+		"wiring-later": "Du kannst dies später nochmal ansehen.",
+		"wiring-close": "Schließen"
 	}
 }

@@ -129,6 +129,17 @@
 			<p data-lang="no-course-yet-text" style="margin-bottom: 5px;"></p>
 			<button id="no-course-yet-close" data-lang="no-course-yet-close" style="font-size: 1.4rem;"></button>
 		</div>
+		<div class="dialog" id="wiring-begin-dialog" style="display: none;">
+			<h2 data-lang="wiring"></h2>
+			<p data-lang="wiring-later" style="margin-bottom: 5px;"></p>
+			<img id="wiring-begin-image" style="width: 80%;" alt="This is supposed to be an image, but it isn't working.">
+			<button id="wiring-begin-close" data-lang="wiring-close" style="font-size: 1.4rem;"></button>
+		</div>
+		<div class="dialog" id="wiring-dialog" style="display: none;">
+			<h2 data-lang="wiring"></h2>
+			<img id="wiring-image" style="width: 80%;" alt="This is supposed to be an image, but it isn't working.">
+			<button id="wiring-close" data-lang="wiring-close" style="font-size: 1.4rem;"></button>
+		</div>
 	</div>
 	<div id="editor" style="display: none;">
 		<div id="topbar" style="display: flex; gap: 5px; align-items: center;">
@@ -152,6 +163,9 @@
 			</button>
 			<button style="margin: 0;" id="back">
 				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.75 4a3.25 3.25 0 0 1 3.245 3.066L22 7.25v9.5a3.25 3.25 0 0 1-3.066 3.245L18.75 20h-8.501a3.25 3.25 0 0 1-2.085-.756l-.155-.139-4.995-4.75a3.25 3.25 0 0 1-.116-4.594l.116-.116 4.995-4.75a3.25 3.25 0 0 1 2.032-.888L10.25 4h8.501Zm-7.304 4.397a.75.75 0 0 0-1.049 1.05l.073.083L12.94 12l-2.47 2.47-.073.084a.75.75 0 0 0 1.05 1.049l.083-.073L14 13.061l2.47 2.47.084.072a.75.75 0 0 0 1.049-1.05l-.073-.083L15.061 12l2.47-2.47.072-.084a.75.75 0 0 0-1.05-1.049l-.083.073L14 10.939l-2.47-2.47-.084-.072Z" fill="#ffffff"/></svg>
+			</button>
+			<button id="wiring">
+				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21.707 3.707a1 1 0 0 0-1.414-1.414L18.496 4.09a4.252 4.252 0 0 0-5.251.604l-1.068 1.069a1.75 1.75 0 0 0 0 2.474l3.585 3.586a1.75 1.75 0 0 0 2.475 0l1.068-1.068a4.252 4.252 0 0 0 .605-5.25l1.797-1.798ZM10.707 11.707a1 1 0 0 0-1.414-1.414l-1.47 1.47-.293-.293a.75.75 0 0 0-1.06 0l-1.775 1.775a4.252 4.252 0 0 0-.605 5.25l-1.797 1.798a1 1 0 1 0 1.414 1.414l1.798-1.797a4.252 4.252 0 0 0 5.25-.605l1.775-1.775a.75.75 0 0 0 0-1.06l-.293-.293 1.47-1.47a1 1 0 0 0-1.414-1.414l-1.47 1.47-1.586-1.586 1.47-1.47Z" fill="#4040C3"/></svg>
 			</button>
 			<button id="fix">
 				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14.25 2.001a.75.75 0 0 1 .743.648l.007.102v.752c0 .633-.196 1.22-.53 1.704a3.75 3.75 0 0 1 2.521 3.29h.256a2.25 2.25 0 0 0 2.24-2.259l-.006-1.485a.75.75 0 0 1 1.5-.006l.007 1.485a3.75 3.75 0 0 1-3.536 3.76l-.214.006L17 9.997v1.502h4.253a.75.75 0 0 1 .743.649l.007.102a.75.75 0 0 1-.648.743l-.102.007H17v1.999h.238l.214.007a3.75 3.75 0 0 1 3.531 3.56l.005.2-.007 1.485a.75.75 0 0 1-1.493.095l-.007-.102.007-1.485a2.25 2.25 0 0 0-2.087-2.253l-.154-.006h-.476a5.002 5.002 0 0 1-9.542 0H6.74a2.25 2.25 0 0 0-2.24 2.259l.005 1.485a.75.75 0 1 1-1.5.007L3 18.765a3.75 3.75 0 0 1 3.535-3.76L6.75 15l.25-.001v-2H2.75a.75.75 0 0 1-.743-.648L2 12.25a.75.75 0 0 1 .648-.743l.102-.007L7 11.499V9.997h-.25l-.215-.005a3.75 3.75 0 0 1-3.53-3.56L3 6.231l.006-1.485A.75.75 0 0 1 4.5 4.65l.006.102L4.5 6.238a2.25 2.25 0 0 0 2.087 2.254l.154.006h.268A3.753 3.753 0 0 1 9.53 5.206a2.968 2.968 0 0 1-.524-1.494L9 3.503v-.752a.75.75 0 0 1 1.493-.102l.007.102v.752a1.5 1.5 0 0 0 2.993.145l.007-.145v-.752a.75.75 0 0 1 .75-.75Z" fill="#C34040"/></svg>

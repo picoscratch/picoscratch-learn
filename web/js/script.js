@@ -208,6 +208,16 @@ $("#kick-dialog-button").addEventListener("click", async () => {
 $("#no-course-yet-close").addEventListener("click", async () => {
 	await new Dialog("#no-course-yet-dialog").hide();
 })
+$("#wiring-close").addEventListener("click", async () => {
+	await new Dialog("#wiring-dialog").hide();
+})
+$("#wiring-begin-close").addEventListener("click", async () => {
+	await new Dialog("#wiring-begin-dialog").hide();
+	nextTask();
+})
+$("#wiring").addEventListener("click", async () => {
+	new Dialog("#wiring-dialog").show();
+})
 if(!ipcRenderer.sendSync("config.has", "schoolcode")) {
 	$("#setup").style.display = "flex";
 	$("#schoolcode-input input").addEventListener("keyup", async (e) => {

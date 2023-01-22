@@ -110,7 +110,15 @@ export function connectServer(code) {
 				setVarTags({});
 			}
 			correctPoints.push(toXml());
-			nextTask();
+			if(packet.task.wiring) {
+				$("#wiring").style.display = "";
+				$("#wiring-begin-image").src = HTTP_PROTOCOL + "://" + SERVER + "/img/" + packet.task.wiring;
+				$("#wiring-image").src = HTTP_PROTOCOL + "://" + SERVER + "/img/" + packet.task.wiring;
+				new Dialog("#wiring-begin-dialog").show();
+			} else {
+				$("#wiring").style.display = "none";
+				nextTask();
+			}
 		} else if(packet.type == "kick") {
 			await Dialog.hideall();
 			new Dialog("#kick-dialog").show();
