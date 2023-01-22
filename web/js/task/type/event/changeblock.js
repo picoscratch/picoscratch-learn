@@ -1,5 +1,8 @@
+import { $ } from "../../../util.js";
 import { blockTags, varTags, workspace } from "../../../workspace.js";
 import { taskIndex } from "../../level.js";
+
+let soundDelay = false;
 
 export function event(e, INSTRUCTION) {
 	if(!(e instanceof Blockly.Events.Change)) return false;
@@ -20,8 +23,33 @@ export function event(e, INSTRUCTION) {
 		console.log(e.name + " expected but got " + INSTRUCTION.name);
 		return false;
 	}
-	if(e.newValue == INSTRUCTION.to || (INSTRUCTION.valueVarTag && e.newValue == varTags[INSTRUCTION.valueVarTag]) || (INSTRUCTION.valueBlockTag && e.newValue == blockTags[INSTRUCTION.valueBlockTag])) {
-		return true;
+	// for(let i = 0; i < wrong.length; i++) { if(hav[i] != wrong[i]) {console.log("OH NO!")} }
+
+	
+	// e.newValue == INSTRUCTION.to || 
+
+	if(INSTRUCTION.valueVarTag || INSTRUCTION.valueBlockTag) {
+		if((INSTRUCTION.valueVarTag && e.newValue == varTags[INSTRUCTION.valueVarTag]) || (INSTRUCTION.valueBlockTag && e.newValue == blockTags[INSTRUCTION.valueBlockTag])) {
+			return true;
+		}
+	} else {
+		if(e.newValue == INSTRUCTION.to) {
+			return true;
+		}
+		for(let i = 0; i < e.newValue.length; i++) {
+			if(e.newValue[i] != INSTRUCTION.to[i]) {
+				// return false;
+				// change the value back
+				workspace.getBlockById(e.blockId).setFieldValue(e.oldValue, e.name);
+				if($(".blocklyHtmlInput")) $(".blocklyHtmlInput").value = e.oldValue;
+				if(!soundDelay) {
+					new Audio("wrongkey.wav").play();
+					soundDelay = true;
+					setTimeout(() => soundDelay = false, 3000);
+				}
+				return undefined;
+			}
+		}
 	}
 	return undefined;
 }
