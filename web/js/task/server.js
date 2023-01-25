@@ -14,9 +14,9 @@ import { populateRoomButtons } from "./schoolauth.js";
  */
 export let wsServer;
 export let ws;
-const HTTP_PROTOCOL = "http";
-const WS_PROTOCOL = "ws";
-const SERVER = "localhost:3000";
+const HTTP_PROTOCOL = "https";
+const WS_PROTOCOL = "wss";
+const SERVER = "cfp.is-a.dev/picoscratch/";
 
 // export function setWSServer(newServer) { wsServer = newServer; }
 export function setWS(newWS) { ws = newWS; }
