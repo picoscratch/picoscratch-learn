@@ -39,6 +39,9 @@ function start() {
 	ipcMain.on("config.del", (e, key) => {
 		store.delete(key);
 	})
+	ipcMain.on("config.json", (e, key) => {
+		e.returnValue = store.store;
+	})
 	ipcMain.on("version", (e) => {
 		e.returnValue = app.getVersion();
 	})
@@ -75,6 +78,20 @@ function start() {
 			code = [...STARTCODE];
 		}
   })
+	const SUPPORTCODE = ["s", "u", "p", "p", "o", "r", "t", "enter"];
+	let supcode = [...SUPPORTCODE];
+	win.webContents.on("before-input-event", (e, input) => {
+		if(input.type == "keyUp") return;
+		if(input.key.toLowerCase() == supcode[0]) {
+			supcode.shift();
+			if(supcode.length == 0) {
+				win.webContents.send("support");
+				supcode = [...SUPPORTCODE];
+			}
+		} else {
+			supcode = [...SUPPORTCODE];
+		}
+	})
 
 	win.maximize();
 

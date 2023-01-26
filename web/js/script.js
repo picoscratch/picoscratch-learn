@@ -6,7 +6,7 @@ import { correctPoints, createWorkspace, fromXml, setCorrectPoints, taskXML, toX
 const langs = require("./lang.json");
 import { setupUpdater } from "./updater.js";
 import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask } from "./task/level.js";
-import { checkSchoolcode, connectServer, ws, wsServer } from "./task/server.js";
+import { checkSchoolcode, connectServer, HTTP_PROTOCOL, SERVER, ws, wsServer, WS_PROTOCOL } from "./task/server.js";
 import { $, sleep } from "./util.js";
 
 let picoW = true;
@@ -275,4 +275,16 @@ ipcRenderer.on("devmode", (event) => {
 		$("#devmode-notification").classList.remove("notificationOut");
 		$("#devmode-notification").style.display = "none";
 	}, 3000);
+})
+
+ipcRenderer.on("support", async (event) => {
+	const data = { config: ipcRenderer.sendSync("config.json"), version: ipcRenderer.sendSync("version"), platform: process.platform, arch: process.arch, release: process.release, server: { http_protocol: HTTP_PROTOCOL, ws_protocol: WS_PROTOCOL, server: SERVER } };
+	const id = await fetch(HTTP_PROTOCOL + "://" + SERVER + "/api/support", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({data})
+	}).then(res => res.json())
+	alert("Required information has been sent to the support.\nYour Support ID is " + id.id + ".\nPlease tell this ID to the support team.")
 })
