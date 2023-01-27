@@ -3,6 +3,7 @@ import { $ } from "../util.js";
 
 export function populateRoomButtons(rooms) {
 	console.log(rooms);
+	$("#rooms").innerHTML = "";
 	if(rooms.length == 0) {
 		$("#rooms").innerHTML = "<p>" + translate("no-rooms") + "</p>";
 		return;

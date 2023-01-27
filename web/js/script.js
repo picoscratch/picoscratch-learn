@@ -245,6 +245,7 @@ if(!ipcRenderer.sendSync("config.has", "schoolcode")) {
 		await sleep(1500);
 		$("#setup").style.display = "none";
 		$("#login").style.display = "flex";
+		ws.send(JSON.stringify({ type: "room", uuid: ipcRenderer.sendSync("config.get", "room") }));
 	});
 } else {
 	$("#login").style.display = "flex";

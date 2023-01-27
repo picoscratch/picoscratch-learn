@@ -40,8 +40,15 @@ export function event(e, INSTRUCTION) {
 			if(e.newValue[i] != INSTRUCTION.to[i]) {
 				// return false;
 				// change the value back
-				workspace.getBlockById(e.blockId).setFieldValue(e.oldValue, e.name);
-				if($(".blocklyHtmlInput")) $(".blocklyHtmlInput").value = e.oldValue;
+				let v = e.oldValue;
+				for(let i = 0; i < e.oldValue.length; i++) {
+					if(e.oldValue[i] != INSTRUCTION.to[i]) {
+						v = "";
+						break;
+					}
+				}
+				workspace.getBlockById(e.blockId).setFieldValue(v, e.name);
+				if($(".blocklyHtmlInput")) $(".blocklyHtmlInput").value = v;
 				if(!soundDelay) {
 					new Audio("wrongkey.wav").play();
 					soundDelay = true;

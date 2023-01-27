@@ -125,6 +125,15 @@ export function connectServer(code) {
 		} else if(packet.type == "kick") {
 			await Dialog.hideall();
 			new Dialog("#kick-dialog").show();
+		} else if(packet.type == "startCourse") {
+			await new Dialog("#waiting-for-teacher-dialog").hide();
+			await new Dialog("#end-dialog").hide();
+			if(document.querySelector("#start-btn").hasAttribute("data-level")) {
+				ws.send(JSON.stringify({type: "task", level: parseInt($("#start-btn").getAttribute("data-level")) + 1}));
+			}
+		} else if(packet.type == "stopCourse") {
+			await Dialog.hideall();
+			new Dialog("#end-dialog").show();
 		}
 	})
 	ws.addEventListener("error", () => {
