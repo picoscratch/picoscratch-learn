@@ -8,12 +8,14 @@ import { setupUpdater } from "./updater.js";
 import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask } from "./task/level.js";
 import { checkSchoolcode, connectServer, HTTP_PROTOCOL, SERVER, ws, wsServer, WS_PROTOCOL } from "./task/server.js";
 import { $, sleep } from "./util.js";
+import { initIdleDetector } from "./task/idle.js";
 
 let picoW = true;
 
 setLang("en");
 tryGetLanguage();
 setupUpdater();
+await initIdleDetector();
 
 $("#version").innerText = ipcRenderer.sendSync("version");
 
