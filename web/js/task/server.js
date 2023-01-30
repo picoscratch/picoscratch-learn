@@ -47,6 +47,9 @@ export function connectServer(code) {
 			await new Dialog("#loading-dialog").hide();
 			await new PSNotification("#connection-lost-notification").hide();
 			setLang(packet.lang);
+			if(ws.retryCount > 0) {
+				ws.send(JSON.stringify({type: "login", name: $("#name").value}));
+			}
 			// if(ipcRenderer.sendSync("config.has", "device")) {
 			// 	ws.send(JSON.stringify({type: "deviceIdentify", device: ipcRenderer.sendSync("config.get", "device")}));
 			// } else {
@@ -141,9 +144,9 @@ export function connectServer(code) {
 		// document.querySelector("#status").innerText = translate("connecting-to-server") + " (" + (ws.retryCount + 1) + ")";
 		new PSNotification("#connection-lost-notification").show();
 	})
-	ws.addEventListener("close", () => {
-		alert("Server disconnected!")
-	})
+	// ws.addEventListener("close", () => {
+	// 	alert("Server disconnected!")
+	// })
 	// const server = ipcRenderer.sendSync("config.get", "server");
 	// wsServer = server;
 	// ws = new ReconnectingWebSocket(server);
