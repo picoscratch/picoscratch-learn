@@ -37,6 +37,7 @@ export function connectServer(code) {
 	})
 	ws.addEventListener("message", async (data) => {
 		const packet = JSON.parse(data.data.toString());
+		console.log("packet from server", packet);
 		if(packet.type == "hi") {
 			if(!packet.success) {
 				alert("Something isn't right. Please try again later.");
