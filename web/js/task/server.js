@@ -141,6 +141,9 @@ export function connectServer(code) {
 		// document.querySelector("#status").innerText = translate("connecting-to-server") + " (" + (ws.retryCount + 1) + ")";
 		new PSNotification("#connection-lost-notification").show();
 	})
+	ws.addEventListener("close", () => {
+		alert("Server disconnected!")
+	})
 	// const server = ipcRenderer.sendSync("config.get", "server");
 	// wsServer = server;
 	// ws = new ReconnectingWebSocket(server);
