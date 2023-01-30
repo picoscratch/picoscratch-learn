@@ -11,13 +11,18 @@ export function renderLeaderboard(el) {
 		el.removeChild(el.lastChild);
 	}
 	document.querySelector("#playername").innerText = capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ");
-	document.querySelector("#xp").innerText = leaderboard.find(p => p.name == capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ")).xp + " XP";
-	const achievements = leaderboard.find(p => p.name == capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ")).achievements;
-	for(const a of document.querySelectorAll(".achievement")) {
-		a.style.display = "none";
-	}
-	for(const a of achievements) {
-		if(document.querySelector("#achievement-" + a)) document.querySelector("#achievement-" + a).style.display = "flex";
+	const myUser = leaderboard.find(p => p.name == capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" "));
+	if(myUser) {
+		document.querySelector("#xp").innerText = myUser.xp + " XP";
+		const achievements = leaderboard.find(p => p.name == capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ")).achievements;
+		for(const a of document.querySelectorAll(".achievement")) {
+			a.style.display = "none";
+		}
+		for(const a of achievements) {
+			if(document.querySelector("#achievement-" + a)) document.querySelector("#achievement-" + a).style.display = "flex";
+		}
+	} else {
+		console.log("Cant find myself on leaderboard!");
 	}
 	for(let i = 0; i < 10; i++) {
 		if(!leaderboard[i]) break;

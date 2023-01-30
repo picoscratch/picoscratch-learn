@@ -77,7 +77,9 @@ export function connectServer(code) {
 				return;
 			}
 			$("#login").style.display = "none";
-			$("#levelpath").style.display = "";
+			if(ws.retryCount == 0) {
+				$("#levelpath").style.display = "";
+			}
 		} else if(packet.type == "levelpath") {
 			createButtons(packet.done, packet.locked, packet.isDone);
 		} else if(packet.type == "leaderboard") {

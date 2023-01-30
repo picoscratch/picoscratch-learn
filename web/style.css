@@ -419,6 +419,6 @@ select {
 	}
 }
 
-input {
+input:not(.blocklyHtmlInput) {
 	background-color: rgba(29, 29, 29, 0.8);
 }
