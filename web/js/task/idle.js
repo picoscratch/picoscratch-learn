@@ -1,4 +1,4 @@
-import { ws } from "./server.js";
+import { fullyAuthed, ws } from "./server.js";
 
 export async function initIdleDetector() {
 	try {
@@ -16,10 +16,10 @@ export async function initIdleDetector() {
 				lastIdle = isIdle;
 				if(isIdle) {
 					console.log("User went idle.");
-					ws.send(JSON.stringify({ type: "idleStateChange", idle: true }));
+					if(fullyAuthed) ws.send(JSON.stringify({ type: "idleStateChange", idle: true }));
 				} else {
 					console.log("User is active.");
-					ws.send(JSON.stringify({ type: "idleStateChange", idle: false }));
+					if(fullyAuthed) ws.send(JSON.stringify({ type: "idleStateChange", idle: false }));
 				}
 			}
 		});

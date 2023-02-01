@@ -23,6 +23,7 @@ export const SERVER = "cfp.is-a.dev/picoscratch/";
 
 // export function setWSServer(newServer) { wsServer = newServer; }
 export function setWS(newWS) { ws = newWS; }
+export let fullyAuthed = false;
 
 export async function checkSchoolcode(code) {
 	const result = await fetch(HTTP_PROTOCOL + "://" + SERVER + "/api/schoolcode/" + code).then(res => res.json());
@@ -80,6 +81,7 @@ export function connectServer(code) {
 			if(ws.retryCount == 0) {
 				$("#levelpath").style.display = "";
 			}
+			fullyAuthed = true;
 		} else if(packet.type == "levelpath") {
 			createButtons(packet.done, packet.locked, packet.isDone);
 		} else if(packet.type == "leaderboard") {
@@ -147,9 +149,10 @@ export function connectServer(code) {
 		// document.querySelector("#status").innerText = translate("connecting-to-server") + " (" + (ws.retryCount + 1) + ")";
 		new PSNotification("#connection-lost-notification").show();
 	})
-	// ws.addEventListener("close", () => {
-	// 	alert("Server disconnected!")
-	// })
+	ws.addEventListener("close", () => {
+		console.log("Server disconnected!")
+		fullyAuthed = false;
+	})
 	// const server = ipcRenderer.sendSync("config.get", "server");
 	// wsServer = server;
 	// ws = new ReconnectingWebSocket(server);
