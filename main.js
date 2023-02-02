@@ -23,6 +23,7 @@ function start() {
 			nodeIntegrationInSubFrames: true,
 		},
 		// kiosk: true,
+		fullscreen: true,
 		icon: path.join(__dirname, "picoscratch.ico")
 	})
 	require('@electron/remote/main').enable(win.webContents)
