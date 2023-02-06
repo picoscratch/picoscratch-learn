@@ -17,10 +17,15 @@ tryGetLanguage();
 setupUpdater();
 await initIdleDetector();
 
+new Dialog("#pico-dialog").show();
+
 $("#version").innerText = ipcRenderer.sendSync("version");
 
 $("#greenflag").addEventListener("click", async () => {
 	await run();
+	await sleep(3000);
+	$("#next").disabled = false;
+	document.querySelector("#next").animate([{ transform: "scale(1.5)" }, { transform: "scale(1)" }], { duration: 300 })
 })
 // $("#stop").addEventListener("click", async () => {
 // 	await writePort("\r\x03")
@@ -61,6 +66,7 @@ $("#next").addEventListener("click", async () => {
 	$("#greenflag").disabled = true;
 	$("#reset").style.display = "";
 	$("#next").style.display = "none";
+	$("#next").disabled = true;
 	$("#pythontab").style.width = "100%";
 	$("#pythontab").style.display = "none";
 	$("#code-in-py").style.display = "none";
@@ -111,11 +117,19 @@ $("#back").addEventListener("click", async () => {
 $("#pico").addEventListener("click", () => {
 	$("#pico-w").style.backgroundColor = "";
 	$("#pico").style.backgroundColor = "#0e0e0e";
+	$("#pico svg path").style.fill = "#40C340";
+	for(let i = 0; i < 4; i++) {
+		$("#pico-w" + i + " path").style.fill = "#FFFFFF";
+	}
 	picoW = false;
 })
 $("#pico-w").addEventListener("click", () => {
 	$("#pico").style.backgroundColor = "";
 	$("#pico-w").style.backgroundColor = "#0e0e0e";
+	$("#pico svg path").style.fill = "#FFFFFF";
+	for(let i = 0; i < 4; i++) {
+		$("#pico-w" + i + " path").style.fill = "#40C340";
+	}
 	picoW = true;
 	$("#pico-w3").style.display = "none";
 	$("#pico-w0").style.display = "";
@@ -131,6 +145,14 @@ $("#pico-w").addEventListener("click", () => {
 			}, 80);
 		}, 80);
 	}, 80);
+})
+$("#pico-dialog-w").addEventListener("click", () => {
+	$("#pico-w").click();
+	new Dialog("#pico-dialog").hide();
+})
+$("#pico-dialog-normal").addEventListener("click", () => {
+	$("#pico").click();
+	new Dialog("#pico-dialog").hide();
 })
 $("#start-btn").addEventListener("click", async () => {
 	$("#play-btn-svg").style.display = "none";
