@@ -423,6 +423,10 @@ input:not(.blocklyHtmlInput) {
 	background-color: rgba(29, 29, 29, 0.8);
 }
 
+.blocklyHtmlInput {
+	color: white;
+}
+
 #next:disabled {
 	filter: grayscale(100%);
 }
