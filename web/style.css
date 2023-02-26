@@ -221,6 +221,11 @@ button {
 	margin-bottom: 5px;
 }
 
+#tabswitcher > div {
+	display: flex;
+	gap: 10px;
+}
+
 .tab {
 	font-size: 1.5rem;
 	background-color: #1d1d1d;
@@ -284,7 +289,9 @@ button {
 	position: fixed;
 	top: 50px;
 	right: 0;
-	background-color: #1d1d1d;
+	background-color: rgba(29, 29, 29, 0.8);
+  /* background-color: rgba(46, 46, 46, 0.8); */
+	backdrop-filter: blur(20px);
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;
 	padding: 10px;
@@ -429,4 +436,63 @@ input:not(.blocklyHtmlInput) {
 
 #next:disabled {
 	filter: grayscale(100%);
+}
+
+.slideInFromRight {
+	animation: slideInFromRight forwards 1s ease-in-out;
+}
+
+@keyframes slideInFromRight {
+	0% {
+		transform: translateX(100%);
+	}
+	100% {
+		transform: translateX(0);
+	}
+}
+
+.slideInFromLeft {
+	animation: slideInFromLeft forwards 1s ease-in-out;
+}
+
+@keyframes slideInFromLeft {
+	0% {
+		transform: translateX(-100%);
+	}
+	100% {
+		transform: translateX(0);
+	}
+}
+
+.slideInFromTop {
+	animation: slideInFromTop forwards 500ms ease-in-out;
+}
+
+@keyframes slideInFromTop {
+	0% {
+		transform: translateY(-100%);
+	}
+	100% {
+		transform: translateY(0);
+	}
+}
+
+.slideInFromBottom {
+	animation: slideInFromBottom forwards 500ms ease-in-out;
+}
+
+@keyframes slideInFromBottom {
+	0% {
+		transform: translateY(100%);
+	}
+	100% {
+		transform: translateY(0);
+	}
+}
+
+#debug-buttons button {
+	font-size: 1.4rem;
+	background-color: #2e2e2e;
+	padding: 5px;
+	margin: 5px;
 }

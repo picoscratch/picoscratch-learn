@@ -18,7 +18,10 @@
 	<link rel="stylesheet" href="spinner.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/vs2015.min.css">
 	<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"></script>
+	<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 	<link rel="shortcut icon" href="../picoscratch.ico" type="image/x-icon">
+	<link href="https://cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
 </head>
 <body>
 	<div id="notifybar">
@@ -47,6 +50,17 @@
 				<h2 style="margin: 0;" data-lang="connection-lost"></h2>
 			</div>
 		</div>
+		<div class="notification" id="debug-window" style="height: 90vh; width: 40vw; z-index: 99; flex-direction: column; gap: 5px; display: none;">
+			<h1 style="font-size: 2rem; margin: 5px;">Debug</h1>
+			<div id="debug-buttons">
+				<button id="close-debug">Close debug window</button>
+				<button id="refresh-workspace">Refresh workspace</button>
+				<button id="reload-workspace">Reload workspace</button>
+				<button id="pico-reset">Pico reset</button>
+				<button id="serial-connect">Serial connect</button>
+				<button id="serial-disconnect">Serial disconnect</button>
+			</div>
+		</div>
 	</div>
 	<div id="darken" style="z-index: 999; display: none;">
 		<!-- <div class="dialog" id="language-dialog" style="display: none;">
@@ -60,7 +74,8 @@
 		<div class="dialog" id="connect-pico-dialog" style="display: none; position: absolute; z-index: 10; outline: rgba(8, 8, 8, 0.7); outline-style: solid; outline-width: 1000px;">
 			<h2 data-lang="dialog-connect-pico-title"></h2>
 			<p data-lang="dialog-connect-pico-text"></p>
-			<object id="connect-pico-obj" data="connectpico.svg" type="image/svg+xml" style="width: 700px; margin-bottom: 15px;"></object>
+			<p data-lang="dialog-connect-pico-error" style="text-align: center; display: none;" id="connect-pico-error"></p>
+			<object id="connect-pico-obj" data="connectpico.svg" type="image/svg+xml" style="width: 700px; margin-bottom: 15px;" loading="eager"></object>
 		</div>
 		<!-- <div class="dialog" id="log-in-dialog" style="display: none;">
 			<h2 data-lang="log-in-dialog-title"></h2>
@@ -178,27 +193,31 @@
 			<button id="fix" title="debug">
 				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14.25 2.001a.75.75 0 0 1 .743.648l.007.102v.752c0 .633-.196 1.22-.53 1.704a3.75 3.75 0 0 1 2.521 3.29h.256a2.25 2.25 0 0 0 2.24-2.259l-.006-1.485a.75.75 0 0 1 1.5-.006l.007 1.485a3.75 3.75 0 0 1-3.536 3.76l-.214.006L17 9.997v1.502h4.253a.75.75 0 0 1 .743.649l.007.102a.75.75 0 0 1-.648.743l-.102.007H17v1.999h.238l.214.007a3.75 3.75 0 0 1 3.531 3.56l.005.2-.007 1.485a.75.75 0 0 1-1.493.095l-.007-.102.007-1.485a2.25 2.25 0 0 0-2.087-2.253l-.154-.006h-.476a5.002 5.002 0 0 1-9.542 0H6.74a2.25 2.25 0 0 0-2.24 2.259l.005 1.485a.75.75 0 1 1-1.5.007L3 18.765a3.75 3.75 0 0 1 3.535-3.76L6.75 15l.25-.001v-2H2.75a.75.75 0 0 1-.743-.648L2 12.25a.75.75 0 0 1 .648-.743l.102-.007L7 11.499V9.997h-.25l-.215-.005a3.75 3.75 0 0 1-3.53-3.56L3 6.231l.006-1.485A.75.75 0 0 1 4.5 4.65l.006.102L4.5 6.238a2.25 2.25 0 0 0 2.087 2.254l.154.006h.268A3.753 3.753 0 0 1 9.53 5.206a2.968 2.968 0 0 1-.524-1.494L9 3.503v-.752a.75.75 0 0 1 1.493-.102l.007.102v.752a1.5 1.5 0 0 0 2.993.145l.007-.145v-.752a.75.75 0 0 1 .75-.75Z" fill="#C34040"/></svg>
 			</button>
-			<div id="task" style="margin-left: auto; font-size: 1.1rem; margin-right: auto;">
+			<div id="task" style="margin-left: auto; font-size: 1.1rem; margin-right: auto;" class="slideInFromTop">
 				<div id="taskname" style="text-align: center; font-size: 1.4rem;"></div>
 				<div id="instruction" style="text-align: center;"></div>
 			</div>
 		</div>
 		<div id="tabswitcher">
-			<div class="tab selected" id="tab-scratch">Scratch</div>
-			<div class="tab" id="tab-python">Python</div>
-			<div style="margin-left: auto;">
-				<button style="background-color: #0e0e0e; margin: 0;" id="pico-w" title="Pico W">
-					<svg id="pico-w0" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.96 18.568a1.501 1.501 0 1 0 2.122-2.123 1.501 1.501 0 0 0-2.123 2.123Z" fill="#40C340"/></svg>
-					<svg id="pico-w1" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.938 16.446a1.501 1.501 0 1 1 2.123 2.123 1.501 1.501 0 0 1-2.123-2.123Zm-2.603-2.742a5.233 5.233 0 0 1 7.4 0c.46.461.838 1.025 1.101 1.625a1 1 0 0 1-1.832.803 3.356 3.356 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.255 3.255 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.613Z" fill="#40C340"/></svg>
-					<svg id="pico-w2" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.96 16.44a1.501 1.501 0 1 1 2.122 2.122 1.501 1.501 0 0 1-2.123-2.122Zm-2.604-2.742a5.233 5.233 0 0 1 7.4 0c.46.461.838 1.025 1.101 1.625a1 1 0 1 1-1.832.803 3.358 3.358 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.254 3.254 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.613ZM6.31 10.707a8.128 8.128 0 0 1 11.495 0 8.353 8.353 0 0 1 1.503 2.085 1 1 0 0 1-1.78.91 6.357 6.357 0 0 0-1.137-1.581 6.128 6.128 0 0 0-9.8 1.562 1 1 0 1 1-1.785-.902 8.08 8.08 0 0 1 1.504-2.074Z" fill="#40C340"/></svg>
-					<svg id="pico-w3" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.784 10.708a8.35 8.35 0 0 1 1.504 2.085 1 1 0 0 1-1.781.91 6.353 6.353 0 0 0-1.137-1.58 6.128 6.128 0 0 0-9.8 1.562 1 1 0 0 1-1.784-.903 8.128 8.128 0 0 1 12.998-2.074ZM15.735 13.7c.46.46.838 1.024 1.101 1.624a1 1 0 1 1-1.832.803 3.36 3.36 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.257 3.257 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.612 5.233 5.233 0 0 1 7.4 0Zm4.684-5.401c.508.508.987 1.087 1.404 1.691a1 1 0 0 1-1.646 1.136c-.35-.506-.752-.993-1.172-1.413-3.872-3.872-10.15-3.872-14.023 0-.4.399-.797.886-1.16 1.41a1 1 0 0 1-1.644-1.14c.428-.618.9-1.195 1.39-1.684 4.653-4.654 12.198-4.654 16.851 0Zm-7.358 8.142a1.501 1.501 0 1 1-2.122 2.123 1.501 1.501 0 0 1 2.122-2.123Z" fill="#40C340"/></svg>
-				</button>
-				<button title="Pico" style="margin: 0;" id="pico"><svg width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12.858 14.273 7.434 7.434a1 1 0 0 0 1.414-1.414l-17.999-18a1 1 0 1 0-1.414 1.414L5.39 6.804c-.643.429-1.254.927-1.821 1.495a12.382 12.382 0 0 0-1.39 1.683 1 1 0 0 0 1.644 1.14c.363-.524.761-1.01 1.16-1.41a9.94 9.94 0 0 1 1.855-1.46L7.99 9.405a8.14 8.14 0 0 0-3.203 3.377 1 1 0 0 0 1.784.903 6.08 6.08 0 0 1 1.133-1.563 6.116 6.116 0 0 1 1.77-1.234l1.407 1.407A5.208 5.208 0 0 0 8.336 13.7a5.25 5.25 0 0 0-1.09 1.612 1 1 0 0 0 1.832.802c.167-.381.394-.722.672-1a3.23 3.23 0 0 1 3.108-.841Zm-1.332-5.93 2.228 2.229a6.1 6.1 0 0 1 2.616 1.55c.444.444.837.995 1.137 1.582a1 1 0 1 0 1.78-.911 8.353 8.353 0 0 0-1.503-2.085 8.108 8.108 0 0 0-6.258-2.365ZM8.51 5.327l1.651 1.651a9.904 9.904 0 0 1 10.016 4.148 1 1 0 1 0 1.646-1.136A11.912 11.912 0 0 0 8.51 5.327Zm4.552 11.114a1.501 1.501 0 1 1-2.123 2.123 1.501 1.501 0 0 1 2.123-2.123Z" fill="#fff"/></svg></button>
+			<div class="slideInFromLeft">
+				<div class="tab selected" id="tab-scratch">Scratch</div>
+				<div class="tab" id="tab-python">Python</div>
 			</div>
-			<select class="tab" id="tab-language" style="color: white">
-				<option value="en">English</option>
-				<option value="de">Deutsch</option>
-			</select>
+			<div class="slideInFromRight" style="margin-left: auto;">
+				<div>
+					<button style="background-color: #0e0e0e; margin: 0;" id="pico-w" title="Pico W">
+						<svg id="pico-w0" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.96 18.568a1.501 1.501 0 1 0 2.122-2.123 1.501 1.501 0 0 0-2.123 2.123Z" fill="#40C340"/></svg>
+						<svg id="pico-w1" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.938 16.446a1.501 1.501 0 1 1 2.123 2.123 1.501 1.501 0 0 1-2.123-2.123Zm-2.603-2.742a5.233 5.233 0 0 1 7.4 0c.46.461.838 1.025 1.101 1.625a1 1 0 0 1-1.832.803 3.356 3.356 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.255 3.255 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.613Z" fill="#40C340"/></svg>
+						<svg id="pico-w2" style="display: none;" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.96 16.44a1.501 1.501 0 1 1 2.122 2.122 1.501 1.501 0 0 1-2.123-2.122Zm-2.604-2.742a5.233 5.233 0 0 1 7.4 0c.46.461.838 1.025 1.101 1.625a1 1 0 1 1-1.832.803 3.358 3.358 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.254 3.254 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.613ZM6.31 10.707a8.128 8.128 0 0 1 11.495 0 8.353 8.353 0 0 1 1.503 2.085 1 1 0 0 1-1.78.91 6.357 6.357 0 0 0-1.137-1.581 6.128 6.128 0 0 0-9.8 1.562 1 1 0 1 1-1.785-.902 8.08 8.08 0 0 1 1.504-2.074Z" fill="#40C340"/></svg>
+						<svg id="pico-w3" width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.784 10.708a8.35 8.35 0 0 1 1.504 2.085 1 1 0 0 1-1.781.91 6.353 6.353 0 0 0-1.137-1.58 6.128 6.128 0 0 0-9.8 1.562 1 1 0 0 1-1.784-.903 8.128 8.128 0 0 1 12.998-2.074ZM15.735 13.7c.46.46.838 1.024 1.101 1.624a1 1 0 1 1-1.832.803 3.36 3.36 0 0 0-.683-1.013 3.233 3.233 0 0 0-4.572 0 3.257 3.257 0 0 0-.672 1 1 1 0 1 1-1.832-.802 5.25 5.25 0 0 1 1.09-1.612 5.233 5.233 0 0 1 7.4 0Zm4.684-5.401c.508.508.987 1.087 1.404 1.691a1 1 0 0 1-1.646 1.136c-.35-.506-.752-.993-1.172-1.413-3.872-3.872-10.15-3.872-14.023 0-.4.399-.797.886-1.16 1.41a1 1 0 0 1-1.644-1.14c.428-.618.9-1.195 1.39-1.684 4.653-4.654 12.198-4.654 16.851 0Zm-7.358 8.142a1.501 1.501 0 1 1-2.122 2.123 1.501 1.501 0 0 1 2.122-2.123Z" fill="#40C340"/></svg>
+					</button>
+					<button title="Pico" style="margin: 0;" id="pico"><svg width="35px" height="35px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12.858 14.273 7.434 7.434a1 1 0 0 0 1.414-1.414l-17.999-18a1 1 0 1 0-1.414 1.414L5.39 6.804c-.643.429-1.254.927-1.821 1.495a12.382 12.382 0 0 0-1.39 1.683 1 1 0 0 0 1.644 1.14c.363-.524.761-1.01 1.16-1.41a9.94 9.94 0 0 1 1.855-1.46L7.99 9.405a8.14 8.14 0 0 0-3.203 3.377 1 1 0 0 0 1.784.903 6.08 6.08 0 0 1 1.133-1.563 6.116 6.116 0 0 1 1.77-1.234l1.407 1.407A5.208 5.208 0 0 0 8.336 13.7a5.25 5.25 0 0 0-1.09 1.612 1 1 0 0 0 1.832.802c.167-.381.394-.722.672-1a3.23 3.23 0 0 1 3.108-.841Zm-1.332-5.93 2.228 2.229a6.1 6.1 0 0 1 2.616 1.55c.444.444.837.995 1.137 1.582a1 1 0 1 0 1.78-.911 8.353 8.353 0 0 0-1.503-2.085 8.108 8.108 0 0 0-6.258-2.365ZM8.51 5.327l1.651 1.651a9.904 9.904 0 0 1 10.016 4.148 1 1 0 1 0 1.646-1.136A11.912 11.912 0 0 0 8.51 5.327Zm4.552 11.114a1.501 1.501 0 1 1-2.123 2.123 1.501 1.501 0 0 1 2.123-2.123Z" fill="#fff"/></svg></button>
+				</div>
+				<select class="tab" id="tab-language" style="color: white">
+					<option value="en">English</option>
+					<option value="de">Deutsch</option>
+				</select>
+			</div>
 		</div>
 		<div id="tabs" style="display: flex; gap: 10px;">
 			<div id="blocklyDiv"></div>
@@ -211,7 +230,18 @@
 		<pre id="console">
 	
 		</pre>
-		<input type="text" id="console_input" data-lang-placeholder="send-to-console">
+		<input type="text" id="console_input" data-lang-placeholder="send-to-console" class="slideInFromBottom">
+	</div>
+	<div id="reading" style="display: none;">
+		<div id="reading-topbar" class="slideInFromTop" style="position: fixed; top: 0; background-color: rgba(29, 29, 29, 0.8); backdrop-filter: blur(15px); z-index: 5; width: 100vw; border-radius: 10px; padding: 5px;">
+			<button style="margin: 0;" id="reading-back" title="Zurück">
+				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.75 4a3.25 3.25 0 0 1 3.245 3.066L22 7.25v9.5a3.25 3.25 0 0 1-3.066 3.245L18.75 20h-8.501a3.25 3.25 0 0 1-2.085-.756l-.155-.139-4.995-4.75a3.25 3.25 0 0 1-.116-4.594l.116-.116 4.995-4.75a3.25 3.25 0 0 1 2.032-.888L10.25 4h8.501Zm-7.304 4.397a.75.75 0 0 0-1.049 1.05l.073.083L12.94 12l-2.47 2.47-.073.084a.75.75 0 0 0 1.05 1.049l.083-.073L14 13.061l2.47 2.47.084.072a.75.75 0 0 0 1.049-1.05l-.073-.083L15.061 12l2.47-2.47.072-.084a.75.75 0 0 0-1.05-1.049l-.083.073L14 10.939l-2.47-2.47-.084-.072Z" fill="#ffffff"/></svg>
+			</button>
+			<button id="reading-next" title="Aufgabe fertigstellen">
+				<svg width="50px" height="50px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m8.5 16.586-3.793-3.793a1 1 0 0 0-1.414 1.414l4.5 4.5a1 1 0 0 0 1.414 0l11-11a1 1 0 0 0-1.414-1.414L8.5 16.586Z" fill="#4040C3"/></svg>
+			</button>
+		</div>
+		<div id="reading-container" style="margin-top: 80px;"></div>
 	</div>
 	<div id="setup" style="display: none; align-items: center; justify-content: center; gap: 15px; height: 100vh; flex-direction: column;">
 		<div id="setup-process" class="comeIn">
@@ -246,7 +276,7 @@
 		</div>
 		<!-- <img src="bottom waves.svg" style="position: fixed; bottom: 0; z-index: -5; width: 100vw;"> -->
 	</div>
-	<div id="levelpath" style="display: none;" class="comeIn">
+	<div id="levelpath" style="display: none; overflow-y: hidden;" class="comeIn">
 		<svg style="display: none;" id="btnComplete" width="70" height="71" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<ellipse cx="29.5775" cy="32.5352" rx="29.5775" ry="27.4648" fill="#30A030"/>
 			<ellipse cx="29.5775" cy="27.4648" rx="29.5775" ry="27.4648" fill="#40C340" class="moving"/>
@@ -279,14 +309,14 @@
 			</button>
 		</div>
 
-		<div style="position: sticky; top: 10px;">
+		<div style="position: sticky; top: 10px; width: fit-content;" class="slideInFromLeft">
 			<h1 style="font-size: 2rem; margin: 10px; margin-bottom: 5px;">PicoScratch</h1>
 			<h2 style="font-size: 1.4rem; font-weight: normal; margin: 10px;" id="school"></h2>
 		</div>
 
 		<div id="levelpath-levels"></div>
 
-		<div style="position: fixed; top: 5px; right: 15px;">
+		<div style="position: fixed; top: 5px; right: 15px;" class="slideInFromRight">
 			<div style="display: flex; gap: 15px; align-items: center; justify-content: right;">
 				<!-- <button>
 					<svg width="40px" height="40px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3.747a.75.75 0 0 1 .75-.75h16.504a.75.75 0 0 1 .6 1.2L16.69 9.748l4.164 5.552a.75.75 0 0 1-.6 1.2H4.5v4.749a.75.75 0 0 1-.648.743L3.75 22a.75.75 0 0 1-.743-.648L3 21.249V3.747Z" fill="#C34040"/></svg>

@@ -93,6 +93,20 @@ function start() {
 			supcode = [...SUPPORTCODE];
 		}
 	})
+	const DEBUGCODE = ["d", "e", "b", "u", "g", "enter"];
+	let debugcode = [...DEBUGCODE];
+	win.webContents.on("before-input-event", (e, input) => {
+		if(input.type == "keyUp") return;
+		if(input.key.toLowerCase() == debugcode[0]) {
+			debugcode.shift();
+			if(debugcode.length == 0) {
+				win.webContents.send("debug");
+				debugcode = [...DEBUGCODE];
+			}
+		} else {
+			debugcode = [...DEBUGCODE];
+		}
+	})
 
 	win.maximize();
 

@@ -30,6 +30,8 @@ export function setVarTags(newVarTags) { varTags = newVarTags; }
 export function setCorrectPoints(newCorrectPoints) { correctPoints = newCorrectPoints; }
 
 export function createWorkspace() {
+	setLocale(getLang());
+	
 	workspace = Blockly.inject("blocklyDiv", {
 		comments: true,
 		disable: false,
@@ -137,6 +139,7 @@ export function createWorkspace() {
 				duration: 1000
 			})
 		}
+		workspace.refreshToolboxSelection_();
 		// if(e instanceof Blockly.Events.EndBlockDrag) {
 		// 	// if(!workspace.getBlockById(e.blockId)) return;
 		// 	// if(workspace.getBlockById(e.blockId).startHat_) return;
@@ -379,8 +382,6 @@ export function createWorkspace() {
 	
 	fromXml(startXML);
 	setupCustomBlocks();
-
-	setLocale(getLang());
 }
 
 Blockly.prompt = (msg, defaultValue, callback) => {
@@ -445,9 +446,14 @@ function report(block, text) {
 window.report = report;
 
 export function setLocale(locale) {
-	workspace.getFlyout().setRecyclingEnabled(false);
-	var xml = Blockly.Xml.workspaceToDom(workspace);
+	let xml;
+	if(workspace) {
+		workspace.getFlyout().setRecyclingEnabled(false);
+		xml = Blockly.Xml.workspaceToDom(workspace);
+	}
 	Blockly.ScratchMsgs.setLocale(locale);
-	Blockly.Xml.clearWorkspaceAndLoadFromXml(xml, workspace);
-	workspace.getFlyout().setRecyclingEnabled(true);
+	if(workspace) {
+		Blockly.Xml.clearWorkspaceAndLoadFromXml(xml, workspace);
+		workspace.getFlyout().setRecyclingEnabled(true);
+	}
 }

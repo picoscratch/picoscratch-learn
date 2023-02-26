@@ -1,10 +1,13 @@
 import { nextTask, taskIndex } from "./task/level.js";
+import { $, sleep } from "./util.js";
 
 const { SerialPort } = require('serialport')
 const { autoDetect } = require("@serialport/bindings-cpp")
 let picoport;
 export let port;
 let connectDialogShown = false;
+let test;
+let testInterval;
 
 window.addEventListener("beforeunload", () => {
 	port.close();
@@ -12,6 +15,7 @@ window.addEventListener("beforeunload", () => {
 
 export function connectPort() {
 	if(port && port.isOpen) return;
+	console.log("Checking");
 	autoDetect().list().then(async ports => {
 		picoport = ports.find(p => p.manufacturer == "MicroPython" || p.manufacturer == "Microsoft");
 		if(!picoport) {
@@ -24,9 +28,6 @@ export function connectPort() {
 		if(connectDialogShown) {
 			connectDialogShown = false;
 			document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb").id = "usb-connected";
-			setTimeout(async () => {
-				await new Dialog("#connect-pico-dialog").hide();
-			}, 500);
 		}
 		picoport = picoport.path;
 		port = new SerialPort({
@@ -38,16 +39,58 @@ export function connectPort() {
 			document.querySelector("#console").innerText += data;
 			document.querySelector("#console").scrollTop = document.querySelector("#console").scrollHeight;
 			document.dispatchEvent(new CustomEvent("portdata", {detail: data}))
+
+			if(data.includes("PicoScratch connection test")) {
+				test = true;
+				if(taskIndex == -1 && !connectDialogShown) nextTask();
+				setTimeout(async () => {
+					await new Dialog("#connect-pico-dialog").hide();
+				}, 500);
+			}
 		})
 		port.on("error", () => {
 			connectPort();
 		})
 		port.on("close", () => {
+			$("#connect-pico-obj").contentDocument.querySelector("#error").style.fill = "none";
+			$("#connect-pico-error").style.display = "none";
+			if(testInterval) clearTimeout(testInterval);
 			connectPort();
 		})
-		port.on("open", () => {
+		port.on("open", async () => {
 			console.log("open");
 			if(taskIndex == -1 && !connectDialogShown) nextTask();
+			// Test pico
+			await writePort("\r\x05")
+			await writePort("print('PicoScratch connection test')\r")
+			await writePort("\r\x04");
+
+			testInterval = setTimeout(async () => {
+				if(test) return;
+				// try to reset pico
+				await writePort("\x04");
+				await sleep(500);
+				await writePort("\r\x05")
+				await writePort("print('PicoScratch connection test')\r")
+				await writePort("\r\x04");
+
+				testInterval = setTimeout(async () => {
+					if(test) return;
+					// alert("Pico did not respond. Please try again.\nThe cable you are using might not be a data cable.\nTry plugging it into a different USB port, or try a different cable.\nIf the issue persists, please restart the program.");
+					if(!$("#connect-pico-obj").contentDocument) {
+						new Dialog("#connect-pico-dialog").show();
+						await sleep(500);
+						document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb").id = "usb-connected";
+					}
+					$("#connect-pico-obj").contentDocument.querySelector("#error").style.fill = "#F55050";
+					$("#connect-pico-error").style.display = "";
+					await sleep(20000);
+					testInterval = undefined;
+					port.close();
+					$("#connect-pico-obj").contentDocument.querySelector("#error").style.fill = "none";
+					$("#connect-pico-error").style.display = "none";
+				}, 2000);
+			}, 2000);
 		})
 	});
 }

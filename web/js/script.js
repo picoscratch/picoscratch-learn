@@ -1,6 +1,6 @@
 const ipcRenderer = require("electron/renderer").ipcRenderer;
 import { setLang, tryGetLanguage } from "./lang.js";
-import { writePort } from "./port.js";
+import { connectPort, port, writePort } from "./port.js";
 import { makeCode } from "./run.js";
 import { correctPoints, createWorkspace, fromXml, setCorrectPoints, taskXML, toXml, workspace } from "./workspace.js";
 const langs = require("./lang.json");
@@ -9,6 +9,7 @@ import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredq
 import { checkSchoolcode, connectServer, HTTP_PROTOCOL, SERVER, ws, wsServer, WS_PROTOCOL } from "./task/server.js";
 import { $, sleep } from "./util.js";
 import { initIdleDetector } from "./task/idle.js";
+import { PSNotification } from "./notification.js";
 
 let picoW = true;
 
@@ -18,6 +19,11 @@ setupUpdater();
 await initIdleDetector();
 
 new Dialog("#pico-dialog").show();
+
+export const editor = new Quill("#reading-container", {
+	theme: "bubble",
+	readOnly: true
+});
 
 $("#version").innerText = ipcRenderer.sendSync("version");
 
@@ -77,6 +83,7 @@ $("#next").addEventListener("click", async () => {
 	setAnsweredQs(0);
 	setCorrectQs(0);
 	setCorrectPoints([]);
+	party.confetti(document.querySelector("#levelpath"), { count: "90", spread: "10" })
 })
 $("#tab-scratch").addEventListener("click", async () => {
 	$("#pythontab").style.display = "none";
@@ -113,6 +120,16 @@ $("#back").addEventListener("click", async () => {
 	setTaskIndex(-1);
 	setAnsweredQs(0);
 	setCorrectQs(0);
+})
+$("#reading-back").addEventListener("click", async () => {
+	$("#reading").style.display = "none";
+	$("#levelpath").style.display = "";
+})
+$("#reading-next").addEventListener("click", async () => {
+	$("#reading").style.display = "none";
+	$("#levelpath").style.display = "";
+	ws.send(JSON.stringify({type: "done", level: currentLevel, answeredqs, correctqs}));
+	party.confetti(document.querySelector("#levelpath"), { count: "90", spread: "10" })
 })
 $("#pico").addEventListener("click", () => {
 	$("#pico-w").style.backgroundColor = "";
@@ -161,16 +178,29 @@ $("#start-btn").addEventListener("click", async () => {
 	ws.send(JSON.stringify({type: "task", level: parseInt($("#start-btn").getAttribute("data-level")) + 1}));
 	setCurrentLevel(parseInt($("#start-btn").getAttribute("data-level")) + 1);
 })
-$("#fix").addEventListener("click", () => {
+$("#close-debug").addEventListener("click", () => {
+	new PSNotification("#debug-window").hide();
+})
+$("#refresh-workspace").addEventListener("click", () => {
 	workspace.refreshToolboxSelection_();
 })
-$("#fix").addEventListener("doubleclick", () => {
+$("#reload-workspace").addEventListener("click", () => {
 	const xml = toXml();
 	while($("#blocklyDiv").firstChild) {
 		$("#blocklyDiv").firstChild.remove();
 	}
 	createWorkspace();
 	fromXml(xml);
+})
+$("#serial-connect").addEventListener("click", async () => {
+	connectPort();
+})
+$("#serial-disconnect").addEventListener("click", async () => {
+	port.close();
+})
+$("#pico-reset").addEventListener("click", async () => {
+	// Ctrl-D
+	await writePort("\x04");
 })
 $("#submit-name").addEventListener("click", async () => {
 	// await new Dialog("#log-in-dialog").hide();
@@ -312,4 +342,8 @@ ipcRenderer.on("support", async (event) => {
 		body: JSON.stringify({data})
 	}).then(res => res.json())
 	alert("Required information has been sent to the support.\nYour Support ID is " + id.id + ".\nPlease tell this ID to the support team.")
+})
+
+ipcRenderer.on("debug", async () => {
+	new PSNotification("#debug-window").show();
 })

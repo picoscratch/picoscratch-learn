@@ -3,6 +3,7 @@ const ReconnectingWebSocket = require("reconnecting-websocket");
 import { setLang, translate } from "../lang.js";
 import { createButtons } from "../levelpath/buttons.js";
 import { PSNotification } from "../notification.js";
+import { editor } from "../script.js";
 import { $ } from "../util.js";
 import { correctPoints, createWorkspace, fromXml, setBlockTags, setTaskXML, setVarTags, startXML, toXml } from "../workspace.js";
 import { renderLeaderboards, setLeaderboard } from "./leaderboard.js";
@@ -49,7 +50,7 @@ export function connectServer(code) {
 			await new Dialog("#loading-dialog").hide();
 			await new PSNotification("#connection-lost-notification").hide();
 			setLang(packet.lang);
-			if(ws.retryCount > 0) {
+			if(ws.retryCount > 0 && fullyAuthed && $("#name").value != "") {
 				ws.send(JSON.stringify({type: "login", name: $("#name").value}));
 			}
 			// if(ipcRenderer.sendSync("config.has", "device")) {
@@ -78,7 +79,7 @@ export function connectServer(code) {
 				return;
 			}
 			$("#login").style.display = "none";
-			if(ws.retryCount == 0) {
+			if(ws.retryCount == 0 || !fullyAuthed) {
 				$("#levelpath").style.display = "";
 			}
 			fullyAuthed = true;
@@ -102,12 +103,34 @@ export function connectServer(code) {
 				return;
 			}
 			setTask(packet.task);
-			setTaskIndex(-1);
-			document.querySelector("#taskname").innerText = packet.task.name;
 			document.querySelector("#levelpath").style.display = "none";
-			document.querySelector("#editor").style.display = "";
 			document.querySelector("#level-loader").style.display = "none";
 			document.querySelector("#play-btn-svg").style.display = "";
+			if(task.type && task.type == "reading") {
+				$("#reading").style.display = "";
+				editor.setContents(task.content);
+				return;
+			}
+			setTaskIndex(-1);
+			document.querySelector("#taskname").innerText = packet.task.name;
+			const buttons = ["#greenflag", "#reset", "#back", "#wiring", "#fix"];
+			for(let i = 0; i < buttons.length; i++) {
+				document.querySelector(buttons[i]).style.transform = "translateY(-150%)";
+				document.querySelector(buttons[i]).animate([
+					{
+						transform: "translateY(-150%)"
+					},
+					{
+						transform: "translateY(0)"
+					}
+				], {
+					duration: 500,
+					easing: "ease-in-out",
+					delay: i * 100,
+					fill: "forwards"
+				});
+			}
+			document.querySelector("#editor").style.display = "";
 			createWorkspace();
 			if(packet.task.noclear) {
 				setVarTags(packet.task.varTags)
