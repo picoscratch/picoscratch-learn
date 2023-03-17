@@ -2,6 +2,7 @@ const ipcRenderer = require("electron/renderer").ipcRenderer;
 const ReconnectingWebSocket = require("reconnecting-websocket");
 import { setLang, translate } from "../lang.js";
 import { createButtons } from "../levelpath/buttons.js";
+import { addSections } from "../levelpath/sections.js";
 import { PSNotification } from "../notification.js";
 import { editor } from "../script.js";
 import { $ } from "../util.js";
@@ -15,12 +16,12 @@ import { populateRoomButtons } from "./schoolauth.js";
  */
 export let wsServer;
 export let ws;
-export const HTTP_PROTOCOL = "https";
-export const WS_PROTOCOL = "wss";
-export const SERVER = "cfp.is-a.dev/picoscratch/";
-// export const HTTP_PROTOCOL = "http";
-// export const WS_PROTOCOL = "ws";
-// export const SERVER = "localhost:8080";
+// export const HTTP_PROTOCOL = "https";
+// export const WS_PROTOCOL = "wss";
+// export const SERVER = "cfp.is-a.dev/picoscratch/";
+export const HTTP_PROTOCOL = "http";
+export const WS_PROTOCOL = "ws";
+export const SERVER = "localhost:8080";
 
 // export function setWSServer(newServer) { wsServer = newServer; }
 export function setWS(newWS) { ws = newWS; }
@@ -84,7 +85,7 @@ export function connectServer(code) {
 			}
 			fullyAuthed = true;
 		} else if(packet.type == "levelpath") {
-			createButtons(packet.done, packet.locked, packet.isDone);
+			createButtons(packet.done, packet.locked, packet.isDone, packet.infos);
 		} else if(packet.type == "leaderboard") {
 			console.log(packet.leaderboard);
 			setLeaderboard(packet.leaderboard);
@@ -171,6 +172,10 @@ export function connectServer(code) {
 			alert(packet.warning);
 		} else if(packet.type == "pingTime") {
 			console.log("Ping: " + packet.ping + "ms");
+		} else if(packet.type == "sections") {
+			addSections(packet);
+		} else if(packet.type == "sectionDone") {
+			$("#section-back").click();
 		}
 	})
 	ws.addEventListener("error", () => {

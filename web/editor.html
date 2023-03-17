@@ -276,7 +276,7 @@
 		</div>
 		<!-- <img src="bottom waves.svg" style="position: fixed; bottom: 0; z-index: -5; width: 100vw;"> -->
 	</div>
-	<div id="levelpath" style="display: none; overflow-y: hidden;" class="comeIn">
+	<div id="levelpath" style="display: none; overflow-y: hidden; min-height: 100vh;">
 		<svg style="display: none;" id="btnComplete" width="70" height="71" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<ellipse cx="29.5775" cy="32.5352" rx="29.5775" ry="27.4648" fill="#30A030"/>
 			<ellipse cx="29.5775" cy="27.4648" rx="29.5775" ry="27.4648" fill="#40C340" class="moving"/>
@@ -309,111 +309,160 @@
 			</button>
 		</div>
 
-		<div style="position: sticky; top: 10px; width: fit-content;" class="slideInFromLeft">
-			<h1 style="font-size: 2rem; margin: 10px; margin-bottom: 5px;">PicoScratch</h1>
-			<h2 style="font-size: 1.4rem; font-weight: normal; margin: 10px;" id="school"></h2>
-		</div>
-
-		<div id="levelpath-levels"></div>
-
-		<div style="position: fixed; top: 5px; right: 15px;" class="slideInFromRight">
-			<div style="display: flex; gap: 15px; align-items: center; justify-content: right;">
-				<!-- <button>
-					<svg width="40px" height="40px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3.747a.75.75 0 0 1 .75-.75h16.504a.75.75 0 0 1 .6 1.2L16.69 9.748l4.164 5.552a.75.75 0 0 1-.6 1.2H4.5v4.749a.75.75 0 0 1-.648.743L3.75 22a.75.75 0 0 1-.743-.648L3 21.249V3.747Z" fill="#C34040"/></svg>
-				</button> -->
-				<select class="tab" id="lang-selector2" style="color: white;">
-					<option value="en">English</option>
-					<option value="de">Deutsch</option>
-				</select>
-				<div style="text-align: right;">
-					<h3 style="font-size: 1.8rem; margin: 0;" id="playername"></h3>
-					<p style="margin: 0; margin-top: 5px;" id="xp"></p>
-				</div>
+		<div style="display: grid; grid-template-columns: 20% 49% 30%; gap: 5px; grid-template-areas: '. . .';">
+			<div style="margin-top: 10px; width: fit-content;" class="slideInFromLeft">
+				<h1 style="font-size: 2rem; margin: 10px; margin-bottom: 5px;">PicoScratch</h1>
+				<h2 style="font-size: 1.4rem; font-weight: normal; margin: 10px;" id="school"></h2>
+				<button id="section-back" style="display: none;">Zurück</button>
 			</div>
-			<div style="background-color: #1D1D1D; border: solid 2px #2e2e2e; border-radius: 10px; width: 300px; display: flex; flex-direction: column; justify-content: center; text-align: center; gap: 5px; padding: 5px;">
-				<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;" data-lang="top-10"></h2>
-				<div id="leaderboard">
-
+	
+			<div id="sections" class="comeIn" style="margin-top: 60px; display: flex; flex-direction: column; gap: 10px;">
+				<!-- <div class="section">
+					<h1>Raspberry Pi Pico</h1>
+					<p>Was sind Mikrocontroller? Wie verwende ich ein Steckbrett?</p>
+					<button class="btn-green" style="font-size: 1.5rem; display: flex; gap: 5px; justify-content: center; align-items: center;">
+						<svg id="play-btn-svg" width="1.5rem" height="1.5rem" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000000"/></svg>
+						Start
+					</button>
+					<img src="learnsections/pico.png">
 				</div>
-				<!-- <div style="display: flex; gap: 5px; align-items: center;">
-					<svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.31177 18.4663H31.876V38.4086C31.876 39.844 30.4566 40.8481 29.1031 40.3701L20.0939 37.1888L11.0847 40.3701C9.73119 40.8481 8.31177 39.844 8.31177 38.4086V18.4663Z" fill="#FFC800"/><circle cx="20.0943" cy="20.0941" r="14.4004" transform="rotate(35.6401 20.0943 20.0941)" fill="#FFD900"/><path d="M11.7032 31.7972C18.1667 36.4314 27.1631 34.9486 31.7973 28.4851L8.39111 11.7031C3.75689 18.1666 5.23977 27.163 11.7032 31.7972Z" fill="#FEEA66"/><path d="M18.945 24.776C18.945 25.604 19.467 26.108 20.205 26.108C20.925 26.108 21.465 25.604 21.465 24.776V15.182C21.465 14.264 20.925 13.652 20.061 13.652C19.485 13.652 18.999 13.886 18.531 14.21L16.605 15.542C16.173 15.83 15.975 16.226 15.975 16.604C15.975 17.216 16.443 17.666 17.019 17.666C17.271 17.666 17.541 17.594 17.775 17.432L18.909 16.658H18.945V24.776Z" fill="#FF9600"/><circle cx="20.0943" cy="20.0941" r="12.9004" transform="rotate(35.6401 20.0943 20.0941)" stroke="#FFC800" stroke-width="3"/></svg>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				<div class="section">
+					<h1>LEDs</h1>
+					<p>Alles mit LEDs!</p>
+					<button class="btn-green" style="font-size: 1.5rem; display: flex; gap: 5px; justify-content: center; align-items: center;">
+						<svg id="play-btn-svg" width="1.5rem" height="1.5rem" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000000"/></svg>
+						Start
+					</button>
+					<img src="learnsections/leds.png">
 				</div>
-				<div style="display: flex; gap: 5px; align-items: center;">
-					<svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.31201 18.4663H31.8763V38.4086C31.8763 39.844 30.4569 40.8481 29.1033 40.3701L20.0941 37.1888L11.085 40.3701C9.73144 40.8481 8.31201 39.844 8.31201 38.4086V18.4663Z" fill="#AAC1D4"/><circle cx="20.0943" cy="20.0941" r="14.4004" transform="rotate(35.6401 20.0943 20.0941)" fill="#C2D1DD"/><path d="M11.7032 31.7972C18.1667 36.4314 27.1631 34.9486 31.7973 28.4851L8.39111 11.7031C3.75689 18.1666 5.23977 27.163 11.7032 31.7972Z" fill="#D6E4EF"/><path d="M16.0073 24.92C16.0073 25.55 16.4573 26 17.1773 26H22.7933C23.5313 26 23.9453 25.568 23.9453 24.938C23.9453 24.29 23.5313 23.858 22.7933 23.858H19.3553V23.822L22.5773 20.024C23.3333 19.124 23.8193 18.224 23.8193 17.054C23.8193 15.074 22.3793 13.562 20.0573 13.562C17.8793 13.562 16.5113 14.786 16.2413 16.1C16.2233 16.208 16.2053 16.316 16.2053 16.406C16.2053 17.072 16.6913 17.522 17.3393 17.522C17.8433 17.522 18.2213 17.234 18.4733 16.712C18.7973 16.046 19.2473 15.686 19.9493 15.686C20.8133 15.686 21.2993 16.28 21.2993 17.09C21.2993 17.72 21.0473 18.224 20.5793 18.782L16.7633 23.354C16.2053 24.02 16.0073 24.398 16.0073 24.92Z" fill="#849FB5"/><circle cx="20.0946" cy="20.0941" r="12.9004" transform="rotate(35.6401 20.0946 20.0941)" stroke="#AAC1D4" stroke-width="3"/></svg>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				<div class="section">
+					<h1>Eingabe</h1>
+					<p>Knöpfe machen klick!</p>
+					<button class="btn-green" style="font-size: 1.5rem; display: flex; gap: 5px; justify-content: center; align-items: center;">
+						<svg id="play-btn-svg" width="1.5rem" height="1.5rem" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000000"/></svg>
+						Start
+					</button>
+					<img src="learnsections/buttons.png">
 				</div>
-				<div style="display: flex; gap: 5px; align-items: center;">
-					<svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.31152 19.4663H31.8758V38.4086C31.8758 39.844 30.4564 40.8481 29.1029 40.3701L20.0937 37.1888L11.0845 40.3701C9.73095 40.8481 8.31152 39.844 8.31152 38.4086V19.4663Z" fill="#D7975D"/><circle cx="20.0941" cy="20.0941" r="14.4004" transform="rotate(35.6401 20.0941 20.0941)" fill="#E5AE7C"/><path d="M11.703 31.7972C18.1664 36.4314 27.1628 34.9486 31.7971 28.4851L8.39087 11.7031C3.75665 18.1666 5.23953 27.163 11.703 31.7972Z" fill="#F7BE8B"/><path d="M16.4038 24.326C16.9258 25.514 18.2218 26.198 19.9858 26.198C22.2898 26.198 23.9818 24.686 23.9818 22.454C23.9818 20.852 23.1358 19.862 22.3798 19.502V19.466C23.2618 18.89 23.7478 17.99 23.7478 16.946C23.7478 14.984 22.3618 13.562 19.9678 13.562C18.2038 13.562 16.9798 14.372 16.5298 15.398C16.4398 15.614 16.3858 15.83 16.3858 16.028C16.3858 16.676 16.8538 17.144 17.5018 17.144C17.9518 17.144 18.3838 16.892 18.6178 16.424C18.7978 16.046 19.1398 15.686 19.8598 15.686C20.6878 15.686 21.2278 16.262 21.2278 17.126C21.2278 18.062 20.6518 18.638 19.8418 18.638H19.7158C19.0678 18.638 18.6178 19.07 18.6178 19.7C18.6178 20.33 19.0678 20.762 19.7158 20.762H19.8418C20.7238 20.762 21.4618 21.41 21.4618 22.472C21.4618 23.408 20.8858 24.074 19.9498 24.074C19.3198 24.074 18.8518 23.786 18.5638 23.318C18.2758 22.85 17.8618 22.598 17.4118 22.598C16.7098 22.598 16.2778 23.084 16.2778 23.714C16.2778 23.912 16.3138 24.128 16.4038 24.326Z" fill="#CD7900"/><circle cx="20.0941" cy="20.0941" r="12.9004" transform="rotate(35.6401 20.0941 20.0941)" stroke="#D7975D" stroke-width="3"/></svg>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				<div class="section">
+					<h1>Sensoren</h1>
+					<p>...</p>
+					<button class="btn-green" style="font-size: 1.5rem; display: flex; gap: 5px; justify-content: center; align-items: center;">
+						<svg id="play-btn-svg" width="1.5rem" height="1.5rem" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000000"/></svg>
+						Start
+					</button>
+					<img src="learnsections/sensors.png">
 				</div>
-				<div style="display: flex; gap: 5px; align-items: center;">
-					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">4</h1>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
-				</div>
-				<div style="display: flex; gap: 5px; align-items: center;">
-					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">5</h1>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
-				</div>
-				<div style="display: flex; gap: 5px; align-items: center;">
-					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">6</h1>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
-				</div>
-				<div style="display: flex; gap: 5px; align-items: center;">
-					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">7</h1>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
-				</div>
-				<div style="display: flex; gap: 5px; align-items: center;">
-					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">8</h1>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
-				</div>
-				<div style="display: flex; gap: 5px; align-items: center;">
-					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">9</h1>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
-				</div>
-				<div style="display: flex; gap: 5px; align-items: center;">
-					<h1 style="font-size: 1.9rem; margin: 0; margin-right: 4px; margin-left: 4px;">10</h1>
-					<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
-					<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+				<div class="section">
+					<h1>???</h1>
+					<p>Du musst erst den vorherigen Lernabschnitt abschließen!</p>
+					<button class="btn-gray" style="font-size: 1.5rem; display: flex; gap: 5px; justify-content: center; align-items: center;">
+						<svg id="play-btn-svg" width="1.5rem" height="1.5rem" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z" fill="#000000"/></svg>
+						Start
+					</button>
 				</div> -->
 			</div>
-			<div style="background-color: #1D1D1D; border: solid 2px #2e2e2e; border-radius: 10px; width: 300px; display: flex; flex-direction: column; justify-content: center; text-align: center; gap: 5px; margin-top: 10px; padding: 5px;">
-				<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;" data-lang="achievements"></h2>
-				<div style="display: none; gap: 5px; align-items: center;" id="achievement-fast" class="achievement">
-					<svg width="90px" viewBox="0 0 58 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<rect width="58" height="72" rx="10" fill="#A03030"/>
-						<rect width="58" height="67" rx="10" fill="#C34040"/>
-						<rect x="17" y="27" width="23" height="22" fill="#F5F550"/>
-						<path d="M24.0897 16.4238C24.6817 15.8535 25.6 15.8613 26.192 16.4317C28.2866 18.4551 30.2522 20.6348 32.0888 22.9942C32.9237 21.8692 33.8723 20.6426 34.8969 19.6426C35.4964 19.0645 36.4223 19.0645 37.0219 19.6504C39.6478 22.2285 41.8714 25.6348 43.4348 28.8692C44.9754 32.0567 46 35.3145 46 37.6113C46 47.5801 38.4259 56.002 29 56.002C19.4679 56.002 12 47.5723 12 37.6035C12 34.6035 13.3509 30.9395 15.4455 27.3145C17.5629 23.6348 20.5531 19.7988 24.0897 16.4238ZM29.129 48.502C31.0491 48.502 32.7491 47.9551 34.3504 46.8613C37.5455 44.5645 38.4031 39.9707 36.483 36.3613C36.2705 35.9238 36.058 35.4863 35.7393 35.0488L31.8991 39.6426C31.8991 39.6426 25.7214 31.5488 25.2888 31.002C22.1013 35.0488 20.5 37.3457 20.5 39.9707C20.5 45.3301 24.3402 48.502 29.129 48.502Z" fill="#F58050"/>
-					</svg>						
-					<div style="text-align: left;">
-						<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;" data-lang="achievement-fast-name"></h2>
-						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;" data-lang="achievement-fast-desc"></h2>
+			<div id="levelpath-levels" class="fadeIn" style="display: none;"></div>
+	
+			<div style="margin-top: 5px; margin-right: 5px; justify-self: right;" class="slideInFromRight">
+				<div style="display: flex; gap: 15px; align-items: center; justify-content: right; width: 307px;">
+					<!-- <button>
+						<svg width="40px" height="40px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3.747a.75.75 0 0 1 .75-.75h16.504a.75.75 0 0 1 .6 1.2L16.69 9.748l4.164 5.552a.75.75 0 0 1-.6 1.2H4.5v4.749a.75.75 0 0 1-.648.743L3.75 22a.75.75 0 0 1-.743-.648L3 21.249V3.747Z" fill="#C34040"/></svg>
+					</button> -->
+					<select class="tab" id="lang-selector2" style="color: white;">
+						<option value="en">English</option>
+						<option value="de">Deutsch</option>
+					</select>
+					<div style="text-align: right;">
+						<h3 style="font-size: 1.8rem; margin: 0;" id="playername"></h3>
+						<p style="margin: 0; margin-top: 5px;" id="xp"></p>
 					</div>
 				</div>
-				<div style="display: none; gap: 5px; align-items: center;" id="achievement-first" class="achievement">
-					<svg width="80px" viewBox="0 0 58 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<rect width="58" height="72" rx="10" fill="#3030A0"/>
-						<rect width="58" height="67" rx="10" fill="#4040C3"/>
-						<path d="M36.9006 12C38.07 12 39.1984 12.4386 40.07 13.2319C40.9416 14.0252 41.4953 15.1175 41.6252 16.3H44.3044C45.2321 16.3006 46.1256 16.6559 46.8078 17.2955C47.49 17.9351 47.911 18.8122 47.9873 19.7529L48 20.0625V26.5125C48.0001 28.2973 47.329 30.0145 46.1244 31.3118C44.9198 32.6091 43.2729 33.3882 41.5217 33.4893L41.0779 33.5022C40.3737 35.736 39.0602 37.7203 37.2904 39.2239C35.5206 40.7274 33.3674 41.6883 31.0815 41.9947V45.325H34.7856C36.5392 45.3254 38.2263 46.0085 39.5008 47.2342C40.7753 48.4599 41.5407 50.1353 41.64 51.9169L41.6527 52.3125V53.3875C41.6526 53.7775 41.5136 54.1542 41.2615 54.4479C41.0093 54.7416 40.6611 54.9324 40.2814 54.985L40.068 55H18.9342C18.5508 55.0005 18.1803 54.8596 17.8913 54.6035C17.6022 54.3473 17.4142 53.9932 17.3621 53.6068L17.3494 53.3875V52.3125C17.3493 50.5281 18.0201 48.8112 19.2243 47.5139C20.4285 46.2167 22.0748 45.4373 23.8257 45.3358L24.2165 45.325H27.9142V41.9947C25.6292 41.6876 23.4768 40.7263 21.7078 39.2228C19.9388 37.7193 18.6259 35.7354 17.922 33.5022L17.8671 33.5C16.0458 33.5 14.2992 32.7638 13.0113 31.4534C11.7235 30.143 11 28.3657 11 26.5125V20.0625C11 17.9856 12.6566 16.3 14.6977 16.3H17.3769C17.5069 15.1171 18.0609 14.0245 18.9329 13.2312C19.805 12.4378 20.9338 11.9995 22.1036 12H36.9006ZM44.3044 19.525H41.6548V30.2385C42.4812 30.1189 43.2436 29.7184 43.8179 29.102C44.3922 28.4857 44.7446 27.6897 44.8179 26.8436L44.8327 26.5125V20.0625C44.8325 19.9414 44.7921 19.8239 44.7181 19.7291C44.6441 19.6343 44.5407 19.5677 44.4249 19.5401L44.3044 19.525ZM17.3494 19.525H14.6977C14.5576 19.525 14.4232 19.5816 14.3242 19.6824C14.2251 19.7832 14.1694 19.9199 14.1694 20.0625V26.5125C14.1693 27.4192 14.491 28.2955 15.0753 28.9801C15.6595 29.6646 16.4671 30.1115 17.3494 30.2385V19.525Z" fill="#F5F550"/>
-						<line x1="25" y1="27.1716" x2="30.1716" y2="22" stroke="#F58050" stroke-width="4" stroke-linecap="round"/>
-						<line x1="30" y1="34" x2="30" y2="23" stroke="#F58050" stroke-width="4" stroke-linecap="round"/>
-						<g style="mix-blend-mode:darken">
-						<rect x="16" y="42" width="27" height="14" fill="#D9D9D9"/>
-						</g>
-					</svg>						
-					<div style="text-align: left;">
-						<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;" data-lang="achievement-first-name"></h2>
-						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;" data-lang="achievement-first-desc"></h2>
+				<div style="background-color: #1D1D1D; border: solid 2px #2e2e2e; border-radius: 10px; width: 300px; display: flex; flex-direction: column; justify-content: center; text-align: center; gap: 5px; padding: 5px;">
+					<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;" data-lang="top-10"></h2>
+					<div id="leaderboard">
+	
+					</div>
+					<!-- <div style="display: flex; gap: 5px; align-items: center;">
+						<svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.31177 18.4663H31.876V38.4086C31.876 39.844 30.4566 40.8481 29.1031 40.3701L20.0939 37.1888L11.0847 40.3701C9.73119 40.8481 8.31177 39.844 8.31177 38.4086V18.4663Z" fill="#FFC800"/><circle cx="20.0943" cy="20.0941" r="14.4004" transform="rotate(35.6401 20.0943 20.0941)" fill="#FFD900"/><path d="M11.7032 31.7972C18.1667 36.4314 27.1631 34.9486 31.7973 28.4851L8.39111 11.7031C3.75689 18.1666 5.23977 27.163 11.7032 31.7972Z" fill="#FEEA66"/><path d="M18.945 24.776C18.945 25.604 19.467 26.108 20.205 26.108C20.925 26.108 21.465 25.604 21.465 24.776V15.182C21.465 14.264 20.925 13.652 20.061 13.652C19.485 13.652 18.999 13.886 18.531 14.21L16.605 15.542C16.173 15.83 15.975 16.226 15.975 16.604C15.975 17.216 16.443 17.666 17.019 17.666C17.271 17.666 17.541 17.594 17.775 17.432L18.909 16.658H18.945V24.776Z" fill="#FF9600"/><circle cx="20.0943" cy="20.0941" r="12.9004" transform="rotate(35.6401 20.0943 20.0941)" stroke="#FFC800" stroke-width="3"/></svg>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div>
+					<div style="display: flex; gap: 5px; align-items: center;">
+						<svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.31201 18.4663H31.8763V38.4086C31.8763 39.844 30.4569 40.8481 29.1033 40.3701L20.0941 37.1888L11.085 40.3701C9.73144 40.8481 8.31201 39.844 8.31201 38.4086V18.4663Z" fill="#AAC1D4"/><circle cx="20.0943" cy="20.0941" r="14.4004" transform="rotate(35.6401 20.0943 20.0941)" fill="#C2D1DD"/><path d="M11.7032 31.7972C18.1667 36.4314 27.1631 34.9486 31.7973 28.4851L8.39111 11.7031C3.75689 18.1666 5.23977 27.163 11.7032 31.7972Z" fill="#D6E4EF"/><path d="M16.0073 24.92C16.0073 25.55 16.4573 26 17.1773 26H22.7933C23.5313 26 23.9453 25.568 23.9453 24.938C23.9453 24.29 23.5313 23.858 22.7933 23.858H19.3553V23.822L22.5773 20.024C23.3333 19.124 23.8193 18.224 23.8193 17.054C23.8193 15.074 22.3793 13.562 20.0573 13.562C17.8793 13.562 16.5113 14.786 16.2413 16.1C16.2233 16.208 16.2053 16.316 16.2053 16.406C16.2053 17.072 16.6913 17.522 17.3393 17.522C17.8433 17.522 18.2213 17.234 18.4733 16.712C18.7973 16.046 19.2473 15.686 19.9493 15.686C20.8133 15.686 21.2993 16.28 21.2993 17.09C21.2993 17.72 21.0473 18.224 20.5793 18.782L16.7633 23.354C16.2053 24.02 16.0073 24.398 16.0073 24.92Z" fill="#849FB5"/><circle cx="20.0946" cy="20.0941" r="12.9004" transform="rotate(35.6401 20.0946 20.0941)" stroke="#AAC1D4" stroke-width="3"/></svg>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div>
+					<div style="display: flex; gap: 5px; align-items: center;">
+						<svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.31152 19.4663H31.8758V38.4086C31.8758 39.844 30.4564 40.8481 29.1029 40.3701L20.0937 37.1888L11.0845 40.3701C9.73095 40.8481 8.31152 39.844 8.31152 38.4086V19.4663Z" fill="#D7975D"/><circle cx="20.0941" cy="20.0941" r="14.4004" transform="rotate(35.6401 20.0941 20.0941)" fill="#E5AE7C"/><path d="M11.703 31.7972C18.1664 36.4314 27.1628 34.9486 31.7971 28.4851L8.39087 11.7031C3.75665 18.1666 5.23953 27.163 11.703 31.7972Z" fill="#F7BE8B"/><path d="M16.4038 24.326C16.9258 25.514 18.2218 26.198 19.9858 26.198C22.2898 26.198 23.9818 24.686 23.9818 22.454C23.9818 20.852 23.1358 19.862 22.3798 19.502V19.466C23.2618 18.89 23.7478 17.99 23.7478 16.946C23.7478 14.984 22.3618 13.562 19.9678 13.562C18.2038 13.562 16.9798 14.372 16.5298 15.398C16.4398 15.614 16.3858 15.83 16.3858 16.028C16.3858 16.676 16.8538 17.144 17.5018 17.144C17.9518 17.144 18.3838 16.892 18.6178 16.424C18.7978 16.046 19.1398 15.686 19.8598 15.686C20.6878 15.686 21.2278 16.262 21.2278 17.126C21.2278 18.062 20.6518 18.638 19.8418 18.638H19.7158C19.0678 18.638 18.6178 19.07 18.6178 19.7C18.6178 20.33 19.0678 20.762 19.7158 20.762H19.8418C20.7238 20.762 21.4618 21.41 21.4618 22.472C21.4618 23.408 20.8858 24.074 19.9498 24.074C19.3198 24.074 18.8518 23.786 18.5638 23.318C18.2758 22.85 17.8618 22.598 17.4118 22.598C16.7098 22.598 16.2778 23.084 16.2778 23.714C16.2778 23.912 16.3138 24.128 16.4038 24.326Z" fill="#CD7900"/><circle cx="20.0941" cy="20.0941" r="12.9004" transform="rotate(35.6401 20.0941 20.0941)" stroke="#D7975D" stroke-width="3"/></svg>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div>
+					<div style="display: flex; gap: 5px; align-items: center;">
+						<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">4</h1>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div>
+					<div style="display: flex; gap: 5px; align-items: center;">
+						<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">5</h1>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div>
+					<div style="display: flex; gap: 5px; align-items: center;">
+						<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">6</h1>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div>
+					<div style="display: flex; gap: 5px; align-items: center;">
+						<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">7</h1>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div>
+					<div style="display: flex; gap: 5px; align-items: center;">
+						<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">8</h1>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div>
+					<div style="display: flex; gap: 5px; align-items: center;">
+						<h1 style="font-size: 1.9rem; margin: 0; margin-right: 14px; margin-left: 11px;">9</h1>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div>
+					<div style="display: flex; gap: 5px; align-items: center;">
+						<h1 style="font-size: 1.9rem; margin: 0; margin-right: 4px; margin-left: 4px;">10</h1>
+						<h2 style="font-weight: normal; font-size: 1.4rem; margin: 0;">Cfp</h2>
+						<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;">5352 XP</h2>
+					</div> -->
+				</div>
+				<div style="background-color: #1D1D1D; border: solid 2px #2e2e2e; border-radius: 10px; width: 300px; display: flex; flex-direction: column; justify-content: center; text-align: center; gap: 5px; margin-top: 10px; padding: 5px;">
+					<h2 style="font-size: 2rem; margin: 5px; font-weight: normal;" data-lang="achievements"></h2>
+					<div style="display: none; gap: 5px; align-items: center;" id="achievement-fast" class="achievement">
+						<svg width="90px" viewBox="0 0 58 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<rect width="58" height="72" rx="10" fill="#A03030"/>
+							<rect width="58" height="67" rx="10" fill="#C34040"/>
+							<rect x="17" y="27" width="23" height="22" fill="#F5F550"/>
+							<path d="M24.0897 16.4238C24.6817 15.8535 25.6 15.8613 26.192 16.4317C28.2866 18.4551 30.2522 20.6348 32.0888 22.9942C32.9237 21.8692 33.8723 20.6426 34.8969 19.6426C35.4964 19.0645 36.4223 19.0645 37.0219 19.6504C39.6478 22.2285 41.8714 25.6348 43.4348 28.8692C44.9754 32.0567 46 35.3145 46 37.6113C46 47.5801 38.4259 56.002 29 56.002C19.4679 56.002 12 47.5723 12 37.6035C12 34.6035 13.3509 30.9395 15.4455 27.3145C17.5629 23.6348 20.5531 19.7988 24.0897 16.4238ZM29.129 48.502C31.0491 48.502 32.7491 47.9551 34.3504 46.8613C37.5455 44.5645 38.4031 39.9707 36.483 36.3613C36.2705 35.9238 36.058 35.4863 35.7393 35.0488L31.8991 39.6426C31.8991 39.6426 25.7214 31.5488 25.2888 31.002C22.1013 35.0488 20.5 37.3457 20.5 39.9707C20.5 45.3301 24.3402 48.502 29.129 48.502Z" fill="#F58050"/>
+						</svg>						
+						<div style="text-align: left;">
+							<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;" data-lang="achievement-fast-name"></h2>
+							<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;" data-lang="achievement-fast-desc"></h2>
+						</div>
+					</div>
+					<div style="display: none; gap: 5px; align-items: center;" id="achievement-first" class="achievement">
+						<svg width="80px" viewBox="0 0 58 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<rect width="58" height="72" rx="10" fill="#3030A0"/>
+							<rect width="58" height="67" rx="10" fill="#4040C3"/>
+							<path d="M36.9006 12C38.07 12 39.1984 12.4386 40.07 13.2319C40.9416 14.0252 41.4953 15.1175 41.6252 16.3H44.3044C45.2321 16.3006 46.1256 16.6559 46.8078 17.2955C47.49 17.9351 47.911 18.8122 47.9873 19.7529L48 20.0625V26.5125C48.0001 28.2973 47.329 30.0145 46.1244 31.3118C44.9198 32.6091 43.2729 33.3882 41.5217 33.4893L41.0779 33.5022C40.3737 35.736 39.0602 37.7203 37.2904 39.2239C35.5206 40.7274 33.3674 41.6883 31.0815 41.9947V45.325H34.7856C36.5392 45.3254 38.2263 46.0085 39.5008 47.2342C40.7753 48.4599 41.5407 50.1353 41.64 51.9169L41.6527 52.3125V53.3875C41.6526 53.7775 41.5136 54.1542 41.2615 54.4479C41.0093 54.7416 40.6611 54.9324 40.2814 54.985L40.068 55H18.9342C18.5508 55.0005 18.1803 54.8596 17.8913 54.6035C17.6022 54.3473 17.4142 53.9932 17.3621 53.6068L17.3494 53.3875V52.3125C17.3493 50.5281 18.0201 48.8112 19.2243 47.5139C20.4285 46.2167 22.0748 45.4373 23.8257 45.3358L24.2165 45.325H27.9142V41.9947C25.6292 41.6876 23.4768 40.7263 21.7078 39.2228C19.9388 37.7193 18.6259 35.7354 17.922 33.5022L17.8671 33.5C16.0458 33.5 14.2992 32.7638 13.0113 31.4534C11.7235 30.143 11 28.3657 11 26.5125V20.0625C11 17.9856 12.6566 16.3 14.6977 16.3H17.3769C17.5069 15.1171 18.0609 14.0245 18.9329 13.2312C19.805 12.4378 20.9338 11.9995 22.1036 12H36.9006ZM44.3044 19.525H41.6548V30.2385C42.4812 30.1189 43.2436 29.7184 43.8179 29.102C44.3922 28.4857 44.7446 27.6897 44.8179 26.8436L44.8327 26.5125V20.0625C44.8325 19.9414 44.7921 19.8239 44.7181 19.7291C44.6441 19.6343 44.5407 19.5677 44.4249 19.5401L44.3044 19.525ZM17.3494 19.525H14.6977C14.5576 19.525 14.4232 19.5816 14.3242 19.6824C14.2251 19.7832 14.1694 19.9199 14.1694 20.0625V26.5125C14.1693 27.4192 14.491 28.2955 15.0753 28.9801C15.6595 29.6646 16.4671 30.1115 17.3494 30.2385V19.525Z" fill="#F5F550"/>
+							<line x1="25" y1="27.1716" x2="30.1716" y2="22" stroke="#F58050" stroke-width="4" stroke-linecap="round"/>
+							<line x1="30" y1="34" x2="30" y2="23" stroke="#F58050" stroke-width="4" stroke-linecap="round"/>
+							<g style="mix-blend-mode:darken">
+							<rect x="16" y="42" width="27" height="14" fill="#D9D9D9"/>
+							</g>
+						</svg>						
+						<div style="text-align: left;">
+							<h2 style="font-weight: 600; font-size: 1.6rem; margin: 0;" data-lang="achievement-first-name"></h2>
+							<h2 style="font-weight: normal; font-size: 1.3rem; margin: 0; margin-left: auto;" data-lang="achievement-first-desc"></h2>
+						</div>
 					</div>
 				</div>
 			</div>

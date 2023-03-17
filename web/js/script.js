@@ -10,6 +10,7 @@ import { checkSchoolcode, connectServer, HTTP_PROTOCOL, SERVER, ws, wsServer, WS
 import { $, sleep } from "./util.js";
 import { initIdleDetector } from "./task/idle.js";
 import { PSNotification } from "./notification.js";
+import { currentSection } from "./levelpath/sections.js";
 
 let picoW = true;
 
@@ -78,7 +79,7 @@ $("#next").addEventListener("click", async () => {
 	$("#code-in-py").style.display = "none";
 	await writePort("\r\x03")
 	// ws.send("done " + currentLevel + " " + answeredqs + " " + correctqs);
-	ws.send(JSON.stringify({type: "done", level: currentLevel, answeredqs, correctqs}));
+	ws.send(JSON.stringify({type: "done", level: currentLevel, answeredqs, correctqs, section: currentSection}));
 	setTaskIndex(-1);
 	setAnsweredQs(0);
 	setCorrectQs(0);
@@ -128,7 +129,7 @@ $("#reading-back").addEventListener("click", async () => {
 $("#reading-next").addEventListener("click", async () => {
 	$("#reading").style.display = "none";
 	$("#levelpath").style.display = "";
-	ws.send(JSON.stringify({type: "done", level: currentLevel, answeredqs, correctqs}));
+	ws.send(JSON.stringify({type: "done", level: currentLevel, answeredqs, correctqs, section: currentSection}));
 	party.confetti(document.querySelector("#levelpath"), { count: "90", spread: "10" })
 })
 $("#pico").addEventListener("click", () => {

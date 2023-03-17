@@ -208,6 +208,13 @@ button {
 	color: black;
 }
 
+.btn-gray {
+	background-color: #acacac;
+	border-color: #acacac;
+	border-bottom-color: #818181;
+	color: black;
+}
+
 .btn-red {
 	background-color: #F55050;
 	border-color: #F55050;
@@ -396,6 +403,20 @@ select {
 	}
 }
 
+.fadeIn {
+	animation: fadeIn 1s forwards;
+	opacity: 0;
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
 @keyframes goAway {
 	0% {
 		transform: translateY(0);
@@ -495,4 +516,38 @@ input:not(.blocklyHtmlInput) {
 	background-color: #2e2e2e;
 	padding: 5px;
 	margin: 5px;
+}
+
+.section {
+	background-color: #1d1d1d;
+	border: #2e2e2e 2px solid;
+	border-radius: 15px;
+	display: flex;
+	gap: 10px;
+	flex-direction: column;
+	padding: 10px;
+	width: 100%;
+	position: relative;
+	height: 200px;
+}
+
+.section h1 {
+	margin: 0;
+	font-size: 2rem;
+}
+
+.section p {
+	margin: 0;
+	font-size: 1.5rem;
+}
+
+.section img {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+.section button {
+	margin-top: auto;
+	width: 100px;
 }
