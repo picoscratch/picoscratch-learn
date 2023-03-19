@@ -213,6 +213,12 @@ export const NUMBERS = {
 	return distance`)
 			return "ultra(" + await solveNumber(blk.value[0]) + ", " + await solveNumber(blk.value[1]) + ")";
 		}
+	},
+	components_internaltemp: {
+		import: ["machine"],
+		code: async (blk) => {
+			return "27 - ((machine.ADC(4).read_u16() * (3.3 / (65535))) - 0.706) / 0.001721"
+		}
 	}
 }
 

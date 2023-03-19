@@ -1,3 +1,4 @@
+import { addData } from "./consolechart.js";
 import { nextTask, taskIndex } from "./task/level.js";
 import { $, sleep } from "./util.js";
 
@@ -46,6 +47,12 @@ export function connectPort() {
 				setTimeout(async () => {
 					await new Dialog("#connect-pico-dialog").hide();
 				}, 500);
+			}
+
+			// Check if the data can be parsed as a float
+			if(!isNaN(parseFloat(data))) {
+				addData(parseFloat(data));
+				console.log("Data: " + parseFloat(data));
 			}
 		})
 		port.on("error", () => {

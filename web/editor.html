@@ -22,9 +22,10 @@
 	<link rel="shortcut icon" href="../picoscratch.ico" type="image/x-icon">
 	<link href="https://cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-	<div id="notifybar">
+	<div id="notifybar" style="z-index: 9999;">
 		<div class="notification" id="update-notification" style="display: none;">
 			<div class="progress-ring" id="update-ring">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="ring">
@@ -227,9 +228,12 @@
 			</pre>
 		</div>
 		
-		<pre id="console">
-	
-		</pre>
+		<div id="console-container">
+			<pre id="console">
+				
+			</pre>
+			<canvas id="chart"></canvas>
+		</div>
 		<input type="text" id="console_input" data-lang-placeholder="send-to-console" class="slideInFromBottom">
 	</div>
 	<div id="reading" style="display: none;">
@@ -313,7 +317,8 @@
 			<div style="margin-top: 10px; width: fit-content;" class="slideInFromLeft">
 				<h1 style="font-size: 2rem; margin: 10px; margin-bottom: 5px;">PicoScratch</h1>
 				<h2 style="font-size: 1.4rem; font-weight: normal; margin: 10px;" id="school"></h2>
-				<button id="section-back" style="display: none;">Zurück</button>
+				<h3 id="section-name" style="display: none;" class="slideInFromLeft"></h3>
+				<button id="section-back" class="slideInFromLeft" style="display: none;">Zurück</button>
 			</div>
 	
 			<div id="sections" class="comeIn" style="margin-top: 60px; display: flex; flex-direction: column; gap: 10px;">

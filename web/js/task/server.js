@@ -16,12 +16,12 @@ import { populateRoomButtons } from "./schoolauth.js";
  */
 export let wsServer;
 export let ws;
-export const HTTP_PROTOCOL = "https";
-export const WS_PROTOCOL = "wss";
-export const SERVER = "cfp.is-a.dev/picoscratch/";
-// export const HTTP_PROTOCOL = "http";
-// export const WS_PROTOCOL = "ws";
-// export const SERVER = "localhost:8080";
+// export const HTTP_PROTOCOL = "https";
+// export const WS_PROTOCOL = "wss";
+// export const SERVER = "cfp.is-a.dev/picoscratch/";
+export const HTTP_PROTOCOL = "http";
+export const WS_PROTOCOL = "ws";
+export const SERVER = "localhost:8080";
 
 // export function setWSServer(newServer) { wsServer = newServer; }
 export function setWS(newWS) { ws = newWS; }

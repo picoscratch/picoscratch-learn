@@ -11,6 +11,7 @@ import { $, sleep } from "./util.js";
 import { initIdleDetector } from "./task/idle.js";
 import { PSNotification } from "./notification.js";
 import { currentSection } from "./levelpath/sections.js";
+import { resetData } from "./consolechart.js";
 
 let picoW = true;
 
@@ -84,6 +85,7 @@ $("#next").addEventListener("click", async () => {
 	setAnsweredQs(0);
 	setCorrectQs(0);
 	setCorrectPoints([]);
+	resetData();
 	party.confetti(document.querySelector("#levelpath"), { count: "90", spread: "10" })
 })
 $("#tab-scratch").addEventListener("click", async () => {
@@ -121,6 +123,7 @@ $("#back").addEventListener("click", async () => {
 	setTaskIndex(-1);
 	setAnsweredQs(0);
 	setCorrectQs(0);
+	resetData();
 })
 $("#reading-back").addEventListener("click", async () => {
 	$("#reading").style.display = "none";

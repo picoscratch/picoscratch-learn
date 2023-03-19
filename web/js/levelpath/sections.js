@@ -27,6 +27,8 @@ export function addSection(section) {
     $("#sections").style.display = "none";
     $("#levelpath-levels").style.display = "";
     $("#section-back").style.display = "";
+    $("#section-name").innerText = section.name;
+    $("#section-name").style.display = "";
     currentSection = section.id;
   });
   sectionDiv.appendChild(startButton);
@@ -74,4 +76,6 @@ $("#section-back").addEventListener("click", () => {
   $("#sections").style.display = "flex";
   $("#levelpath-levels").style.display = "none";
   $("#section-back").style.display = "none";
+  $("#section-name").innerText = "";
+  $("#section-name").style.display = "none";
 });

@@ -551,3 +551,20 @@ input:not(.blocklyHtmlInput) {
 	margin-top: auto;
 	width: 100px;
 }
+
+#section-name {
+	color: #acacac;
+	margin: 10px;
+}
+
+#section-back {
+	font-size: 1.4rem;
+	padding: 5px;
+	margin-left: 10px;
+}
+
+#console-container {
+	display: grid;
+	gap: 5px;
+	grid-template-columns: 70% 30%;
+}

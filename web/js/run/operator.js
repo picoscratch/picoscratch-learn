@@ -29,6 +29,16 @@ export const CONDITIONS = {
 		code: async (blk) => {
 			return blk.value[1].shadow[0].field[0]._ + " in " + blk.value[0].shadow[0].field[0]._;
 		}
+	},
+	operator_lt: {
+		code: async (blk) => {
+			return await solveNumber(blk.value[0]) + " < " + await solveNumber(blk.value[1]);
+		}
+	},
+	operator_gt: {
+		code: async (blk) => {
+			return await solveNumber(blk.value[0]) + " > " + await solveNumber(blk.value[1]);
+		}
 	}
 };
 
@@ -57,6 +67,37 @@ export const NUMBERS = {
 		import: ["random"],
 		code: async (blk) => {
 			return "random.randrange(" + await solveNumber(blk.value[0]) + ", " + await solveNumber(blk.value[1]) + ")"
+		}
+	},
+	operator_round: {
+		code: async (blk) => {
+			return "round(" + await solveNumber(blk.value[0]) + ")";
+		}
+	},
+	operator_mod: {
+		code: async (blk) => {
+			return await solveNumber(blk.value[0]) + " % " + await solveNumber(blk.value[1]);
+		}
+	},
+	operator_mathop: {
+		import: ["math"],
+		code: async (blk) => {
+			let op = blk.value[0].shadow[0].field[0]._;
+			let val = await solveNumber(blk.value[1]);
+			if(op == "abs") return "abs(" + val + ")";
+			else if(op == "floor") return "math.floor(" + val + ")";
+			else if(op == "ceiling") return "math.ceil(" + val + ")";
+			else if(op == "sqrt") return "math.sqrt(" + val + ")";
+			else if(op == "sin") return "math.sin(" + val + ")";
+			else if(op == "cos") return "math.cos(" + val + ")";
+			else if(op == "tan") return "math.tan(" + val + ")";
+			else if(op == "asin") return "math.asin(" + val + ")";
+			else if(op == "acos") return "math.acos(" + val + ")";
+			else if(op == "atan") return "math.atan(" + val + ")";
+			else if(op == "ln") return "math.log(" + val + ")";
+			else if(op == "log") return "math.log10(" + val + ")";
+			else if(op == "e ^") return "math.exp(" + val + ")";
+			else if(op == "10 ^") return "10 ** " + val;
 		}
 	}
 }
