@@ -10,18 +10,22 @@ import { correctPoints, createWorkspace, fromXml, setBlockTags, setTaskXML, setV
 import { renderLeaderboards, setLeaderboard } from "./leaderboard.js";
 import { nextTask, setCurrentLevel, setTask, setTaskIndex, task } from "./level.js";
 import { populateRoomButtons } from "./schoolauth.js";
+import { writePort } from "../port.js";
+import { setAnsweredQs, setCorrectQs } from "./level.js";
+import { setCorrectPoints } from "../workspace.js";
+import { resetData } from "../consolechart.js";
 
 /**
  * @deprecated Build your own with WS_PROTOCOL + "://" + SERVER
  */
 export let wsServer;
 export let ws;
-export const HTTP_PROTOCOL = "https";
-export const WS_PROTOCOL = "wss";
-export const SERVER = "cfp.is-a.dev/picoscratch/";
-// export const HTTP_PROTOCOL = "http";
-// export const WS_PROTOCOL = "ws";
-// export const SERVER = "localhost:8080";
+// export const HTTP_PROTOCOL = "https";
+// export const WS_PROTOCOL = "wss";
+// export const SERVER = "cfp.is-a.dev/picoscratch/";
+export const HTTP_PROTOCOL = "http";
+export const WS_PROTOCOL = "ws";
+export const SERVER = "localhost:8080";
 
 // export function setWSServer(newServer) { wsServer = newServer; }
 export function setWS(newWS) { ws = newWS; }
@@ -176,6 +180,47 @@ export function connectServer(code) {
 			addSections(packet);
 		} else if(packet.type == "sectionDone") {
 			$("#section-back").click();
+		} else if(packet.type == "done") {
+			if(packet.success) {
+				$("#editor").style.display = "none";
+				$("#levelpath").style.display = "";
+				while($("#blocklyDiv").firstChild) {
+					$("#blocklyDiv").firstChild.remove();
+				}
+				$("#greenflag").disabled = true;
+				$("#reset").style.display = "";
+				$("#next").style.display = "none";
+				$("#pythontab").style.width = "100%";
+				$("#pythontab").style.display = "none";
+				$("#code-in-py").style.display = "none";
+				await writePort("\r\x03")
+	
+				setTaskIndex(-1);
+				setAnsweredQs(0);
+				setCorrectQs(0);
+				setCorrectPoints([]);
+				resetData();
+				party.confetti(document.querySelector("#levelpath"), { count: "90", spread: "10" })
+			}
+		} else if(packet.type == "dismiss") {
+			$("#editor").style.display = "none";
+			$("#levelpath").style.display = "";
+			while($("#blocklyDiv").firstChild) {
+				$("#blocklyDiv").firstChild.remove();
+			}
+			$("#greenflag").disabled = true;
+			$("#reset").style.display = "";
+			$("#next").style.display = "none";
+			$("#pythontab").style.width = "100%";
+			$("#pythontab").style.display = "none";
+			$("#code-in-py").style.display = "none";
+			await writePort("\r\x03")
+
+			setTaskIndex(-1);
+			setAnsweredQs(0);
+			setCorrectQs(0);
+			setCorrectPoints([]);
+			resetData();
 		}
 	})
 	ws.addEventListener("error", () => {

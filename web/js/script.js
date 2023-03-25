@@ -66,27 +66,10 @@ $("#next").addEventListener("click", async () => {
 	//location.href = "#" + (currentLevel + 1) + "_" + playername + "_" + playerscore;
 	//location.reload();
 	// await loadNextLevel();
-	$("#editor").style.display = "none";
-	$("#levelpath").style.display = "";
-	while($("#blocklyDiv").firstChild) {
-		$("#blocklyDiv").firstChild.remove();
-	}
-	$("#greenflag").disabled = true;
-	$("#reset").style.display = "";
-	$("#next").style.display = "none";
-	$("#next").disabled = true;
-	$("#pythontab").style.width = "100%";
-	$("#pythontab").style.display = "none";
-	$("#code-in-py").style.display = "none";
-	await writePort("\r\x03")
 	// ws.send("done " + currentLevel + " " + answeredqs + " " + correctqs);
+	$("#next").disabled = true;
+	document.querySelector("#next").animate([{ transform: "rotate(0deg)" }, { transform: "rotate(360deg)" }], { duration: 1000, easing: "ease-in-out" })
 	ws.send(JSON.stringify({type: "done", level: currentLevel, answeredqs, correctqs, section: currentSection}));
-	setTaskIndex(-1);
-	setAnsweredQs(0);
-	setCorrectQs(0);
-	setCorrectPoints([]);
-	resetData();
-	party.confetti(document.querySelector("#levelpath"), { count: "90", spread: "10" })
 })
 $("#tab-scratch").addEventListener("click", async () => {
 	$("#pythontab").style.display = "none";
