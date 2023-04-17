@@ -13,12 +13,14 @@ export let currentLevel = 1;
 export let task;
 export let answeredqs = 0;
 export let correctqs = 0;
+export let verifying = false;
 
 export function setTaskIndex(newIndex) { taskIndex = newIndex; }
 export function setCurrentLevel(newLevel) { currentLevel = newLevel; }
 export function setTask(newTask) { task = newTask; }
 export function setAnsweredQs(newAnsweredQs) { answeredqs = newAnsweredQs; }
 export function setCorrectQs(newCorrectQs) { correctqs = newCorrectQs; }
+export function setVerifying(newVerifying) { verifying = newVerifying; }
 
 /**
  * @deprecated

@@ -5,13 +5,16 @@ import { makeCode } from "./run.js";
 import { correctPoints, createWorkspace, fromXml, setCorrectPoints, taskXML, toXml, workspace } from "./workspace.js";
 const langs = require("./lang.json");
 import { setupUpdater } from "./updater.js";
-import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask } from "./task/level.js";
+import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask, setVerifying, verifying } from "./task/level.js";
 import { checkSchoolcode, connectServer, HTTP_PROTOCOL, SERVER, ws, wsServer, WS_PROTOCOL } from "./task/server.js";
 import { $, sleep } from "./util.js";
 import { initIdleDetector } from "./task/idle.js";
 import { PSNotification } from "./notification.js";
-import { currentSection } from "./levelpath/sections.js";
+import { currentSection, setCurrentSection } from "./levelpath/sections.js";
 import { resetData } from "./consolechart.js";
+const { readFileSync, existsSync, unlinkSync, writeFileSync } = require("node:fs");
+const { app, shell } = require("@electron/remote")
+const { join } = require("node:path");
 
 let picoW = true;
 
@@ -68,6 +71,29 @@ $("#next").addEventListener("click", async () => {
 	// await loadNextLevel();
 	// ws.send("done " + currentLevel + " " + answeredqs + " " + correctqs);
 	$("#next").disabled = true;
+	if(task.verification.type == "code") {
+		await writePort("\r\x03") // Cancel running code
+		await sleep(300);
+		setVerifying(true);
+		await writePort("\r\x05")
+		await writePort(task.verification.code);
+		await writePort("\r\x04");
+		let i = 0;
+		while(i < 10) {
+			if(!verifying) {
+				break;
+			}
+			await sleep(500);
+			i++;
+		}
+		if(verifying) {
+			// Timeout
+			setVerifying(false);
+			showCustomNotif("Kann nicht verifizieren. Stelle sicher, dass du alles richtig gesteckt hast.");
+			return;
+		}
+		console.log("Verified");
+	}
 	document.querySelector("#next").animate([{ transform: "rotate(0deg)" }, { transform: "rotate(360deg)" }], { duration: 1000, easing: "ease-in-out" })
 	ws.send(JSON.stringify({type: "done", level: currentLevel, answeredqs, correctqs, section: currentSection}));
 })
@@ -168,8 +194,15 @@ $("#start-btn").addEventListener("click", async () => {
 $("#close-debug").addEventListener("click", () => {
 	new PSNotification("#debug-window").hide();
 })
+async function showCustomNotif(text) {
+	$("#custom-notification-text").innerText = text;
+	new PSNotification("#custom-notification").show();
+	await sleep(3000);
+	new PSNotification("#custom-notification").hide();
+}
 $("#refresh-workspace").addEventListener("click", () => {
 	workspace.refreshToolboxSelection_();
+	showCustomNotif("Refreshed workspace toolbox");
 })
 $("#reload-workspace").addEventListener("click", () => {
 	const xml = toXml();
@@ -178,17 +211,61 @@ $("#reload-workspace").addEventListener("click", () => {
 	}
 	createWorkspace();
 	fromXml(xml);
+	showCustomNotif("Reloaded workspace");
 })
 $("#serial-connect").addEventListener("click", async () => {
 	connectPort();
+	showCustomNotif("[Confirmed]");
 })
 $("#serial-disconnect").addEventListener("click", async () => {
 	port.close();
+	showCustomNotif("Closed port");
 })
 $("#pico-reset").addEventListener("click", async () => {
 	// Ctrl-D
 	await writePort("\x04");
+	showCustomNotif("Sent reset signal");
 })
+$("#pico-interrupt").addEventListener("click", async () => {
+	// Ctrl-C
+	await writePort("\x03");
+	showCustomNotif("Sent interrupt signal");
+})
+$("#reload-with-psess").addEventListener("click", async () => {
+	savePsess();
+	location.reload();
+});
+
+function savePsess() {
+	const psess = {
+		name: $("#name").value,
+		section: currentSection,
+		level: currentLevel,
+		answeredqs,
+		correctqs,
+		picoW,
+		workspace: toXml(),
+		taskIndex,
+		isInEditor: $("#editor").style.display !== "none",
+		isInReading: $("#reading").style.display !== "none",
+		isInLevelPath: $("#levelpath").style.display !== "none"
+	};
+	writeFileSync(join(app.getPath("userData"), "psess.json"), JSON.stringify(psess));
+}
+
+$("#save-psess").addEventListener("click", () => {
+	savePsess();
+	showCustomNotif("Saved psess in userData");
+});
+$("#re-request-verification").addEventListener("click", async () => {
+	$("#next").disabled = false;
+	$("#next").click();
+	showCustomNotif("Re-requested verification");
+});
+$("#open-ps-folder").addEventListener("click", async () => {
+	shell.openPath(app.getPath("userData"));
+	showCustomNotif("Opened userData folder");
+});
 $("#submit-name").addEventListener("click", async () => {
 	// await new Dialog("#log-in-dialog").hide();
 	// new Dialog("#loading-dialog").show();
@@ -291,6 +368,53 @@ if(!ipcRenderer.sendSync("config.has", "schoolcode")) {
 } else {
 	$("#login").style.display = "flex";
 	connectServer(ipcRenderer.sendSync("config.get", "schoolcode"));
+}
+
+if(existsSync(join(app.getPath("userData"), "psess.json"))) {
+	new PSNotification("#psess-notification").show();
+	new Dialog("#pico-dialog").hide();
+
+	const psess = JSON.parse(readFileSync(join(app.getPath("userData"), "psess.json")));
+
+	await new Promise(resolve => setTimeout(resolve, 1000));
+
+	$("#name").value = psess.name;
+	ws.send(JSON.stringify({ type: "login", name: psess.name }))
+	await new Promise(resolve => setTimeout(resolve, 1000));
+	setCurrentSection(psess.section);
+	setCurrentLevel(psess.level);
+	ws.send(JSON.stringify({ type: "task", level: currentLevel, section: currentSection }));
+	await new Promise(resolve => setTimeout(resolve, 1000));
+	// if(psess.isInEditor) {
+	// 	$("#editor").style.display = "";
+	// 	$("#levelpath").style.display = "none";
+	// 	$("#reading").style.display = "none";
+	// } else if(psess.isInReading) {
+	// 	$("#editor").style.display = "none";
+	// 	$("#levelpath").style.display = "none";
+	// 	$("#reading").style.display = "";
+	// } else if(psess.isInLevelPath) {
+	// 	$("#editor").style.display = "none";
+	// 	$("#levelpath").style.display = "";
+	// 	$("#reading").style.display = "none";
+	// }
+	// answeredqs = psess.answeredqs;
+	// correctqs = psess.correctqs;
+	setAnsweredQs(psess.answeredqs);
+	setCorrectQs(psess.correctqs);
+	picoW = psess.picoW;
+	fromXml(psess.workspace);
+	setTaskIndex(psess.taskIndex - 1);
+	nextTask();
+	await new Promise(resolve => setTimeout(resolve, 1000));
+	new Dialog("#wiring-begin-dialog").hide();
+	new Dialog("#custom-dialog").hide();
+	new Dialog("#quiz-dialog").hide();
+	connectPort();
+
+	unlinkSync(join(app.getPath("userData"), "psess.json"));
+
+	new PSNotification("#psess-notification").hide();
 }
 
 async function run() {

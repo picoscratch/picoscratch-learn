@@ -10,7 +10,10 @@ export function renderLeaderboard(el) {
 	while(el.firstChild) {
 		el.removeChild(el.lastChild);
 	}
-	document.querySelector("#playername").innerText = capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ");
+	document.querySelector("#playername span").innerText = capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ");
+	document.querySelector("#playername img").src = "https://api.dicebear.com/6.x/thumbs/svg?seed=" + capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ");
+	document.querySelector("#editor-name span").innerText = capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ");
+	document.querySelector("#editor-name img").src = "https://api.dicebear.com/6.x/thumbs/svg?seed=" + capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" ");
 	const myUser = leaderboard.find(p => p.name == capitalizeWords(document.querySelector("#name").value.trim().split(" ")).join(" "));
 	if(myUser) {
 		document.querySelector("#xp").innerText = myUser.xp + " XP";
@@ -23,6 +26,7 @@ export function renderLeaderboard(el) {
 		}
 	} else {
 		console.log("Cant find myself on leaderboard!");
+		alert("Das hier sollte nie passieren.");
 	}
 	for(let i = 0; i < 10; i++) {
 		if(!leaderboard[i]) break;
@@ -43,6 +47,14 @@ export function renderLeaderboard(el) {
 			if(i == 9) div.innerHTML = `<h1 class="leaderboard-place leaderboard-place-last">${i + 1}</h1>`;
 			else div.innerHTML = `<h1 class="leaderboard-place">${i + 1}</h1>`;
 		}
+		const avatar = document.createElement("img");
+		avatar.src = "https://api.dicebear.com/6.x/thumbs/svg?seed=" + player.name;
+		avatar.style.width = "40px";
+		avatar.style.height = "40px";
+		avatar.style.borderRadius = "100%";
+		avatar.style.marginRight = "5px";
+		div.appendChild(avatar);
+
 		const name = document.createElement("h2");
 		name.classList.add("leaderboard-name");
 		name.innerText = player.name;

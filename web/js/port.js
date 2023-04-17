@@ -1,5 +1,5 @@
 import { addData } from "./consolechart.js";
-import { nextTask, taskIndex } from "./task/level.js";
+import { nextTask, setVerifying, taskIndex, verifying } from "./task/level.js";
 import { $, sleep } from "./util.js";
 
 const { SerialPort } = require('serialport')
@@ -13,6 +13,10 @@ let testInterval;
 window.addEventListener("beforeunload", () => {
 	port.close();
 })
+
+$("#pico-test-success").addEventListener("click", async () => {
+	test = true;
+});
 
 export function connectPort() {
 	if(port && port.isOpen) return;
@@ -53,6 +57,12 @@ export function connectPort() {
 			if(!isNaN(parseFloat(data))) {
 				addData(parseFloat(data));
 				console.log("Data: " + parseFloat(data));
+			}
+
+			if(verifying) {
+				if(data.includes("True")) {
+					setVerifying(false);
+				}
 			}
 		})
 		port.on("error", () => {

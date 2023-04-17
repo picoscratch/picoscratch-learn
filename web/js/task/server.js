@@ -20,12 +20,12 @@ import { resetData } from "../consolechart.js";
  */
 export let wsServer;
 export let ws;
-export const HTTP_PROTOCOL = "https";
-export const WS_PROTOCOL = "wss";
-export const SERVER = "cfp.is-a.dev/picoscratch/";
-// export const HTTP_PROTOCOL = "http";
-// export const WS_PROTOCOL = "ws";
-// export const SERVER = "localhost:8080";
+//export const HTTP_PROTOCOL = "https";
+//export const WS_PROTOCOL = "wss";
+//export const SERVER = "cfp.is-a.dev/picoscratch/";
+export const HTTP_PROTOCOL = "http";
+export const WS_PROTOCOL = "ws";
+export const SERVER = "localhost:8080";
 
 // export function setWSServer(newServer) { wsServer = newServer; }
 export function setWS(newWS) { ws = newWS; }
@@ -173,7 +173,7 @@ export function connectServer(code) {
 		} else if(packet.type == "ping") {
 			ws.send(JSON.stringify({type: "pong"}));
 		} else if(packet.type == "pingWarn") {
-			alert(packet.warning);
+			// alert(packet.warning);
 		} else if(packet.type == "pingTime") {
 			console.log("Ping: " + packet.ping + "ms");
 		} else if(packet.type == "sections") {

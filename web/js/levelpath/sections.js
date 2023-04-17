@@ -3,6 +3,10 @@ import { $ } from "../util.js";
 
 export let currentSection;
 
+export function setCurrentSection(newSection) {
+  currentSection = newSection;
+}
+
 export function addSection(section) {
   const sectionDiv = document.createElement("div");
   sectionDiv.classList.add("section");

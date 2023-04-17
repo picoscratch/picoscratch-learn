@@ -51,16 +51,40 @@
 				<h2 style="margin: 0;" data-lang="connection-lost"></h2>
 			</div>
 		</div>
-		<div class="notification" id="debug-window" style="height: 90vh; width: 40vw; z-index: 99; flex-direction: column; gap: 5px; display: none;">
+		<div class="notification" id="debug-window" style="height: 90vh; width: 40vw; z-index: 99999999999999999; flex-direction: column; gap: 5px; display: none;">
 			<h1 style="font-size: 2rem; margin: 5px;">Debug</h1>
 			<div id="debug-buttons">
 				<button id="close-debug">Close debug window</button>
+				<h2>Workspace</h2>
 				<button id="refresh-workspace">Refresh workspace</button>
 				<button id="reload-workspace">Reload workspace</button>
+				<h2>Pico + Serial</h2>
 				<button id="pico-reset">Pico reset</button>
+				<button id="pico-interrupt">Pico interrupt (^C)</button>
 				<button id="serial-connect">Serial connect</button>
 				<button id="serial-disconnect">Serial disconnect</button>
+				<button id="pico-test-success">Succeed pico connection test</button>
+				<h2>PSESS</h2>
+				<button id="reload-with-psess">Reload with psess</button>
+				<button id="save-psess">Save psess</button>
+				<h2>Other</h2>
+				<button id="re-request-verification">Request verification</button>
+				<button id="open-ps-folder">Open userData folder</button>
 			</div>
+		</div>
+		<div class="notification" id="psess-notification" style="display: none; z-index: 99999;">
+			<div class="progress-ring spinner-indeter">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="ring">
+					<circle class="dynamic" cx="50%" cy="50%" r="43.75%"></circle>
+				</svg>
+			</div>
+			<div style="display: flex; flex-direction: column; gap: 10px;">
+				<h2 style="margin: 0;">Loading psess</h2>
+				<span>Do not touch</span>
+			</div>
+		</div>
+		<div class="notification" id="custom-notification" style="display: none; z-index: 100000000000000000;">
+			<h2 id="custom-notification-text"></h2>
 		</div>
 	</div>
 	<div id="darken" style="z-index: 999; display: none;">
@@ -198,6 +222,10 @@
 				<div id="taskname" style="text-align: center; font-size: 1.4rem;"></div>
 				<div id="instruction" style="text-align: center;"></div>
 			</div>
+			<h3 id="editor-name" style="font-size: 1.8rem; margin: 0; margin-right: 5px; display: flex; gap: 10px; align-items: center;" class="slideInFromRight">
+				<img src="" width="40px" height="40px" style="border-radius: 100%;">
+				<span></span>
+			</h3>
 		</div>
 		<div id="tabswitcher">
 			<div class="slideInFromLeft">
@@ -379,7 +407,10 @@
 						<option value="de">Deutsch</option>
 					</select>
 					<div style="text-align: right;">
-						<h3 style="font-size: 1.8rem; margin: 0;" id="playername"></h3>
+						<h3 style="font-size: 1.8rem; margin: 0; display: flex; gap: 10px; align-items: center;" id="playername">
+							<img src="" width="40px" height="40px" style="border-radius: 100%;">
+							<span></span>
+						</h3>
 						<p style="margin: 0; margin-top: 5px;" id="xp"></p>
 					</div>
 				</div>
