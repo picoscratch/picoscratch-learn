@@ -63,6 +63,7 @@ export function createWorkspace() {
 	
 	workspace.addChangeListener((e) => {
 		console.log(e);
+		if(taskIndex == -2) return;
 		const INSTRUCTION = task.instructions[taskIndex];
 		if(!INSTRUCTION) return;
 		let allow = true;

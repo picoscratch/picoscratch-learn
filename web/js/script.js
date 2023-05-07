@@ -2,7 +2,7 @@ const ipcRenderer = require("electron/renderer").ipcRenderer;
 import { setLang, tryGetLanguage } from "./lang.js";
 import { connectPort, port, writePort } from "./port.js";
 import { makeCode } from "./run.js";
-import { correctPoints, createWorkspace, fromXml, setCorrectPoints, taskXML, toXml, workspace } from "./workspace.js";
+import { correctPoints, createWorkspace, fromXml, setCorrectPoints, startXML, taskXML, toXml, workspace } from "./workspace.js";
 const langs = require("./lang.json");
 import { setupUpdater } from "./updater.js";
 import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask, setVerifying, verifying } from "./task/level.js";
@@ -38,22 +38,22 @@ $("#greenflag").addEventListener("click", async () => {
 	$("#next").disabled = false;
 	document.querySelector("#next").animate([{ transform: "scale(1.5)" }, { transform: "scale(1)" }], { duration: 300 })
 })
-// $("#stop").addEventListener("click", async () => {
-// 	await writePort("\r\x03")
-// })
+$("#stop").addEventListener("click", async () => {
+	await writePort("\r\x03")
+})
 $("#console_input").addEventListener("keypress", async (e) => {
 	if(e.key == "Enter") {
 		await writePort($("#console_input").value + "\r\n")
 		$("#console_input").value = "";
 	}
 })
-// $("#save").addEventListener("click", async () => {
-// 	ipcRenderer.send("save", toXml());
-// })
-// $("#load").addEventListener("click", async () => {
-// 	const v = ipcRenderer.sendSync("load");
-// 	if(v != null) fromXml(v);
-// })
+$("#save").addEventListener("click", async () => {
+	ipcRenderer.send("save", toXml());
+})
+$("#load").addEventListener("click", async () => {
+	const v = ipcRenderer.sendSync("load");
+	if(v != null) fromXml(v);
+})
 $("#reset").addEventListener("click", async () => {
 	fromXml(taskXML);
 	setTaskIndex(-1);
@@ -133,7 +133,46 @@ $("#back").addEventListener("click", async () => {
 	setAnsweredQs(0);
 	setCorrectQs(0);
 	resetData();
+	$("#stop").style.display = "none";
+	$("#save").style.display = "none";
+	$("#load").style.display = "none";
+	$("#reset").style.display = "";
+	$("#task").style.display = "";
+	$("#editor-name").style.display = "";
 })
+$("#playground").addEventListener("click", async () => {
+	$("#levelpath").style.display = "none";
+	const buttons = ["#greenflag", "#stop", "#save", "#load", "#reset", "#back", "#wiring", "#fix"];
+	for(let i = 0; i < buttons.length; i++) {
+		document.querySelector(buttons[i]).style.transform = "translateY(-150%)";
+		document.querySelector(buttons[i]).animate([
+			{
+				transform: "translateY(-150%)"
+			},
+			{
+				transform: "translateY(0)"
+			}
+		], {
+			duration: 500,
+			easing: "ease-in-out",
+			delay: i * 100,
+			fill: "forwards"
+		});
+	}
+	$("#editor").style.display = "";
+	createWorkspace();
+	fromXml(startXML);
+	$("#greenflag").disabled = false;
+	$("#stop").style.display = "";
+	$("#save").style.display = "";
+	$("#load").style.display = "";
+	$("#reset").style.display = "none";
+	$("#task").style.display = "none";
+	$("#editor-name").style.display = "none";
+	$("#wiring").style.display = "none";
+	connectPort();
+	setTaskIndex(-2);
+});
 $("#reading-back").addEventListener("click", async () => {
 	$("#reading").style.display = "none";
 	$("#levelpath").style.display = "";
