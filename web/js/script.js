@@ -23,14 +23,16 @@ tryGetLanguage();
 setupUpdater();
 await initIdleDetector();
 
-new Dialog("#pico-dialog").show();
-
 export const editor = new Quill("#reading-container", {
 	theme: "bubble",
 	readOnly: true
 });
 
 $("#version").innerText = ipcRenderer.sendSync("version");
+$("#version").addEventListener("click", () => {
+	new Dialog("#changelog-dialog").show();
+	new Dialog("#changelog-dialog").hideButton("#changelog-hide");
+})
 
 $("#greenflag").addEventListener("click", async () => {
 	await run();
@@ -403,9 +405,11 @@ if(!ipcRenderer.sendSync("config.has", "schoolcode")) {
 		$("#setup").style.display = "none";
 		$("#login").style.display = "flex";
 		ws.send(JSON.stringify({ type: "room", uuid: ipcRenderer.sendSync("config.get", "room") }));
+		new Dialog("#pico-dialog").show();
 	});
 } else {
 	$("#login").style.display = "flex";
+	new Dialog("#pico-dialog").show();
 	connectServer(ipcRenderer.sendSync("config.get", "schoolcode"));
 }
 

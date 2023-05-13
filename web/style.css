@@ -568,3 +568,7 @@ input:not(.blocklyHtmlInput) {
 	gap: 5px;
 	grid-template-columns: 70% 30%;
 }
+
+#version {
+	text-decoration: underline;
+}
