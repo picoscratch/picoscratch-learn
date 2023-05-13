@@ -110,8 +110,8 @@ function start() {
 
 	win.maximize();
 
-	if(!store.has("title")) win.loadFile("web/setup.html");
-	else win.loadFile("web/editor.html");
+	// if(!store.has("title")) win.loadFile("web/setup.html");
+	win.loadFile("web/editor.html");
 
 	if(!isPackaged) win.webContents.openDevTools();
 }
