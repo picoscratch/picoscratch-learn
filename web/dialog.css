@@ -2,12 +2,11 @@
 	animation: darkenIn 0.5s ease-in-out forwards;
 }
 
-#darkenOut {
-	animation: darkenOut 0.5s ease-in-out forwards;
+.darkenOut {
+	animation: darkenOut 0.5s ease-in-out forwards !important;
 }
 
-#darken,
-#darkenOut {
+#darken {
 	position: fixed;
 	top: 0px;
 	left: 0px;

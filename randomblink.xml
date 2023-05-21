@@ -1,0 +1,54 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables></variables>
+  <block type="event_whenflagclicked" id="{!5G[{H3qE2[NMQ;pK)W" x="300" y="400">
+    <next>
+      <block type="control_forever" id="G^Oan:[*C8($DtOFI}Ow">
+        <statement name="SUBSTACK">
+          <block type="control_if_else" id="#]Ph(+Xv1:?Z8lF%2YDs">
+            <value name="CONDITION">
+              <block type="operator_lt" id="XHF3#!!0mNGWQ:a_[}8t">
+                <value name="OPERAND1">
+                  <shadow type="text" id="m[,f$G+x;9m?5m^uTU5y">
+                    <field name="TEXT"></field>
+                  </shadow>
+                  <block type="operator_random" id="ERYV}Mn$um#zv7weVNE1">
+                    <value name="FROM">
+                      <shadow type="math_number" id="?_Mb$QkN@=T~v{O^`3iQ">
+                        <field name="NUM">1</field>
+                      </shadow>
+                    </value>
+                    <value name="TO">
+                      <shadow type="math_number" id="ZE5%JfZkaV;_~R3(?=pQ">
+                        <field name="NUM">20</field>
+                      </shadow>
+                    </value>
+                  </block>
+                </value>
+                <value name="OPERAND2">
+                  <shadow type="text" id="2BJAiq]|EDp/]}3f5l+C">
+                    <field name="TEXT">10</field>
+                  </shadow>
+                </value>
+              </block>
+            </value>
+            <statement name="SUBSTACK">
+              <block type="components_internalledon" id="~H3|x%}E-iDdUE:XuDpw"></block>
+            </statement>
+            <statement name="SUBSTACK2">
+              <block type="components_internalledoff" id="emzH#p4nodgmNhCq2(}+"></block>
+            </statement>
+            <next>
+              <block type="control_wait" id="ygFbuLK6^i=b/;aDDM/%">
+                <value name="DURATION">
+                  <shadow type="math_positive_number" id="J@.;Pf4pM+gE_xN+rPCK">
+                    <field name="NUM">1</field>
+                  </shadow>
+                </value>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </next>
+  </block>
+</xml>

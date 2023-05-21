@@ -11,7 +11,7 @@ let test;
 let testInterval;
 
 window.addEventListener("beforeunload", () => {
-	port.close();
+	if(port) port.close();
 })
 
 $("#pico-test-success").addEventListener("click", async () => {
@@ -65,11 +65,23 @@ export function connectPort() {
 				}
 			}
 		})
-		port.on("error", () => {
+		port.on("error", async (err) => {
+			console.error(err);
+			if(!$("#connect-pico-obj").contentDocument) {
+				new Dialog("#connect-pico-dialog").show();
+				await sleep(500);
+				document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb").id = "usb-connected";
+			}
+			$("#connect-pico-obj").contentDocument.querySelector("#error").style.fill = "#F55050";
+			$("#connect-pico-porterror").style.display = "";
+			$("#connect-pico-porterror").innerText = "Computer sagt nein: " + err.message;
+			await sleep(3000);
+			$("#connect-pico-obj").contentDocument.querySelector("#error").style.fill = "none";
+			$("#connect-pico-porterror").style.display = "none";
 			connectPort();
 		})
 		port.on("close", () => {
-			$("#connect-pico-obj").contentDocument.querySelector("#error").style.fill = "none";
+			if($("#connect-pico-obj").contentDocument) $("#connect-pico-obj").contentDocument.querySelector("#error").style.fill = "none";
 			$("#connect-pico-error").style.display = "none";
 			if(testInterval) clearTimeout(testInterval);
 			connectPort();
@@ -78,12 +90,14 @@ export function connectPort() {
 			console.log("open");
 			if(taskIndex == -1 && !connectDialogShown) nextTask();
 			// Test pico
+			console.log("Testing pico");
 			await writePort("\r\x05")
 			await writePort("print('PicoScratch connection test')\r")
 			await writePort("\r\x04");
 
 			testInterval = setTimeout(async () => {
 				if(test) return;
+				console.log("Didn't succeed test");
 				// try to reset pico
 				await writePort("\x04");
 				await sleep(500);
@@ -93,6 +107,7 @@ export function connectPort() {
 
 				testInterval = setTimeout(async () => {
 					if(test) return;
+					console.log("Still not respondig to test, giving up");
 					// alert("Pico did not respond. Please try again.\nThe cable you are using might not be a data cable.\nTry plugging it into a different USB port, or try a different cable.\nIf the issue persists, please restart the program.");
 					if(!$("#connect-pico-obj").contentDocument) {
 						new Dialog("#connect-pico-dialog").show();

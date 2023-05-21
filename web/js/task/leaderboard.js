@@ -26,7 +26,6 @@ export function renderLeaderboard(el) {
 		}
 	} else {
 		console.log("Cant find myself on leaderboard!");
-		alert("Das hier sollte nie passieren.");
 	}
 	for(let i = 0; i < 10; i++) {
 		if(!leaderboard[i]) break;

@@ -1,0 +1,35 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables></variables>
+  <block type="event_whenflagclicked" id="{!5G[{H3qE2[NMQ;pK)W" x="300" y="400">
+    <next>
+      <block type="control_if" id="u!3w+FTA$!keusZ!]+Kw">
+        <value name="CONDITION">
+          <block type="operator_equals" id="c(cU9+NO,jouK1l6b;ql">
+            <value name="OPERAND1">
+              <shadow type="text" id="m:d=k)u;E2lKfbJ5N~-Q">
+                <field name="TEXT"></field>
+              </shadow>
+              <block type="operator_random" id="ERYV}Mn$um#zv7weVNE1">
+                <value name="FROM">
+                  <shadow type="math_number" id="?_Mb$QkN@=T~v{O^`3iQ">
+                    <field name="NUM">1</field>
+                  </shadow>
+                </value>
+                <value name="TO">
+                  <shadow type="math_number" id="ZE5%JfZkaV;_~R3(?=pQ">
+                    <field name="NUM">10</field>
+                  </shadow>
+                </value>
+              </block>
+            </value>
+            <value name="OPERAND2">
+              <shadow type="text" id="}/OYZ6j75hRLF@l9aL-c">
+                <field name="TEXT">3</field>
+              </shadow>
+            </value>
+          </block>
+        </value>
+      </block>
+    </next>
+  </block>
+</xml>

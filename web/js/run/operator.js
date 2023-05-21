@@ -3,10 +3,21 @@ import { runBlock, solveCondition, solveNumber, solveString, addFinalCode, inden
 export const CONDITIONS = {
 	operator_equals: {
 		code: async (blk) => {
-			let val = await solveString(blk.value[0]);
-			if(!isNaN(val.substring(1, val.length - 1))) val = parseFloat(val.substring(1, val.length - 1));
-			let val2 = await solveString(blk.value[1]);
-			if(!isNaN(val2.substring(1, val2.length - 1))) val2 = parseFloat(val2.substring(1, val2.length - 1));
+			// let val = await solveString(blk.value[0]);
+			// console.log("STRING IS: ", val);
+			// if(!isNaN(val.substring(1, val.length - 1))) val = parseFloat(val.substring(1, val.length - 1));
+			// console.log("STRING IS NOW: ", val);
+			// let val2 = await solveString(blk.value[1]);
+			// console.log("STRING IS: ", val2);
+			// if(!isNaN(val2.substring(1, val2.length - 1))) val2 = parseFloat(val2.substring(1, val2.length - 1));
+			// console.log("STRING IS NOW: ", val2);
+			// return val + " == " + val2;
+			let val = await solveNumber(blk.value[0]);
+			console.log("NUMBER IS: ", val);
+			let val2 = await solveNumber(blk.value[1]);
+			console.log("NUMBER IS: ", val2);
+			if(val == null) val = await solveString(blk.value[0]);
+			if(val2 == null) val2 = await solveString(blk.value[1]);
 			return val + " == " + val2;
 		}
 	},

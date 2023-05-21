@@ -39,10 +39,10 @@ class Dialog {
     this.el.classList.remove("dialog");
     this.el.classList.add("dialogOut");
     if(Dialog.shown == 1) {
-			document.getElementById("darken").id = "darkenOut";
+			document.getElementById("darken").classList.add("darkenOut");
 			await new Promise(resolve => setTimeout(resolve, 500));
-			document.getElementById("darkenOut").style.display = "none";
-			document.getElementById("darkenOut").id = "darken";
+			document.getElementById("darken").style.display = "none";
+			document.getElementById("darken").classList.remove("darkenOut");
 		} else {
 			await new Promise(resolve => setTimeout(resolve, 500));
 		}

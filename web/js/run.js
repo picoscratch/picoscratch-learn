@@ -165,7 +165,8 @@ export async function solveNumber(val) {
 	const blk = val.block[0];
 	workspace.glowBlock(blk.$.id, true);
 	if(!NUMBERS[blk.$.type]) {
-		report(blk.$.id, "Can't compile this block: No code");
+		// report(blk.$.id, "Can't compile this block: No code");
+		return null;
 	} else {
 		const number = NUMBERS[blk.$.type];
 		if(number.import) {
