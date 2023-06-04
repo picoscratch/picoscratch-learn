@@ -34,7 +34,7 @@ class Dialog {
   }
 
   async hide() {
-		if(this.el.style.display == "none") return;
+		if(this.el.style.display == "none" || this.el.classList.contains	("dialogOut")) return;
 		console.trace("Hide", this.el.id);
     this.el.classList.remove("dialog");
     this.el.classList.add("dialogOut");

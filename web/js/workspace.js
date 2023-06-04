@@ -13,6 +13,7 @@ import { event as varDeleteEvent } from "./task/type/event/vardelete.js";
 const prompt = require("electron-prompt");
 import { getLang } from "./lang.js";
 import { taskIndex, nextTask, task } from "./task/level.js";
+import { currentGroup } from "./codegroups.js";
 export let workspace = null;
 export let blockTags = {};
 export let varTags = {};
@@ -63,7 +64,39 @@ export function createWorkspace() {
 	
 	workspace.addChangeListener((e) => {
 		console.log(e);
-		if(taskIndex == -2) return;
+		if(taskIndex == -2) {
+			// Custom
+			if(currentGroup == null) return;
+			// new block
+			if(e instanceof Blockly.Events.Create) {
+				const packet = {
+					type: "groupAction",
+					group: currentGroup,
+					action: {
+						type: "addBlock",
+						block: Blockly.Xml.domToText(Blockly.Xml.blockToDom(e.block)),
+						x: e.block.getRelativeToSurfaceXY().x,
+						y: e.block.getRelativeToSurfaceXY().y
+					}
+				}
+				ws.send(JSON.stringify(packet));
+			}
+			// Move block
+			if(e instanceof Blockly.Events.Move) {
+				const packet = {
+					type: "groupAction",
+					group: currentGroup,
+					action: {
+						type: "moveBlock",
+						id: e.blockId,
+						x: e.newCoordinate.x,
+						y: e.newCoordinate.y
+					}
+				}
+				ws.send(JSON.stringify(packet));
+			}
+			return;
+		}
 		const INSTRUCTION = task.instructions[taskIndex];
 		if(!INSTRUCTION) return;
 		let allow = true;
