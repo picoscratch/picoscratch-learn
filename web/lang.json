@@ -67,7 +67,10 @@
 		"wiring": "Wiring",
 		"wiring-later": "You can view this again later.",
 		"wiring-close": "Close",
-		"dialog-connect-pico-error": "Pico did not respond. Please try again.\nThe cable you are using might not be a data cable.\nTry plugging it into a different USB port, or try a different cable.\nIf the issue persists, please restart the program."
+		"dialog-connect-pico-error": "Pico did not respond. Please try again.\nThe cable you are using might not be a data cable.\nTry plugging it into a different USB port, or try a different cable.\nIf the issue persists, please restart the program.",
+		"no-registration": "No registration",
+		"no-registration-text": "Your teacher has disabled new registrations.",
+		"no-registration-close": "Close"
 	},
 	"de": {
 		"start": "Start",
@@ -137,6 +140,9 @@
 		"wiring": "Verdrahtung",
 		"wiring-later": "Du kannst dies später nochmal ansehen.",
 		"wiring-close": "Schließen",
-		"dialog-connect-pico-error": "Pico hat nicht geantwortet. Bitte versuche es erneut.\nDas Kabel, das du verwendest, ist möglicherweise kein Datenkabel.\nVersuche es in einem anderen USB-Port oder versuche ein anderes Kabel.\nWenn das Problem weiterhin besteht, starte das Programm bitte neu."
+		"dialog-connect-pico-error": "Pico hat nicht geantwortet. Bitte versuche es erneut.\nDas Kabel, das du verwendest, ist möglicherweise kein Datenkabel.\nVersuche es in einem anderen USB-Port oder versuche ein anderes Kabel.\nWenn das Problem weiterhin besteht, starte das Programm bitte neu.",
+		"no-registration": "Keine Registrierung",
+		"no-registration-text": "Dein Lehrer hat neue Registrierungen deaktiviert.",
+		"no-registration-close": "Schließen"
 	}
 }

@@ -34,6 +34,8 @@ $("#version").addEventListener("click", () => {
 	new Dialog("#changelog-dialog").hideButton("#changelog-hide");
 })
 
+new Dialog("#no-registration-dialog").hideButton("#no-registration-hide");
+
 $("#greenflag").addEventListener("click", async () => {
 	await run();
 	await sleep(3000);

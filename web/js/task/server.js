@@ -14,18 +14,20 @@ import { writePort } from "../port.js";
 import { setAnsweredQs, setCorrectQs } from "./level.js";
 import { setCorrectPoints } from "../workspace.js";
 import { resetData } from "../consolechart.js";
+import { setGroup } from "../codegroups.js";
+import { workspace } from "../workspace.js";
 
 /**
  * @deprecated Build your own with WS_PROTOCOL + "://" + SERVER
  */
 export let wsServer;
 export let ws;
-export const HTTP_PROTOCOL = "https";
-export const WS_PROTOCOL = "wss";
-export const SERVER = "cfp.is-a.dev/picoscratch/";
-// export const HTTP_PROTOCOL = "http";
-// export const WS_PROTOCOL = "ws";
-// export const SERVER = "localhost:8080";
+// export const HTTP_PROTOCOL = "https";
+// export const WS_PROTOCOL = "wss";
+// export const SERVER = "cfp.is-a.dev/picoscratch/";
+export const HTTP_PROTOCOL = "http";
+export const WS_PROTOCOL = "ws";
+export const SERVER = "localhost:8080";
 
 // export function setWSServer(newServer) { wsServer = newServer; }
 export function setWS(newWS) { ws = newWS; }
@@ -78,6 +80,9 @@ export function connectServer(code) {
 			if(!packet.success) {
 				if(packet.error == "Teacher has not set a course yet") {
 					new Dialog("#no-course-yet-dialog").show();
+					return;
+				} else if(packet.error == "Teacher has not allowed registration") {
+					new Dialog("#no-registration-dialog").show();
 					return;
 				}
 				alert("Something isn't right. Please try again later.\n" + packet.error);
@@ -221,6 +226,23 @@ export function connectServer(code) {
 			setCorrectQs(0);
 			setCorrectPoints([]);
 			resetData();
+		} else if(packet.type == "syncGroup") {
+			// Send the code
+			ws.send(JSON.stringify({type: "groupCode", code: toXml()}));
+		} else if(packet.type == "groupCode") {
+			fromXml(packet.code);
+			console.log("Synced group code!");
+		} else if(packet.type == "startGroup") {
+			setGroup(packet.group);
+		} else if(packet.type == "groupAction") {
+			const action = packet.action;
+			if(action.type == "addBlock") {
+				const block = Blockly.Xml.domToBlock(Blockly.Xml.textToDom(action.block), workspace);
+				block.moveBy(action.x, action.y);
+			} else if(action.type == "moveBlock") {
+				const block = workspace.getBlockById(action.id);
+				block.moveBy(action.x, action.y);
+			}
 		}
 	})
 	ws.addEventListener("error", () => {
