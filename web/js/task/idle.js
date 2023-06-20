@@ -18,7 +18,7 @@ export async function initIdleDetector() {
 				if(isIdle) {
 					console.log("User went idle.");
 					if(fullyAuthed) ws.send(JSON.stringify({ type: "idleStateChange", idle: true }));
-					if(ipcRenderer.sendSync("isDemo")) location.reload();
+					if(ipcRenderer.sendSync("isDemo")) location.href = "inactive.html"
 				} else {
 					console.log("User is active.");
 					if(fullyAuthed) ws.send(JSON.stringify({ type: "idleStateChange", idle: false }));

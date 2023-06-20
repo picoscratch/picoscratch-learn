@@ -546,3 +546,7 @@ ipcRenderer.on("support", async (event) => {
 ipcRenderer.on("debug", async () => {
 	new PSNotification("#debug-window").show();
 })
+
+if(ipcRenderer.sendSync("isDemo")) {
+	$("#pico-dialog-w").click();
+}
