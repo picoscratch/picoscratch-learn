@@ -278,22 +278,47 @@ $("#reload-with-psess").addEventListener("click", async () => {
 	savePsess();
 	location.reload();
 });
+document.addEventListener("keydown", async (e) => {
+	// Ctrl+Shift+R
+	if(e.ctrlKey && e.shiftKey && e.key === "R") {
+		savePsess();
+		location.reload();
+	}
+	// Ctrl+Shift+L
+	if(e.ctrlKey && e.shiftKey && e.key === "L") {
+		location.reload();
+	}
+});
 
 function savePsess() {
-	const psess = {
-		name: $("#name").value,
-		section: currentSection,
-		level: currentLevel,
-		answeredqs,
-		correctqs,
-		picoW,
-		workspace: toXml(),
-		taskIndex,
-		isInEditor: $("#editor").style.display !== "none",
-		isInReading: $("#reading").style.display !== "none",
-		isInLevelPath: $("#levelpath").style.display !== "none"
-	};
-	writeFileSync(join(app.getPath("userData"), "psess.json"), JSON.stringify(psess));
+	if($("#save").style.display === "none") {
+		const psess = {
+			name: $("#name").value,
+			section: currentSection,
+			level: currentLevel,
+			answeredqs,
+			correctqs,
+			picoW,
+			workspace: toXml(),
+			taskIndex,
+			isInEditor: $("#editor").style.display !== "none",
+			isInReading: $("#reading").style.display !== "none",
+			isInLevelPath: $("#levelpath").style.display !== "none",
+			isInPlayground: false
+		};
+		writeFileSync(join(app.getPath("userData"), "psess.json"), JSON.stringify(psess));
+	} else if($("#save").style.display === "") {
+		const psess = {
+			name: $("#name").value,
+			picoW,
+			workspace: toXml(),
+			isInEditor: $("#editor").style.display !== "none",
+			isInReading: $("#reading").style.display !== "none",
+			isInLevelPath: $("#levelpath").style.display !== "none",
+			isInPlayground: true
+		};
+		writeFileSync(join(app.getPath("userData"), "psess.json"), JSON.stringify(psess));
+	}
 }
 
 $("#save-psess").addEventListener("click", () => {
@@ -420,37 +445,55 @@ if(existsSync(join(app.getPath("userData"), "psess.json"))) {
 	new Dialog("#pico-dialog").hide();
 
 	const psess = JSON.parse(readFileSync(join(app.getPath("userData"), "psess.json")));
+	console.log(psess);
 
 	await new Promise(resolve => setTimeout(resolve, 1000));
 
 	$("#name").value = psess.name;
 	ws.send(JSON.stringify({ type: "login", name: psess.name }))
 	await new Promise(resolve => setTimeout(resolve, 1000));
-	setCurrentSection(psess.section);
-	setCurrentLevel(psess.level);
-	ws.send(JSON.stringify({ type: "task", level: currentLevel, section: currentSection }));
-	await new Promise(resolve => setTimeout(resolve, 1000));
-	// if(psess.isInEditor) {
-	// 	$("#editor").style.display = "";
-	// 	$("#levelpath").style.display = "none";
-	// 	$("#reading").style.display = "none";
-	// } else if(psess.isInReading) {
-	// 	$("#editor").style.display = "none";
-	// 	$("#levelpath").style.display = "none";
-	// 	$("#reading").style.display = "";
-	// } else if(psess.isInLevelPath) {
-	// 	$("#editor").style.display = "none";
-	// 	$("#levelpath").style.display = "";
-	// 	$("#reading").style.display = "none";
-	// }
-	// answeredqs = psess.answeredqs;
-	// correctqs = psess.correctqs;
-	setAnsweredQs(psess.answeredqs);
-	setCorrectQs(psess.correctqs);
+	if(!psess.isInPlayground) {
+		setCurrentSection(psess.section);
+		setCurrentLevel(psess.level);
+		ws.send(JSON.stringify({ type: "task", level: currentLevel, section: currentSection }));
+		await new Promise(resolve => setTimeout(resolve, 1000));
+		// if(psess.isInEditor) {
+		// 	$("#editor").style.display = "";
+		// 	$("#levelpath").style.display = "none";
+		// 	$("#reading").style.display = "none";
+		// } else if(psess.isInReading) {
+		// 	$("#editor").style.display = "none";
+		// 	$("#levelpath").style.display = "none";
+		// 	$("#reading").style.display = "";
+		// } else if(psess.isInLevelPath) {
+		// 	$("#editor").style.display = "none";
+		// 	$("#levelpath").style.display = "";
+		// 	$("#reading").style.display = "none";
+		// }
+		// answeredqs = psess.answeredqs;
+		// correctqs = psess.correctqs;
+		setAnsweredQs(psess.answeredqs);
+		setCorrectQs(psess.correctqs);
+		fromXml(psess.workspace);
+		setTaskIndex(psess.taskIndex - 1);
+		nextTask();
+	}
 	picoW = psess.picoW;
-	fromXml(psess.workspace);
-	setTaskIndex(psess.taskIndex - 1);
-	nextTask();
+	if(psess.isInPlayground) {
+		$("#levelpath").style.display = "none";
+		$("#editor").style.display = "";
+		createWorkspace();
+		fromXml(psess.workspace);
+		$("#greenflag").disabled = false;
+		$("#stop").style.display = "";
+		$("#save").style.display = "";
+		$("#load").style.display = "";
+		$("#reset").style.display = "none";
+		$("#task").style.display = "none";
+		$("#editor-name").style.display = "none";
+		$("#wiring").style.display = "none";
+		setTaskIndex(-2);
+	}
 	await new Promise(resolve => setTimeout(resolve, 1000));
 	new Dialog("#wiring-begin-dialog").hide();
 	new Dialog("#custom-dialog").hide();

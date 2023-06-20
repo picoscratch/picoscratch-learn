@@ -1,5 +1,5 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
-const { readFileSync, writeFileSync } = require("fs");
+const { readFileSync, writeFileSync, existsSync } = require("fs");
 const path = require("path");
 const isPackaged = require("electron-is-packaged").isPackaged;
 require('@electron/remote/main').initialize()
@@ -13,6 +13,8 @@ let win;
 Menu.setApplicationMenu(null)
 
 function start() {
+	const isDemo = existsSync(path.join(app.getPath("desktop"), "picoscratch-demo.txt"));
+	console.log(isDemo);
 	win = new BrowserWindow({
 		width: 800,
 		height: 600,
@@ -22,11 +24,21 @@ function start() {
 			contextIsolation: false,
 			nodeIntegrationInSubFrames: true,
 		},
-		// kiosk: true,
-		// fullscreen: true,
+		kiosk: isDemo,
+		fullscreen: isDemo,
+		fullScreen: isDemo,
 		icon: path.join(__dirname, "picoscratch.ico")
 	})
 	require('@electron/remote/main').enable(win.webContents)
+
+	if(isDemo) {
+		win.on("close", (e) => {
+			e.preventDefault();
+		})
+		app.on("before-quit", (e) => {
+			e.preventDefault();
+		})
+	}
 
 	ipcMain.on("config.set", (e, key, value) => {
 		store.set(key, value);
@@ -46,6 +58,9 @@ function start() {
 	ipcMain.on("version", (e) => {
 		e.returnValue = app.getVersion();
 	})
+	ipcMain.on("isDemo", (e) => {
+		e.returnValue = isDemo;
+	});
 	ipcMain.on("save", (e, xml) => {
 		const path = dialog.showSaveDialogSync(win, { title: "Projekt speichern...", defaultPath: "project.xml", filters: [{ name: "PicoScratch Projekte", extensions: ["xml"] }] });
 		if(path) {
@@ -108,7 +123,7 @@ function start() {
 		}
 	})
 
-	win.maximize();
+	if(!isDemo) win.maximize();
 
 	// if(!store.has("title")) win.loadFile("web/setup.html");
 	win.loadFile("web/editor.html");

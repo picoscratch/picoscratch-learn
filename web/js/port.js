@@ -1,6 +1,7 @@
 import { addData } from "./consolechart.js";
 import { nextTask, setVerifying, taskIndex, verifying } from "./task/level.js";
 import { $, sleep } from "./util.js";
+const fs = require("fs");
 
 const { SerialPort } = require('serialport')
 const { autoDetect } = require("@serialport/bindings-cpp")
@@ -10,7 +11,7 @@ let connectDialogShown = false;
 let test;
 let testInterval;
 
-window.addEventListener("beforeunload", () => {
+window.addEventListener("beforeunload", (e) => {
 	if(port) port.close();
 })
 
