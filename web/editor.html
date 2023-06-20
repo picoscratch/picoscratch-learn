@@ -190,9 +190,13 @@
 			</div>
 		</div>
 		<div class="dialog" id="changelog-dialog" style="display: none;">
-			<h2>PicoScratch Learn 1.5.3</h2>
+			<h2>PicoScratch Learn 1.5.5</h2>
 			<ul>
-				<li>Dialog hide fix</li>
+				<li>Demo mode</li>
+				<li>Name field now has max length</li>
+				<li>Ctrl+Shift+L to log out</li>
+				<li>Ctrl+Shift+R to reload with PSESS</li>
+				<li>Reloading with PSESS now works in the custom code editor</li>
 			</ul>
 			<button id="changelog-hide" style="font-size: 1.3rem;">Ok</button>
 		</div>
@@ -316,7 +320,7 @@
 		<div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
 			<h2 style="margin: 0" data-lang="log-in-dialog-title"></h2>
 			<p style="margin: 10px" data-lang="log-in-dialog-text"></p>
-			<input type="text" data-lang-placeholder="log-in-dialog-placeholder" style="text-align: center;" id="name">
+			<input type="text" data-lang-placeholder="log-in-dialog-placeholder" style="text-align: center;" id="name" maxlength="30">
 			<button id="submit-name" class="btn-green" style="font-size: 1.4rem;" data-lang="log-in-dialog-submit"></button>
 		</div>
 		<!-- <img src="bottom waves.svg" style="position: fixed; bottom: 0; z-index: -5; width: 100vw;"> -->

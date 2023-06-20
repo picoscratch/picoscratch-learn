@@ -1,4 +1,5 @@
 import { fullyAuthed, ws } from "./server.js";
+const { ipcRenderer } = require("electron/renderer");
 
 export async function initIdleDetector() {
 	try {
@@ -17,6 +18,7 @@ export async function initIdleDetector() {
 				if(isIdle) {
 					console.log("User went idle.");
 					if(fullyAuthed) ws.send(JSON.stringify({ type: "idleStateChange", idle: true }));
+					if(ipcRenderer.sendSync("isDemo")) location.reload();
 				} else {
 					console.log("User is active.");
 					if(fullyAuthed) ws.send(JSON.stringify({ type: "idleStateChange", idle: false }));
