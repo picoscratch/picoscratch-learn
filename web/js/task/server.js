@@ -24,7 +24,7 @@ export let wsServer;
 export let ws;
 export const HTTP_PROTOCOL = "https";
 export const WS_PROTOCOL = "wss";
-export const SERVER = "cfp.is-a.dev/picoscratch/";
+export const SERVER = "server.picoscratch.de/";
 // export const HTTP_PROTOCOL = "http";
 // export const WS_PROTOCOL = "ws";
 // export const SERVER = "localhost:8080";
