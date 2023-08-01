@@ -14,7 +14,7 @@ import { writePort } from "../port.js";
 import { setAnsweredQs, setCorrectQs } from "./level.js";
 import { setCorrectPoints } from "../workspace.js";
 import { resetData } from "../consolechart.js";
-import { setGroup } from "../codegroups.js";
+import { currentGroup, setGroup } from "../codegroups.js";
 import { workspace } from "../workspace.js";
 
 /**
@@ -228,20 +228,25 @@ export function connectServer(code) {
 			resetData();
 		} else if(packet.type == "syncGroup") {
 			// Send the code
-			ws.send(JSON.stringify({type: "groupCode", code: toXml()}));
+			ws.send(JSON.stringify({type: "groupCode", code: toXml(), group: currentGroup.code}));
 		} else if(packet.type == "groupCode") {
 			fromXml(packet.code);
 			console.log("Synced group code!");
 		} else if(packet.type == "startGroup") {
 			setGroup(packet.group);
+		} else if(packet.type == "joinGroup") {
+			setGroup(packet.group)
 		} else if(packet.type == "groupAction") {
 			const action = packet.action;
-			if(action.type == "addBlock") {
-				const block = Blockly.Xml.domToBlock(Blockly.Xml.textToDom(action.block), workspace);
-				block.moveBy(action.x, action.y);
-			} else if(action.type == "moveBlock") {
-				const block = workspace.getBlockById(action.id);
-				block.moveBy(action.x, action.y);
+			// if(action.type == "addBlock") {
+			// 	const block = Blockly.Xml.domToBlock(Blockly.Xml.textToDom(action.block), workspace);
+			// 	block.moveBy(action.x, action.y);
+			// } else if(action.type == "moveBlock") {
+			// 	const block = workspace.getBlockById(action.id);
+			// 	block.moveBy(action.x, action.y);
+			// }
+			if(action.type == "updateWorkspace") {
+				fromXml(action.workspace);
 			}
 		}
 	})

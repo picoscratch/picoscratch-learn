@@ -1,3 +1,5 @@
+import { ws } from "./task/server.js";
+
 export let currentGroup = null;
 
 export function setGroup(group) {
@@ -10,11 +12,10 @@ export function createCodeGroup() {
 
 export function joinCodeGroup(group) {
 	ws.send(JSON.stringify({type: "joinGroup", group: group}));
-	currentGroup = group;
 }
 
 export function leaveCodeGroup() {
-	ws.send(JSON.stringify({type: "leaveGroup"}));
+	ws.send(JSON.stringify({type: "leaveGroup", group: currentGroup.code}));
 	currentGroup = null;
 }
 

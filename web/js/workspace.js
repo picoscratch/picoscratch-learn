@@ -9,6 +9,7 @@ import { event as regularEvent } from "./task/type/event/regular.js";
 import { event as varBlockEvent } from "./task/type/event/varblock.js";
 import { event as varCreateEvent } from "./task/type/event/varcreate.js";
 import { event as varDeleteEvent } from "./task/type/event/vardelete.js";
+import { ws } from "./task/server.js";
 
 const prompt = require("electron-prompt");
 import { getLang } from "./lang.js";
@@ -67,34 +68,50 @@ export function createWorkspace() {
 		if(taskIndex == -2) {
 			// Custom
 			if(currentGroup == null) return;
-			// new block
-			if(e instanceof Blockly.Events.Create) {
+			setTimeout(() => {
+				// new block
+				// if(e instanceof Blockly.Events.EndBlockDrag) {
+				// 	const packet = {
+				// 		type: "groupAction",
+				// 		group: currentGroup,
+				// 		action: {
+				// 			type: "addBlock",
+				// 			block: Blockly.Xml.domToText(Blockly.Xml.blockToDom(e.block)),
+				// 			x: e.block.getRelativeToSurfaceXY().x,
+				// 			y: e.block.getRelativeToSurfaceXY().y
+				// 		}
+				// 	}
+				// 	ws.send(JSON.stringify(packet));
+				// 	return;
+				// }
+				// // Move block
+				// if(e instanceof Blockly.Events.Move) {
+				// 	console.log(e);
+				// 	const packet = {
+				// 		type: "groupAction",
+				// 		group: currentGroup,
+				// 		action: {
+				// 			type: "moveBlock",
+				// 			id: e.blockId,
+				// 			x: e.newCoordinate.x,
+				// 			y: e.newCoordinate.y
+				// 		}
+				// 	}
+				// 	ws.send(JSON.stringify(packet));
+				// }
+				// forget it
+				// lets just send the whole thing
+				console.log(currentGroup.uuid);
 				const packet = {
 					type: "groupAction",
-					group: currentGroup,
+					group: currentGroup.uuid,
 					action: {
-						type: "addBlock",
-						block: Blockly.Xml.domToText(Blockly.Xml.blockToDom(e.block)),
-						x: e.block.getRelativeToSurfaceXY().x,
-						y: e.block.getRelativeToSurfaceXY().y
+						type: "updateWorkspace",
+						workspace: toXml()
 					}
 				}
 				ws.send(JSON.stringify(packet));
-			}
-			// Move block
-			if(e instanceof Blockly.Events.Move) {
-				const packet = {
-					type: "groupAction",
-					group: currentGroup,
-					action: {
-						type: "moveBlock",
-						id: e.blockId,
-						x: e.newCoordinate.x,
-						y: e.newCoordinate.y
-					}
-				}
-				ws.send(JSON.stringify(packet));
-			}
+			}, 500);
 			return;
 		}
 		const INSTRUCTION = task.instructions[taskIndex];
