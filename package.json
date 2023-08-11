@@ -15,7 +15,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "https://cfp.is-a.dev/update/picoscratch-learn",
+        "url": "https://update.picoscratch.de/picoscratch-learn",
         "useMultipleRangeRequest": false
       }
     ],

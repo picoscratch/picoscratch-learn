@@ -15,6 +15,7 @@ const prompt = require("electron-prompt");
 import { getLang } from "./lang.js";
 import { taskIndex, nextTask, task } from "./task/level.js";
 import { currentGroup } from "./codegroups.js";
+import { defineBlocks } from "./blocks.js";
 export let workspace = null;
 export let blockTags = {};
 export let varTags = {};
@@ -32,6 +33,7 @@ export function setVarTags(newVarTags) { varTags = newVarTags; }
 export function setCorrectPoints(newCorrectPoints) { correctPoints = newCorrectPoints; }
 
 export function createWorkspace() {
+	defineBlocks();
 	setLocale(getLang());
 	
 	workspace = Blockly.inject("blocklyDiv", {
