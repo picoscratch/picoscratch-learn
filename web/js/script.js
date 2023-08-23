@@ -109,7 +109,7 @@ $("#tab-scratch").addEventListener("click", async () => {
 })
 
 export async function updatePythonTab() {
-	$("#pythontab").getElementsByTagName("code")[0].textContent = await makeCode();
+	$("#pythontab").getElementsByTagName("code")[0].textContent = await makeCode(picoW);
 	hljs.highlightElement($("#pythontab").getElementsByTagName("code")[0]);
 }
 

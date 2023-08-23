@@ -7,6 +7,9 @@ import * as DATA from "./run/data.js";
 import * as DEBUG from "./run/debug.js";
 import * as OPERATOR from "./run/operator.js";
 import * as PROCEDURES from "./run/procedures.js";
+import * as PIN from "./run/pin.js";
+import * as PWM from "./run/pwm.js";
+import * as ADC from "./run/adc.js";
 
 const parseXML = require("xml2js").parseStringPromise;
 export let finalCode = "";
@@ -41,6 +44,9 @@ addCode(DATA);
 addCode(DEBUG);
 addCode(OPERATOR);
 addCode(PROCEDURES);
+addCode(PIN);
+addCode(PWM);
+addCode(ADC);
 
 export async function addImport(lib) {
 	if(!imports.includes(lib)) imports.push(lib);
@@ -154,6 +160,7 @@ export async function solveCondition(blk) {
 		}
 		const result = await condition.code(blk);
 		if(result != null) {
+			workspace.glowBlock(blk.$.id, false);
 			return result;
 		}
 	}
@@ -166,6 +173,7 @@ export async function solveNumber(val) {
 	workspace.glowBlock(blk.$.id, true);
 	if(!NUMBERS[blk.$.type]) {
 		// report(blk.$.id, "Can't compile this block: No code");
+		workspace.glowBlock(blk.$.id, false);
 		return null;
 	} else {
 		const number = NUMBERS[blk.$.type];
@@ -174,6 +182,7 @@ export async function solveNumber(val) {
 		}
 		const result = await number.code(blk);
 		if(result != null) {
+			workspace.glowBlock(blk.$.id, false);
 			return result;
 		}
 	}
@@ -191,6 +200,7 @@ export async function solveString(val) {
 		}
 		const result = await string.code(blk);
 		if(result != null) {
+			workspace.glowBlock(blk.$.id, false);
 			return result;
 		}
 	}

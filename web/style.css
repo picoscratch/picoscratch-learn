@@ -88,7 +88,7 @@ input {
 	color: #464646;
 }
 
-.goog-menuitem-highlight {
+.goog-menuitem-highlight:not(.blocklyDropdownMenu div) {
 	background-color: #3f3f3f !important;
 	border-style: solid !important;
 	border-color: #3f3f3f !important;

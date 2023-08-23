@@ -15,7 +15,14 @@ const prompt = require("electron-prompt");
 import { getLang } from "./lang.js";
 import { taskIndex, nextTask, task } from "./task/level.js";
 import { currentGroup } from "./codegroups.js";
-import { defineBlocks } from "./blocks.js";
+// import { defineBlocks } from "./blocks.js";
+import { defineBlocks as componentsBlocks } from "./blocks/components.js";
+import { defineBlocks as controlBlocks } from "./blocks/control.js";
+import { defineBlocks as debugBlocks } from "./blocks/debug.js";
+import { defineBlocks as pinBlocks } from "./blocks/pin.js";
+import { defineBlocks as pwmBlocks } from "./blocks/pwm.js";
+import { defineBlocks as adcBlocks } from "./blocks/adc.js";
+import { defineToolbox } from "./blocks/toolbox.js";
 export let workspace = null;
 export let blockTags = {};
 export let varTags = {};
@@ -31,6 +38,16 @@ export function setTaskXML(newXML) { taskXML = newXML; }
 export function setBlockTags(newBlockTags) { blockTags = newBlockTags; }
 export function setVarTags(newVarTags) { varTags = newVarTags; }
 export function setCorrectPoints(newCorrectPoints) { correctPoints = newCorrectPoints; }
+
+export function defineBlocks() {
+	pinBlocks();
+	componentsBlocks();
+	controlBlocks();
+	debugBlocks();
+	pwmBlocks();
+	adcBlocks();
+	defineToolbox();
+}
 
 export function createWorkspace() {
 	defineBlocks();
