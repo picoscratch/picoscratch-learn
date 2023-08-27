@@ -12,6 +12,8 @@ import { initIdleDetector } from "./task/idle.js";
 import { PSNotification } from "./notification.js";
 import { currentSection, setCurrentSection } from "./levelpath/sections.js";
 import { resetData } from "./consolechart.js";
+import { initCatBlocks } from "./patches/catblocks.js";
+import { loadActionsPatch, setCherryPicking, setDuplication } from "./patches/blockActions.js";
 const { readFileSync, existsSync, unlinkSync, writeFileSync } = require("node:fs");
 const { app, shell } = require("@electron/remote")
 const { join } = require("node:path");
@@ -22,6 +24,14 @@ setLang("en");
 tryGetLanguage();
 setupUpdater();
 await initIdleDetector();
+
+loadActionsPatch();
+setDuplication(true); // Alt + Drag
+setCherryPicking(true, false); // Ctrl + Drag
+
+if(Math.floor(Math.random() * 30) == 0) {
+	initCatBlocks();
+}
 
 export const editor = new Quill("#reading-container", {
 	theme: "bubble",
