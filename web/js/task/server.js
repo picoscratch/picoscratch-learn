@@ -107,6 +107,9 @@ export function connectServer(code) {
 				if(packet.error == "Course is not running") {
 					new Dialog("#waiting-for-teacher-dialog").show();
 					return;
+				} else if(packet.error == "Max level reached") {
+					new Dialog("#max-level-reached-dialog").show();
+					return;
 				}
 				alert("Something isn't right. Please try again later.\n" + packet.error);
 				console.log(packet);
