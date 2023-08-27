@@ -45,6 +45,7 @@ $("#version").addEventListener("click", () => {
 })
 
 new Dialog("#no-registration-dialog").hideButton("#no-registration-hide");
+new Dialog("#max-level-reached-dialog").hideButton("#max-level-reached-dialog-button");
 
 $("#greenflag").addEventListener("click", async () => {
 	await run();

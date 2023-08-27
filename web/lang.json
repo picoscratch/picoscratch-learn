@@ -70,7 +70,10 @@
 		"dialog-connect-pico-error": "Pico did not respond. Please try again.\nThe cable you are using might not be a data cable.\nTry plugging it into a different USB port, or try a different cable.\nIf the issue persists, please restart the program.",
 		"no-registration": "No registration",
 		"no-registration-text": "Your teacher has disabled new registrations.",
-		"no-registration-close": "Close"
+		"no-registration-close": "Close",
+		"max-level-reached-dialog-title": "Max level reached",
+		"max-level-reached-dialog-text": "You have reached the maximum level.",
+		"max-level-reached-dialog-button": "Ok"
 	},
 	"de": {
 		"start": "Start",
@@ -143,6 +146,9 @@
 		"dialog-connect-pico-error": "Pico hat nicht geantwortet. Bitte versuche es erneut.\nDas Kabel, das du verwendest, ist möglicherweise kein Datenkabel.\nVersuche es in einem anderen USB-Port oder versuche ein anderes Kabel.\nWenn das Problem weiterhin besteht, starte das Programm bitte neu.",
 		"no-registration": "Keine Registrierung",
 		"no-registration-text": "Dein Lehrer hat neue Registrierungen deaktiviert.",
-		"no-registration-close": "Schließen"
+		"no-registration-close": "Schließen",
+		"max-level-reached-dialog-title": "Maximales Level erreicht",
+		"max-level-reached-dialog-text": "Du hast das maximale Level erreicht.",
+		"max-level-reached-dialog-button": "Ok"
 	}
 }
