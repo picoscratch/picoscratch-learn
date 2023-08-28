@@ -14,6 +14,7 @@ import { currentSection, setCurrentSection } from "./levelpath/sections.js";
 import { resetData } from "./consolechart.js";
 import { initCatBlocks } from "./patches/catblocks.js";
 import { loadActionsPatch, setCherryPicking, setDuplication } from "./patches/blockActions.js";
+import { autoBlockGlow } from "./task/type/init/regular.js";
 const { readFileSync, existsSync, unlinkSync, writeFileSync } = require("node:fs");
 const { app, shell } = require("@electron/remote")
 const { join } = require("node:path");
@@ -77,6 +78,8 @@ $("#reset").addEventListener("click", async () => {
 	setCorrectPoints([]);
 	correctPoints.push(toXml());
 	nextTask();
+	if(autoBlockGlow) clearTimeout(autoBlockGlow);
+	if(workspace.getBlockById(task.instructions[taskIndex].block)) workspace.glowStack(task.instructions[taskIndex].block, false);
 })
 $("#next").addEventListener("click", async () => {
 	// allowUnload = true;
