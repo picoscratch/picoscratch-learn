@@ -36,6 +36,7 @@ export function connectPort() {
 			document.querySelector("#connect-pico-obj").contentDocument.querySelector("#usb").id = "usb-connected";
 		}
 		picoport = picoport.path;
+		console.log("Port: " + picoport)
 		port = new SerialPort({
 			path: picoport,
 			baudRate: 115200,
@@ -88,7 +89,7 @@ export function connectPort() {
 			connectPort();
 		})
 		port.on("open", async () => {
-			console.log("open");
+			console.log("open", taskIndex, connectDialogShown);
 			if(taskIndex == -1 && !connectDialogShown) nextTask();
 			// Test pico
 			console.log("Testing pico");
