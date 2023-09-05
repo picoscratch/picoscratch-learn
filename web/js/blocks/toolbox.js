@@ -1,28 +1,32 @@
+import { courseType } from "../task/server.js";
 import { adcToolbox } from "./adc.js";
 import { componentsToolbox } from "./components.js";
 import { debugToolbox } from "./debug.js";
 import { pinToolbox } from "./pin.js";
 import { pwmToolbox } from "./pwm.js";
 
-const BEFORE_CATEGORIES = {
-	pin: pinToolbox,
-	pwm: pwmToolbox,
-	adc: adcToolbox
-}
-
-const AFTER_CATEGORIES = {
-	components: componentsToolbox,
-	debug: debugToolbox
+const CATS = {
+	"coding": [{
+		pin: pinToolbox,
+		pwm: pwmToolbox,
+		adc: adcToolbox
+	}, {
+		components: componentsToolbox,
+		debug: debugToolbox
+	}],
+	"chemistry": [{}, {}]
 }
 
 export function defineToolbox() {
 	Blockly.Blocks.defaultToolbox = `<xml id="toolbox-categories" style="display: none">`;
-	for(const cat in BEFORE_CATEGORIES) {
-		Blockly.Blocks.defaultToolbox += `${BEFORE_CATEGORIES[cat]}`;
+	console.log(CATS[courseType], courseType);
+	for(const cat in CATS[courseType][0]) {
+		Blockly.Blocks.defaultToolbox += `${CATS[courseType][0][cat]}`;
 	}
 	Blockly.Blocks.defaultToolbox += `${defaultToolboxItems}`;
-	for(const cat in AFTER_CATEGORIES) {
-		Blockly.Blocks.defaultToolbox += `${AFTER_CATEGORIES[cat]}`;
+	for(const cat in CATS[courseType][1]) {
+		console.log(cat);
+		Blockly.Blocks.defaultToolbox += `${CATS[courseType][1][cat]}`;
 	}
 	Blockly.Blocks.defaultToolbox += `</xml>`;
 }

@@ -22,12 +22,13 @@ import { workspace } from "../workspace.js";
  */
 export let wsServer;
 export let ws;
-export const HTTP_PROTOCOL = "https";
-export const WS_PROTOCOL = "wss";
-export const SERVER = "server.picoscratch.de/";
-// export const HTTP_PROTOCOL = "http";
-// export const WS_PROTOCOL = "ws";
-// export const SERVER = "localhost:8080";
+// export const HTTP_PROTOCOL = "https";
+// export const WS_PROTOCOL = "wss";
+// export const SERVER = "server.picoscratch.de/";
+export const HTTP_PROTOCOL = "http";
+export const WS_PROTOCOL = "ws";
+export const SERVER = "localhost:8080";
+export let courseType = "coding";
 
 // export function setWSServer(newServer) { wsServer = newServer; }
 export function setWS(newWS) { ws = newWS; }
@@ -251,6 +252,8 @@ export function connectServer(code) {
 			if(action.type == "updateWorkspace") {
 				fromXml(action.workspace);
 			}
+		} else if(packet.type == "courseType") {
+			courseType = packet.courseType;
 		}
 	})
 	ws.addEventListener("error", () => {
