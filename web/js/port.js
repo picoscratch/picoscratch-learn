@@ -1,5 +1,5 @@
 import { addData } from "./consolechart.js";
-import { nextTask, setVerifying, taskIndex, verifying } from "./task/level.js";
+import { isInTask, nextTask, setVerifying, taskIndex, verifying } from "./task/level.js";
 import { $, sleep } from "./util.js";
 const fs = require("fs");
 
@@ -69,6 +69,7 @@ export function connectPort() {
 		})
 		port.on("error", async (err) => {
 			console.error(err);
+			if(!isInTask) return;
 			if(!$("#connect-pico-obj").contentDocument) {
 				new Dialog("#connect-pico-dialog").show();
 				await sleep(500);
@@ -83,6 +84,7 @@ export function connectPort() {
 			connectPort();
 		})
 		port.on("close", () => {
+			if(!isInTask) return;
 			if($("#connect-pico-obj").contentDocument) $("#connect-pico-obj").contentDocument.querySelector("#error").style.fill = "none";
 			$("#connect-pico-error").style.display = "none";
 			if(testInterval) clearTimeout(testInterval);

@@ -8,7 +8,7 @@ import { editor } from "../script.js";
 import { $ } from "../util.js";
 import { correctPoints, createWorkspace, fromXml, setBlockTags, setTaskXML, setVarTags, startXML, toXml } from "../workspace.js";
 import { renderLeaderboards, setLeaderboard } from "./leaderboard.js";
-import { nextTask, setCurrentLevel, setTask, setTaskIndex, task } from "./level.js";
+import { isInTask, nextTask, setCurrentLevel, setIsInTask, setTask, setTaskIndex, task } from "./level.js";
 import { populateRoomButtons } from "./schoolauth.js";
 import { writePort } from "../port.js";
 import { setAnsweredQs, setCorrectQs } from "./level.js";
@@ -116,6 +116,7 @@ export function connectServer(code) {
 				console.log(packet);
 				return;
 			}
+			setIsInTask(true);
 			setTask(packet.task);
 			document.querySelector("#levelpath").style.display = "none";
 			document.querySelector("#level-loader").style.display = "none";
@@ -191,6 +192,7 @@ export function connectServer(code) {
 			$("#section-back").click();
 		} else if(packet.type == "done") {
 			if(packet.success) {
+				setIsInTask(false);
 				$("#editor").style.display = "none";
 				$("#levelpath").style.display = "";
 				while($("#blocklyDiv").firstChild) {

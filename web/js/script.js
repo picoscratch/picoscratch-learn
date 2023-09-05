@@ -5,7 +5,7 @@ import { makeCode } from "./run.js";
 import { correctPoints, createWorkspace, fromXml, setCorrectPoints, startXML, taskXML, toXml, workspace } from "./workspace.js";
 const langs = require("./lang.json");
 import { setupUpdater } from "./updater.js";
-import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask, setVerifying, verifying } from "./task/level.js";
+import { taskIndex, setTaskIndex, currentLevel, setCurrentLevel, task, answeredqs, correctqs, setAnsweredQs, setCorrectQs, nextTask, setVerifying, verifying, isInTask, setIsInTask } from "./task/level.js";
 import { checkSchoolcode, connectServer, HTTP_PROTOCOL, SERVER, ws, wsServer, WS_PROTOCOL } from "./task/server.js";
 import { $, sleep } from "./util.js";
 import { initIdleDetector } from "./task/idle.js";
@@ -135,6 +135,7 @@ $("#tab-python").addEventListener("click", async () => {
 	$("#tab-python").classList.add("selected");
 })
 $("#back").addEventListener("click", async () => {
+	setIsInTask(false);
 	$("#editor").style.display = "none";
 	$("#levelpath").style.display = "";
 	while($("#blocklyDiv").firstChild) {
