@@ -9,6 +9,7 @@ import { event as regularEvent } from "./task/type/event/regular.js";
 import { event as varBlockEvent } from "./task/type/event/varblock.js";
 import { event as varCreateEvent } from "./task/type/event/varcreate.js";
 import { event as varDeleteEvent } from "./task/type/event/vardelete.js";
+import { event as moveEventBlock } from "./task/type/event/moveevent.js";
 import { ws } from "./task/server.js";
 
 const prompt = require("electron-prompt");
@@ -140,7 +141,7 @@ export function createWorkspace() {
 		if(e instanceof Blockly.Events.CommentCreate || e instanceof Blockly.Events.CommentDelete || e instanceof Blockly.Events.CommentMove || e instanceof Blockly.Events.CommentChange) return;
 		if(e instanceof Blockly.Events.Ui) return;
 		//if(e instanceof Blockly.Events.Move && !e.oldParentId) return;
-		if(e instanceof Blockly.Events.Move) return;
+		// if(e instanceof Blockly.Events.Move) return;
 		if(e instanceof Blockly.Events.Delete && e.oldXml.tagName == "SHADOW") return;
 		const regularEventResult = regularEvent(e, INSTRUCTION);
 		console.log("regular event result: ", regularEventResult);
@@ -161,9 +162,11 @@ export function createWorkspace() {
 			case "varblock": func = varBlockEvent; break;
 			case "varcreate": func = varCreateEvent; break;
 			case "vardelete": func = varDeleteEvent; break;
+			case "moveevent": func = moveEventBlock; break;
 		}
 		if(func) {
 			const funcResult = func(e, INSTRUCTION);
+			console.log("func result: ", funcResult);
 			if(funcResult === undefined) return;
 			if(!funcResult) {
 				console.log(INSTRUCTION.type, "Event does not allow");

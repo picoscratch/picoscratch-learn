@@ -92,7 +92,9 @@ export function connectPort() {
 		})
 		port.on("open", async () => {
 			console.log("open", taskIndex, connectDialogShown);
-			if(taskIndex == -1 && !connectDialogShown) nextTask();
+			if(taskIndex == -1 && !connectDialogShown) {
+				if(!new Dialog("#wiring-dialog").shown || !new Dialog("#wiring-begin-dialog").shown) nextTask();
+			}
 			// Test pico
 			console.log("Testing pico");
 			await writePort("\r\x05")

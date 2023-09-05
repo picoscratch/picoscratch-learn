@@ -31,7 +31,7 @@ export const NUMBERS = {
 	get_pwm_duty_255: {
 		import: ["machine", "math"],
 		code: async (blk) => {
-			return `int(round(math.sqrt(machine.PWM(machine.Pin(${await solveNumber(blk.value[0])})).duty_u16()), 0))`;
+			return `((machine.PWM(machine.Pin(${await solveNumber(blk.value[0])})).duty_u16()) / 257)`;
 		}
 	},
 	get_pwm_freq: {

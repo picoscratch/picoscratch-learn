@@ -10,7 +10,7 @@ export const NUMBERS = {
 	adc_read_255: {
 		import: ["machine", "math"],
 		code: async (blk) => {
-			return `int(round(math.sqrt(machine.ADC(machine.Pin(${await solveNumber(blk.value[0])})).read_u16()), 0))`;
+			return `((machine.ADC(machine.Pin(${await solveNumber(blk.value[0])})).read_u16()) / 257)`;
 		}
 	},
 	adc_volt: {
