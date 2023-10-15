@@ -276,7 +276,7 @@ $("#serial-connect").addEventListener("click", async () => {
 	showCustomNotif("[Confirmed]");
 })
 $("#serial-disconnect").addEventListener("click", async () => {
-	port.close();
+	port.disconnect();
 	showCustomNotif("Closed port");
 })
 $("#pico-reset").addEventListener("click", async () => {
@@ -447,11 +447,11 @@ if(!ipcRenderer.sendSync("config.has", "schoolcode")) {
 		$("#setup").style.display = "none";
 		$("#login").style.display = "flex";
 		ws.send(JSON.stringify({ type: "room", uuid: ipcRenderer.sendSync("config.get", "room") }));
-		new Dialog("#pico-dialog").show();
+		// new Dialog("#pico-dialog").show();
 	});
 } else {
 	$("#login").style.display = "flex";
-	new Dialog("#pico-dialog").show();
+	// new Dialog("#pico-dialog").show();
 	connectServer(ipcRenderer.sendSync("config.get", "schoolcode"));
 }
 
@@ -521,10 +521,12 @@ if(existsSync(join(app.getPath("userData"), "psess.json"))) {
 }
 
 async function run() {
-	await writePort("\r\x05")
-	await writePort(await makeCode(picoW));
-	await writePort("\r\x04");
-	$("#console").innerText = "";
+	// await writePort("\r\x05")
+	// await writePort(await makeCode(picoW));
+	// await writePort("\r\x04");
+	await port.runScript(await makeCode(picoW), { broadcastOutputAsTerminalData: true });
+	port.sendData("\r\n"); // Send newline to get the prompt
+	$("#console").innerText = "Dein Code wird nun ausgeführt. Wenn du fertig bist, klicke auf den blauen Haken.\n====================\n";
 }
 
 ipcRenderer.on("devmode", (event) => {
