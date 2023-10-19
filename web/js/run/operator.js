@@ -98,8 +98,11 @@ export const NUMBERS = {
 	operator_mathop: {
 		import: ["math"],
 		code: async (blk) => {
-			let op = blk.value[0].shadow[0].field[0]._;
-			let val = await solveNumber(blk.value[1]);
+			console.log(blk);
+			// let op = blk.value[0].shadow[0].field[0]._;
+			// let val = await solveNumber(blk.value[1]);
+			let op = blk.field[0]._;
+			let val = await solveNumber(blk.value[0]);
 			if(op == "abs") return "abs(" + val + ")";
 			else if(op == "floor") return "math.floor(" + val + ")";
 			else if(op == "ceiling") return "math.ceil(" + val + ")";

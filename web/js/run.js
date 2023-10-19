@@ -145,6 +145,8 @@ export async function runBlock(hat) {
 				}
 			} catch(e) {
 				alert("Error compiling block: " + e);
+				workspace.glowBlock(blk.$.id, false);
+				throw e;
 			}
 		}
 		workspace.glowBlock(blk.$.id, false);
