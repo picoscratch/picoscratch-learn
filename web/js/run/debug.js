@@ -9,7 +9,7 @@ export const BLOCKS = {
 	debug_python: {
 		code: async (blk) => {
 			let code = await solveString(blk.value[0]);
-			if(code.startsWith("\"") && code.endsWith("\"")) code = code.substring(1, val.length - 1)
+			if(code.startsWith("\"") && code.endsWith("\"")) code = code.substring(1, code.length - 1)
 			return code;
 		}
 	}

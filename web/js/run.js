@@ -134,13 +134,17 @@ export async function runBlock(hat) {
 			if(block.import) {
 				for(const im of block.import) { addImport(im); }
 			}
-			const result = await block.code(blk, finalBlockCode);
-			if(result != null) {
-				if(typeof result == "string") finalBlockCode += indent + result + "\r\n";
-				else if(typeof result == "object") {
-					if(result.code) finalBlockCode += indent + result.code + "\r\n";
-					if(result.finalBlockCode) finalBlockCode = result.finalBlockCode;
+			try {
+				const result = await block.code(blk, finalBlockCode);
+				if(result != null) {
+					if(typeof result == "string") finalBlockCode += indent + result + "\r\n";
+					else if(typeof result == "object") {
+						if(result.code) finalBlockCode += indent + result.code + "\r\n";
+						if(result.finalBlockCode) finalBlockCode = result.finalBlockCode;
+					}
 				}
+			} catch(e) {
+				alert("Error compiling block: " + e);
 			}
 		}
 		workspace.glowBlock(blk.$.id, false);
