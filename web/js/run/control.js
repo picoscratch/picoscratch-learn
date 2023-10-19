@@ -79,5 +79,10 @@ export const BLOCKS = {
 			popIndent();
 			return { finalBlockCode };
 		}
+	},
+	control_break: {
+		code: async (blk) => {
+			return "break";
+		}
 	}
 }

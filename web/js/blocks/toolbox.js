@@ -68,9 +68,7 @@ export const defaultToolboxItems = `<category name="%{BKY_CATEGORY_EVENTS}" id="
 	<block type="control_forever" id="control_forever"></block>
 	<block type="control_if" id="control_if"></block>
 	<block type="control_if_else" id="control_if_else"></block>
-	<block type="control_wait_until" id="control_wait_until"></block>
-	<block type="control_repeat_until" id="control_repeat_until"></block>
-	<block type="control_stop" id="control_stop"></block>
+	<block type="control_break" id="control_break"></block>
 </category>
 
 <category name="%{BKY_CATEGORY_OPERATORS}" id="operators" colour="#40BF4A" secondaryColour="#389438">

@@ -37,4 +37,17 @@ export function defineBlocks() {
 			})
 		}
 	}
+
+	Blockly.Msg.BREAK = "break";
+	Blockly.ScratchMsgs.locales["en"].BREAK = "break";
+	Blockly.ScratchMsgs.locales["de"].BREAK = "abbrechen";
+	Blockly.Blocks["control_break"] = {
+		init() {
+			this.jsonInit({
+				"message0": Blockly.Msg.BREAK,
+				"category": Blockly.Categories.control,
+				"extensions": ["colours_control", "shape_statement"]
+			})
+		}
+	}
 }
