@@ -7,6 +7,18 @@ export const BLOCKS = {
 			return "time.sleep(" + await solveNumber(blk.value[0]) + ")";
 		}
 	},
+	control_wait_ms: {
+		import: ["time"],
+		code: async (blk) => {
+			return "time.sleep_ms(" + await solveNumber(blk.value[0]) + ")";
+		}
+	},
+	control_wait_us: {
+		import: ["time"],
+		code: async (blk) => {
+			return "time.sleep_us(" + await solveNumber(blk.value[0]) + ")";
+		}
+	},
 	control_repeat: {
 		code: async (blk, finalBlockCode) => {
 			const amount = await solveNumber(blk.value[0]);
