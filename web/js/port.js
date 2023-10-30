@@ -87,7 +87,8 @@ export function connectPort() {
 		// 	connectPort();
 		// })
 		port.onclose = () => {
-			if(!isInTask) return;
+			//if(!isInTask) return;
+			if($("#editor").style.display == "none") return;
 			if($("#connect-pico-obj").contentDocument) $("#connect-pico-obj").contentDocument.querySelector("#error").style.fill = "none";
 			$("#connect-pico-error").style.display = "none";
 			if(testInterval) clearTimeout(testInterval);
@@ -146,6 +147,7 @@ export function connectPort() {
 		} else if(boardInfo.machine.includes("Pico")) {
 			$("#pico").click();
 		}
+		await new Dialog("#connect-pico-dialog").hide();
 	});
 }
 
