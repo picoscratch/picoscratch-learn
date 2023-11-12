@@ -159,5 +159,6 @@ export function writePort(text) {
 			// resolve();
 		// })
 		await port.sendData(text);
+		resolve();
 	})
 }

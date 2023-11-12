@@ -524,7 +524,7 @@ async function run() {
 	// await writePort("\r\x05")
 	// await writePort(await makeCode(picoW));
 	// await writePort("\r\x04");
-	await port.runScript(await makeCode(picoW), { broadcastOutputAsTerminalData: true });
+	await port.runScript(await makeCode(picoW), { broadcastOutputAsTerminalData: true, resolveBeforeResult: true });
 	port.sendData("\r\n"); // Send newline to get the prompt
 	$("#console").innerText = "Dein Code wird nun ausgeführt. Wenn du fertig bist, klicke auf den blauen Haken.\n====================\n";
 }

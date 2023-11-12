@@ -1,0 +1,108 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables></variables>
+  <block type="event_whenflagclicked" id="{!5G[{H3qE2[NMQ;pK)W" x="300" y="400">
+    <next>
+      <block type="control_forever" id="Vde4fD1P%|imG@O9qIv}">
+        <statement name="SUBSTACK">
+          <block type="pin_on" id="rcn*bIRq^pV%BB02O9aB">
+            <value name="PIN">
+              <shadow type="math_number" id="PG,`88MAr_x/z3kbf=m/">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <next>
+              <block type="control_wait" id="_R/qD-n?RFT{zjJCZo?w">
+                <value name="DURATION">
+                  <shadow type="math_positive_number" id="ChQ$oMe2WH+mHTs~4r[#">
+                    <field name="NUM">10</field>
+                  </shadow>
+                </value>
+                <next>
+                  <block type="pin_off" id="|I`w$P2$$a;Sy]6Hgie)">
+                    <value name="PIN">
+                      <shadow type="math_number" id="Hla~5^F0X#/yBp/6?5n:">
+                        <field name="NUM">1</field>
+                      </shadow>
+                    </value>
+                    <next>
+                      <block type="control_wait" id=":;vf/r_24v90ANH.f~Ln">
+                        <value name="DURATION">
+                          <shadow type="math_positive_number" id="U/%u7v3{1TE#sS2klap{">
+                            <field name="NUM">10</field>
+                          </shadow>
+                        </value>
+                        <next>
+                          <block type="pin_on" id="c[wfev-UuzJ9!uN@X8jm">
+                            <value name="PIN">
+                              <shadow type="math_number" id="wVU:/)l:)]a~YP%:4Lrc">
+                                <field name="NUM">2</field>
+                              </shadow>
+                            </value>
+                            <next>
+                              <block type="control_wait" id="5c%LC_cgni%NQvg0Jp:c">
+                                <value name="DURATION">
+                                  <shadow type="math_positive_number" id="51sz@}s@w=sjDKrK}pBG">
+                                    <field name="NUM">10</field>
+                                  </shadow>
+                                </value>
+                                <next>
+                                  <block type="pin_off" id="S_;8~MPBFi4en9cA[H4~">
+                                    <value name="PIN">
+                                      <shadow type="math_number" id="A}|a=GlU`C~/OI)|1p3c">
+                                        <field name="NUM">2</field>
+                                      </shadow>
+                                    </value>
+                                    <next>
+                                      <block type="control_wait" id="ff6l2mC3a:M8G*b]so;I">
+                                        <value name="DURATION">
+                                          <shadow type="math_positive_number" id="wI^X`28a5lt#]_6b?hku">
+                                            <field name="NUM">10</field>
+                                          </shadow>
+                                        </value>
+                                        <next>
+                                          <block type="pin_on" id="M~QUus#(XKHOJ]s/|*$;">
+                                            <value name="PIN">
+                                              <shadow type="math_number" id="mgh*u16Cw|)Kt%_(;mR$">
+                                                <field name="NUM">3</field>
+                                              </shadow>
+                                            </value>
+                                            <next>
+                                              <block type="control_wait" id="W?y7ADVxscG%2BaQuWfs">
+                                                <value name="DURATION">
+                                                  <shadow type="math_positive_number" id="j)K,se=`VWh0|BN{VR;F">
+                                                    <field name="NUM">10</field>
+                                                  </shadow>
+                                                </value>
+                                                <next>
+                                                  <block type="pin_off" id="T5w(zcX5XNJmcpPk;]%H">
+                                                    <value name="PIN">
+                                                      <shadow type="math_number" id="H?X76`;xWVFq[F0^ET*]">
+                                                        <field name="NUM">3</field>
+                                                      </shadow>
+                                                    </value>
+                                                  </block>
+                                                </next>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </next>
+  </block>
+</xml>
